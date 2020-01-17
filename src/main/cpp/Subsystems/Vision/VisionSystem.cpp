@@ -20,9 +20,10 @@ VisionSystem::VisionSystem() {
     double P = BSPrefs::GetInstance()->GetDouble("Vision.x.P", 0.5);
     double I = BSPrefs::GetInstance()->GetDouble("Vision.x.I", 0.0);
     double D = BSPrefs::GetInstance()->GetDouble("Vision.x.D", 0.0);
-    double xThreshold = BSPrefs::GetInstance()->GetDouble("Vision.x.threshold", 50.0);
+    /*double xThreshold =*/ BSPrefs::GetInstance()->GetDouble("Vision.x.threshold", 50.0);
     double range = BSPrefs::GetInstance()->GetDouble("Vision.x.range", 0.3);
 
+    // TODO: modify XOffset Controller functions to work with frc2::PIDControllers
     xoffPID.reset(
         new PIDController(P, I, D, xoffsetController.get(), xoffsetController.get() )
     );
@@ -32,9 +33,6 @@ VisionSystem::VisionSystem() {
 }
 
 void VisionSystem::Run() {
-    double y = 0.0;
-    double x = 0.0;
-
     auto prefs = BSPrefs::GetInstance();
     double P = prefs->GetDouble("Vision.x.P", 0.5);
     double I = prefs->GetDouble("Vision.x.I", 0.0);

@@ -12,7 +12,6 @@ std::shared_ptr<DriveBase> Robot::driveBase;
 std::unique_ptr<VisionSystem> Robot::visionSystem;
 
 
-
 void Robot::RobotInit() {
 	std::cout << "Robot::RobotInit => \n";
 
@@ -31,9 +30,6 @@ void Robot::RobotInit() {
 
 	autoManager.reset(new AutoManager());
 	RobotMap::gyro->ZeroYaw();
-
-	ahrs.reset(new AHRS(SPI::Port::kMXP));
-	ahrs->ZeroYaw();
 
 	std::cout << "Robot::TeleopInit <=\n";
 }
@@ -54,8 +50,7 @@ void Robot::AutonomousInit() {
 	RobotMap::gyro->ZeroYaw();
 	world.reset(new World());
 	autoManager->Init(world);
-	autoInitialized = true;
-	// autoInitialized = false;			// flag for when autonomous routines are running
+	autoInitialized = false;			// flag for when autonomous routines are running
 	InitSubsystems();
 	driveBase->InitTeleop();
 	initialized = true;
@@ -71,30 +66,15 @@ void Robot::TeleopInit() {
 	if (!initialized) {
 		InitSubsystems();
 		driveBase->InitTeleop();
-
 		initialized = true;
 		autoInitialized = false;
 	} else {
 		std::cout << " --- already initialized, ignoring\n";
 	}
 	visionSystem->ResetMaxOutputRange();
-
-	// Make sure follower is disabled
-	// Disable follower mode
-	// auto wheels = Robot::driveBase->GetWheels();
-	// DriveInfo<rev::CANSparkMax*> sparks;
-	// sparks.FL = static_cast<TMW2019SwerveWheel*>(wheels.FL.get())->GetDriveMotor().get();
-	// sparks.FR = static_cast<TMW2019SwerveWheel*>(wheels.FR.get())->GetDriveMotor().get();
-	// sparks.RL = static_cast<TMW2019SwerveWheel*>(wheels.RL.get())->GetDriveMotor().get();
-	// sparks.RR = static_cast<TMW2019SwerveWheel*>(wheels.RR.get())->GetDriveMotor().get();
-
-	// sparks.FL->Follow(rev::CANSparkMax::kFollowerDisabled, 0);
-	// sparks.FR->Follow(rev::CANSparkMax::kFollowerDisabled, 0);
-	// sparks.RL->Follow(rev::CANSparkMax::kFollowerDisabled, 0);
-	// sparks.RR->Follow(rev::CANSparkMax::kFollowerDisabled, 0);
-
     std::cout << "Robot::TeleopInit <=\n";
 }
+
 void Robot::TeleopPeriodic() {
     double startTime = frc::Timer::GetFPGATimestamp();
 	frc::Scheduler::GetInstance()->Run();
@@ -126,22 +106,9 @@ void Robot::TeleopPeriodic() {
 	 * Testing and Diagnostics
 	**********************************************************/
 	const bool speedModeTest = false; // oi->DL7->Pressed();
-//	const bool distanceMode = oi->DL8->Pressed();
 	const bool dmsMode = oi->DL11->Pressed();
 	dmsProcessManager->SetRunning(dmsMode);
 
-	const bool testFrontDrive = oi->DL9->Pressed();
-
-
-
-	/**********************************************************
-	 * Testing and Diagnostics
-	**********************************************************/
-	if (oi->DL6->Pressed()) {
-		std::cout << "STOPPING AUTO\n";
-		autoInitialized = false;
-		Robot::visionSystem->GetLimelight()->SelectPipeline(0);
-	}
 
 
 	/**********************************************************
@@ -149,51 +116,12 @@ void Robot::TeleopPeriodic() {
 	**********************************************************/
 	double twistInput = oi->GetJoystickTwist(threshold);
 	bool invertVisionDrive = false;
-	if (visionMode) {
-		double currentYaw = RobotMap::gyro->GetYaw();
-		double newYaw = calculateLockAngle(currentYaw);
-		// std::cout <<" currentYaw = "<< currentYaw << " | newYaw = " << newYaw << "\n";
-		if (fabs(newYaw) == 180.0) {
-			invertVisionDrive = true;
-		}
-		driveBase->SetTargetAngle(newYaw);
-		twistInput = driveBase->GetTwistControlOutput();
-	}
-
-	
-
-
 	double start = frc::Timer::GetFPGATimestamp();
 	if (speedModeTest) {
 		// driveBase->SetConstantVelocity(twistInput, 0.60);
 		// driveBase->Diagnostics();
 	} else if (dmsMode) {
 		// DriveBase input handled via DMS->Run()
-	} else if (testFrontDrive) {
-		// if (oi->DL9->RisingEdge()) {		// warning DL9 reused in liftControl->Run()
-		// 	driveBase->SetTargetAngle(180.0);
-		// }
-		// std::cout << "Running liftDrive\n";
-		// liftDrive.DriveFront(
-		// 	driveBase->GetCrabTwistOutput(),
-		// 	0.2,
-		// 	0,
-		// 	true);
-
-		// std::cout << " TESTING FOLLOW INVERSION \n";
-		// auto wheels = Robot::driveBase->GetWheels();
-		// DriveInfo<rev::CANSparkMax*> sparks;
-		// sparks.FL = static_cast<TMW2019SwerveWheel*>(wheels.FL.get())->GetDriveMotor().get();
-		// sparks.FR = static_cast<TMW2019SwerveWheel*>(wheels.FR.get())->GetDriveMotor().get();
-		// sparks.RL = static_cast<TMW2019SwerveWheel*>(wheels.RL.get())->GetDriveMotor().get();
-		// sparks.RR = static_cast<TMW2019SwerveWheel*>(wheels.RR.get())->GetDriveMotor().get();
-
-		// sparks.RL->Follow(rev::CANSparkMax::kFollowerSparkMax, sparks.RR->GetDeviceId(), false);
-		// sparks.RR->Set(-oi->GetJoystickY(threshold));
-		// sparks.FL->Set(0.0);
-		// sparks.FR->Set(0.0);
-
-
 	} else if (autoInitialized) {
 		autoManager->Periodic(world);
 	} else {
@@ -201,18 +129,7 @@ void Robot::TeleopPeriodic() {
 			double yMove = -oi->GetJoystickY(threshold);
 			double xMove = oi->GetJoystickX();
 			bool useGyro = true;
-			if (visionMode) { 
-				const bool movingForward = yMove > 0.0;
-				if (movingForward) {
-					xMove = visionSystem->GetLastVisionInfo()->xSpeed;
-				}
-				if (invertVisionDrive) {
-					// Invert vision-based driving when locked at 180.0 degrees
-					// to allow smooth transition to/from field-centric
-					yMove = -yMove;
-				}
-				useGyro = false;
-			} else if (oi->DR4->Pressed()) {
+			if (oi->DR4->Pressed()) {
 				// robot centric
 				xMove = std::copysign(xMove*xMove, xMove);
 				twistInput *= 0.5;
@@ -278,9 +195,6 @@ void Robot::InstrumentSubsystems() {
 
 		// see DriveBase::Instrment for smartdashboard yaw 
 		frc::SmartDashboard::PutNumber("Penguin Temp", RobotMap::gyro->GetPigeon()->GetTemp());
-		frc::SmartDashboard::PutBoolean("AHRS Connected", ahrs->IsConnected());
-		frc::SmartDashboard::PutNumber("AHRS Yaw", ahrs->GetYaw());
-		frc::SmartDashboard::PutNumber("AHRS Temp", ahrs->GetTempC());
 
 		driveBase->Instrument();
 		visionSystem->Instrument();
