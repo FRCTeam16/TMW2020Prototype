@@ -16,6 +16,9 @@
   shared_ptr<rev::CANSparkMax> RobotMap::driveBaseRearRightDrive;
   shared_ptr<WPI_TalonSRX> RobotMap::driveBaseRearRightSteer;
 
+  shared_ptr<WPI_TalonSRX> RobotMap::breakoutTalon;
+  shared_ptr<WPI_TalonSRX> RobotMap::gyroTalon;
+
   std::shared_ptr<BSGyro> RobotMap::gyro;
   
   std::shared_ptr<Compressor> RobotMap::compressor;
@@ -32,7 +35,10 @@ RobotMap::RobotMap() {
   driveBaseRearLeftSteer.reset(new WPI_TalonSRX{6});
   driveBaseRearRightSteer.reset(new WPI_TalonSRX{8});
 
-  // gyro.reset(new BSGyro(elevatorFollowerMotor.get()));  
+  breakoutTalon.reset(new WPI_TalonSRX{9});
+  gyroTalon.reset(new WPI_TalonSRX{10});
+
+  gyro.reset(new BSGyro(gyroTalon.get())); 
 
   compressor.reset(new Compressor{0});
   compressor->SetClosedLoopControl(true);

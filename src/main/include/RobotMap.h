@@ -29,6 +29,9 @@ class RobotMap {
   static shared_ptr<rev::CANSparkMax> driveBaseRearRightDrive;
   static shared_ptr<WPI_TalonSRX> driveBaseRearRightSteer;
 
+  static shared_ptr<WPI_TalonSRX> breakoutTalon;
+  static shared_ptr<WPI_TalonSRX> gyroTalon;
+
   static std::shared_ptr<BSGyro> gyro;
 
   static std::shared_ptr<Compressor> compressor;
