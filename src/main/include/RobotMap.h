@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
 #include <frc/Compressor.h>
@@ -29,9 +22,12 @@ class RobotMap {
   static shared_ptr<rev::CANSparkMax> driveBaseRearRightDrive;
   static shared_ptr<WPI_TalonSRX> driveBaseRearRightSteer;
 
-  static shared_ptr<WPI_TalonSRX> breakoutTalon;
-  static shared_ptr<WPI_TalonSRX> gyroTalon;
+  static shared_ptr<WPI_TalonSRX> turretMotor;
 
+  static shared_ptr<rev::CANSparkMax> shooterMotor;
+  static shared_ptr<rev::CANSparkMax> shooterMotorFollower;
+
+  static shared_ptr<WPI_TalonSRX> gyroTalon;
   static std::shared_ptr<BSGyro> gyro;
 
   static std::shared_ptr<Compressor> compressor;

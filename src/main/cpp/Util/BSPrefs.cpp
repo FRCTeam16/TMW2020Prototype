@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Util/BSPrefsFilebased.h"
 
+
 BSPrefs * BSPrefs::instance;
 
 BSPrefs* BSPrefs::GetInstance() {

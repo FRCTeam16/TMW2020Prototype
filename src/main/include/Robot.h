@@ -11,6 +11,7 @@
 #include "DMS/DmsProcessManager.h"
 #include "DMS/StatusReporter.h"
 #include "Subsystems/Vision/VisionSystem.h"
+#include "Subsystems/Turret/Turret.h"
 #include "Autonomous/World.h"
 #include "Autonomous/AutoManager.h"
 
@@ -35,6 +36,7 @@ class Robot : public frc::TimedRobot {
   static std::shared_ptr<DriveBase> driveBase;
   static std::unique_ptr<OI> oi;
   static std::unique_ptr<VisionSystem> visionSystem;
+  static std::unique_ptr<Turret> turret;
 
 private:
   void InitSubsystems();
