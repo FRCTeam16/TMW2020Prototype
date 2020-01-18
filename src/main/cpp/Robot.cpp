@@ -112,9 +112,7 @@ void Robot::TeleopPeriodic() {
 	 * Turret Control
 	**********************************************************/
 	if (oi->GPA->RisingEdge()) {
-		turret->SetShooterEnabled(true);
-	} else {
-		turret->SetShooterEnabled(false);
+		turret->ToggleShooterEnabled();
 	}
 
 	const double kTurretSpeed = frc::SmartDashboard::GetNumber("TurretSpeed", 0.2);;

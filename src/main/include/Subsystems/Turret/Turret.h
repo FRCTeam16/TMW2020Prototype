@@ -64,12 +64,16 @@ public:
         //----------------
         // Shooter Control
         //----------------
+        frc::SmartDashboard::PutBoolean("ShooterEnabled", shooterEnabled);
+
         UpdateShooterPID();
         rev::CANPIDController shooterPIDController = shooterMotor->GetPIDController();
         double shooterRPM = 0.0;
         if (shooterEnabled) {
             shooterRPM = shooterPIDConfig.kRpm1;
         }
+        frc::SmartDashboard::PutNumber("Velocity1", shooterMotor->GetEncoder().GetVelocity());
+        frc::SmartDashboard::PutNumber("ShooterSetpoint", shooterRPM);
         shooterPIDController.SetReference(shooterRPM, rev::ControlType::kVelocity);
 
 
@@ -84,6 +88,10 @@ public:
 
     void SetShooterEnabled(bool _enabled) {
         shooterEnabled = _enabled;
+    }
+
+    void ToggleShooterEnabled() {
+        shooterEnabled = !shooterEnabled;
     }
 
 private:
