@@ -11,6 +11,7 @@ std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<DriveBase> Robot::driveBase;
 std::unique_ptr<VisionSystem> Robot::visionSystem;
 std::unique_ptr<Turret> Robot::turret;
+std::unique_ptr<Intake> Robot::intake;
 
 
 void Robot::RobotInit() {
@@ -27,6 +28,7 @@ void Robot::RobotInit() {
 	visionSystem.reset(new VisionSystem());
     statusReporter.reset(new StatusReporter());
 	turret.reset(new Turret());
+	intake.reset(new Intake());
     // statusReporter->Launch();
     dmsProcessManager.reset(new DmsProcessManager(statusReporter));
 
@@ -125,6 +127,13 @@ void Robot::TeleopPeriodic() {
 	turret->SetTurretSpeed(turretSpeed);
 
 	/**********************************************************
+	 * Intake Control
+	**********************************************************/
+	if (oi->GPStart->RisingEdge()) {
+		intake->ToggleEnabled();
+	}
+
+	/**********************************************************
 	 * Testing and Diagnostics
 	**********************************************************/
 	const bool speedModeTest = false; // oi->DL7->Pressed();
@@ -182,6 +191,7 @@ void Robot::InitSubsystems() {
     std::cout << "Robot::InitSubsystems =>\n";
 	visionSystem->Init();
 	turret->Init();
+	intake->Init();
 	// status & dms currently don't have init
 	std::cout << "Robot::InitSubsystems <=\n";
 }
@@ -191,6 +201,7 @@ void Robot::RunSubsystems() {
     dmsProcessManager->Run();
 	visionSystem->Run(); 
 	turret->Run();
+	intake->Run();
 	// liftController takes over driving so is in teleop loop
 	double now = frc::Timer::GetFPGATimestamp();
 	SmartDashboard::PutNumber("Subsystem Times", (now-start) * 1000);
