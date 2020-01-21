@@ -17,9 +17,13 @@ VisionSystem::VisionSystem() {
     limelight.reset(new Limelight());
     xoffsetController.reset(new XOffsetController(limelight));
 
-    double P = BSPrefs::GetInstance()->GetDouble("Vision.x.P", 0.5);
-    double I = BSPrefs::GetInstance()->GetDouble("Vision.x.I", 0.0);
-    double D = BSPrefs::GetInstance()->GetDouble("Vision.x.D", 0.0);
+    double P = frc::SmartDashboard::PutNumber("Vision.x.P", 1.0);
+    double I = frc::SmartDashboard::PutNumber("Vision.x.I", 0.0);
+    double D = frc::SmartDashboard::PutNumber("Vision.x.D", 0.03);
+
+    // double P = BSPrefs::GetInstance()->GetDouble("Vision.x.P", 0.5);
+    // double I = BSPrefs::GetInstance()->GetDouble("Vision.x.I", 0.0);
+    // double D = BSPrefs::GetInstance()->GetDouble("Vision.x.D", 0.0);
     /*double xThreshold =*/ BSPrefs::GetInstance()->GetDouble("Vision.x.threshold", 50.0);
     double range = BSPrefs::GetInstance()->GetDouble("Vision.x.range", 0.3);
 
@@ -34,9 +38,13 @@ VisionSystem::VisionSystem() {
 
 void VisionSystem::Run() {
     auto prefs = BSPrefs::GetInstance();
-    double P = prefs->GetDouble("Vision.x.P", 0.5);
-    double I = prefs->GetDouble("Vision.x.I", 0.0);
-    double D = prefs->GetDouble("Vision.x.D", 0.0);
+    // double P = prefs->GetDouble("Vision.x.P", 0.5);
+    // double I = prefs->GetDouble("Vision.x.I", 0.0);
+    // double D = prefs->GetDouble("Vision.x.D", 0.0);
+    double P = frc::SmartDashboard::GetNumber("Vision.x.P", 0.1);
+    double I = frc::SmartDashboard::GetNumber("Vision.x.I", 0.0);
+    double D = frc::SmartDashboard::GetNumber("Vision.x.D", 0.03);
+
     double xThreshold = prefs->GetDouble("Vision.x.threshold", 50.0);
     xoffPID->SetPID(P, I, D);
 
