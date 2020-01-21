@@ -36,7 +36,7 @@ class Robot : public frc::TimedRobot {
   // Subsystems
   static std::shared_ptr<DriveBase> driveBase;
   static std::unique_ptr<OI> oi;
-  static std::unique_ptr<VisionSystem> visionSystem;
+  static std::shared_ptr<VisionSystem> visionSystem;
   static std::unique_ptr<Turret> turret;
   static std::unique_ptr<Intake> intake;
 

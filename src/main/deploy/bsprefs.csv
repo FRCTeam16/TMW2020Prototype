@@ -175,7 +175,7 @@ TwistI, 0
 TwistP, 0.006
 Vision.x.D, 0
 Vision.x.I, 0
-Vision.x.P, 0.015
-Vision.x.range, 0.3
+Vision.x.P, 0.1
+Vision.x.range, 1.0
 Vision.x.threshold, 50
 crawl.speed, 1

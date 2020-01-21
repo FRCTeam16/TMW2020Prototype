@@ -5,6 +5,7 @@
 #include <ctre/Phoenix.h>
 #include <rev/CANSparkMax.h>
 #include "Util/BSPrefs.h"
+#include "Subsystems/Vision/VisionSystem.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -23,8 +24,9 @@ struct PIDConfig {
 
 class Turret : public SubsystemManager {
 public:
-    explicit Turret() 
-        : turretRunMode(Turret::TurretRunMode::kOpenLoop)
+    explicit Turret(std::shared_ptr<VisionSystem> visionSystem) 
+        : turretRunMode(Turret::TurretRunMode::kOpenLoop),
+          visionSystem(visionSystem)
     {
         shooterMotor->SetInverted(false);
         shooterMotor->SetClosedLoopRampRate(0.5);
@@ -47,7 +49,6 @@ public:
         frc::SmartDashboard::PutNumber("#1 RPM", shooterPIDConfig.kRpm1);
 
         frc::SmartDashboard::PutNumber("SetPoint1", 0);
-
     }
 
     void Run() override {
@@ -55,11 +56,22 @@ public:
         // Turret Control
         //----------------
         if (Turret::TurretRunMode::kOpenLoop == turretRunMode) {
+            // std::cout << "Turret Speed: " << turretSpeed << "\n";
             turretMotor->Set(turretSpeed);
         } else {
             // Closed Loop control
-            turretMotor->Set(0.0);  // Zero until we have closed loop control
+            double speed = 0.0;
+            auto visionInfo = visionSystem->GetLastVisionInfo();
+            frc::SmartDashboard::PutBoolean("Has Target", visionInfo->hasTarget);
+            frc::SmartDashboard::PutBoolean("Vision xSpeed", visionInfo->xSpeed);
+            if (visionInfo->hasTarget) {
+                speed = -visionInfo->xSpeed;
+            }
+            std::cout << "Vision Turret Speed: " << speed << "\n";
+            turretMotor->Set(speed);  // Zero until we have closed loop control
         }
+        frc::SmartDashboard::PutNumber("Turret Position", turretMotor->GetEncoder().GetPosition());
+        frc::SmartDashboard::PutNumber("Turret Velocity", turretMotor->GetEncoder().GetVelocity());
 
         //----------------
         // Shooter Control
@@ -75,8 +87,6 @@ public:
         frc::SmartDashboard::PutNumber("Velocity1", shooterMotor->GetEncoder().GetVelocity());
         frc::SmartDashboard::PutNumber("ShooterSetpoint", shooterRPM);
         shooterPIDController.SetReference(shooterRPM, rev::ControlType::kVelocity);
-
-
     }
 
 	// override void Instrument() {}
@@ -84,6 +94,10 @@ public:
     void SetTurretSpeed(double _speed) {
         turretRunMode = Turret::TurretRunMode::kOpenLoop;
         turretSpeed = _speed;
+    }
+
+    void UseVisionTracking() {
+        turretRunMode = Turret::TurretRunMode::kClosedLoop;
     }
 
     void SetShooterEnabled(bool _enabled) {
@@ -95,9 +109,10 @@ public:
     }
 
 private:
-    std::shared_ptr<WPI_TalonSRX> turretMotor = RobotMap::turretMotor;
+    std::shared_ptr<rev::CANSparkMax> turretMotor = RobotMap::turretMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotor = RobotMap::shooterMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotorFollower = RobotMap::shooterMotorFollower;
+    std::shared_ptr<VisionSystem> visionSystem;
 
     Turret::TurretRunMode turretRunMode;
     double turretSpeed = 0.0;

@@ -16,7 +16,7 @@
   shared_ptr<rev::CANSparkMax> RobotMap::driveBaseRearRightDrive;
   shared_ptr<WPI_TalonSRX> RobotMap::driveBaseRearRightSteer;
 
-  shared_ptr<WPI_TalonSRX> RobotMap::turretMotor;
+  shared_ptr<rev::CANSparkMax> RobotMap::turretMotor;
   shared_ptr<rev::CANSparkMax> RobotMap::shooterMotor;
   shared_ptr<rev::CANSparkMax> RobotMap::shooterMotorFollower;
 
@@ -37,7 +37,7 @@ RobotMap::RobotMap() {
   driveBaseRearLeftSteer.reset(new WPI_TalonSRX{6});
   driveBaseRearRightSteer.reset(new WPI_TalonSRX{8});
 
-  turretMotor.reset(new WPI_TalonSRX{9});
+  turretMotor.reset(new rev::CANSparkMax{11, rev::CANSparkMax::MotorType::kBrushless});
   shooterMotor.reset(new rev::CANSparkMax{61, rev::CANSparkMax::MotorType::kBrushless});
   shooterMotorFollower.reset(new rev::CANSparkMax{62, rev::CANSparkMax::MotorType::kBrushless});
 

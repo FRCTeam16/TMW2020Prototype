@@ -9,7 +9,7 @@
 
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<DriveBase> Robot::driveBase;
-std::unique_ptr<VisionSystem> Robot::visionSystem;
+std::shared_ptr<VisionSystem> Robot::visionSystem;
 std::unique_ptr<Turret> Robot::turret;
 std::unique_ptr<Intake> Robot::intake;
 
@@ -27,7 +27,7 @@ void Robot::RobotInit() {
     driveBase.reset(new DriveBase());
 	visionSystem.reset(new VisionSystem());
     statusReporter.reset(new StatusReporter());
-	turret.reset(new Turret());
+	turret.reset(new Turret(visionSystem));
 	intake.reset(new Intake());
     // statusReporter->Launch();
     dmsProcessManager.reset(new DmsProcessManager(statusReporter));
@@ -100,7 +100,7 @@ void Robot::TeleopPeriodic() {
 	**********************************************************/
 	const bool visionMode = oi->DR3->Pressed();	// controls drive
 	if (!autoInitialized) {
-		 if (visionMode) {
+		 if (!visionMode) {
 		 	visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::ImageProcessing);
 		 } else {
 		 	visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::DriverCamera);
@@ -118,13 +118,22 @@ void Robot::TeleopPeriodic() {
 	}
 
 	const double kTurretSpeed = frc::SmartDashboard::GetNumber("TurretSpeed", 0.2);;
-	double turretSpeed = 0.0;
-	if (gamepadLTPressed) {
-		turretSpeed = -kTurretSpeed;
-	} else if (gamepadRTPressed) {
-		turretSpeed = kTurretSpeed;
+
+	if (oi->GPX->Pressed()) {
+		// std::cout << "Turret => Vision Tracking\n";
+		turret->UseVisionTracking();
+	} else {
+		double turretSpeed = 0.0;
+		if (gamepadLTPressed) {
+			// std::cout << "Turret => Turning Left\n";
+			turretSpeed = -kTurretSpeed;
+		} else if (gamepadRTPressed) {
+			// std::cout << "Turret => Turning Right\n";
+			turretSpeed = kTurretSpeed;
+		}
+		turret->SetTurretSpeed(turretSpeed);
 	}
-	turret->SetTurretSpeed(turretSpeed);
+	
 
 	/**********************************************************
 	 * Intake Control

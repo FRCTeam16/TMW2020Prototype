@@ -22,7 +22,7 @@ class RobotMap {
   static shared_ptr<rev::CANSparkMax> driveBaseRearRightDrive;
   static shared_ptr<WPI_TalonSRX> driveBaseRearRightSteer;
 
-  static shared_ptr<WPI_TalonSRX> turretMotor;
+  static shared_ptr<rev::CANSparkMax> turretMotor;
 
   static shared_ptr<rev::CANSparkMax> shooterMotor;
   static shared_ptr<rev::CANSparkMax> shooterMotorFollower;
