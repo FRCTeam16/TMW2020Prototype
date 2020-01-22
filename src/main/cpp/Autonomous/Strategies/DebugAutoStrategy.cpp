@@ -24,23 +24,13 @@ DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 	// DebugStraight();
 	// DebugAutoHalt();
 	// DebugControlled();
-	// auto drive = new TimedDrive(150.00, -0.15, 0.0, 1.5, -1, false);
-
-	const bool isRight = AutoStartPosition::kRight == world->GetStartPosition();
-	const int inv = isRight ? 1 : -1;
-	std::cout << "inv = " << inv << "\n";
-
-	// DebugTargetCount(world);
 	std::cout << "--- DEBUG Autonomous Doing Nothing ---\n";
 }
 	
 
 void DebugAutoStrategy::Init(std::shared_ptr<World> world) {
 	std::cout << "DebugAutoStrategy::Init()\n";
-	AutoStartPosition startPosition = world->GetStartPosition();
-	const bool isRight = AutoStartPosition::kRight == startPosition;
-
-	const int inv = isRight ? 1 : -1;
+	// AutoStartPosition startPosition = world->GetStartPosition();
 	// const double angle = -180;
 	// SetGyroOffset *step = new SetGyroOffset(angle);
 	// step->Run(world);
