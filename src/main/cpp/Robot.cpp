@@ -158,11 +158,11 @@ void Robot::TeleopPeriodic() {
 				twistInput *= 0.5;
 				useGyro = false;
 			}
-			// driveBase->Crab(
-			// 	twistInput,
-			// 	yMove,
-			// 	xMove,
-			// 	useGyro);
+			driveBase->Crab(
+				twistInput,
+				yMove,
+				xMove,
+				useGyro);
 		} else {
 			driveBase->Crab(0, 0, 0, true);
 		}
