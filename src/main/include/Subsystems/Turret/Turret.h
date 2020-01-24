@@ -14,7 +14,7 @@ struct PIDConfig {
     double kI = 0;
     double kD = 0;
     double kIz = 0;
-    double kFF = 0.000015;
+    double kFF = 0.0;
     double kMaxOutput = 1.0;
     double kMinOutput = -1.0;
 
@@ -31,6 +31,9 @@ public:
         shooterMotor->SetInverted(false);
         shooterMotor->SetClosedLoopRampRate(0.5);
         shooterMotorFollower->Follow(*shooterMotor, true);
+        std::cout << "Turret shooterMotor: " << shooterMotor.get() << "\n";
+        std::cout << "Turret shooterMotorFollower: " << shooterMotorFollower.get() << "\n";
+        std::cout << "Turret initialized\n";
     }
 
     enum TurretRunMode { kOpenLoop, kClosedLoop };
@@ -39,6 +42,10 @@ public:
         //-------------------------------
         // Shooter PID Dashboard Controls
         //-------------------------------
+        shooterPIDConfig.kP = 0.0004;
+        shooterPIDConfig.kFF = 0.000173;
+        shooterPIDConfig.kRpm1 = 4300;
+
         frc::SmartDashboard::PutNumber("#1 P Gain", shooterPIDConfig.kP);
         frc::SmartDashboard::PutNumber("#1 I Gain", shooterPIDConfig.kI);
         frc::SmartDashboard::PutNumber("#1 D Gain", shooterPIDConfig.kD);
@@ -57,7 +64,7 @@ public:
         //----------------
         if (Turret::TurretRunMode::kOpenLoop == turretRunMode) {
             // std::cout << "Turret Speed: " << turretSpeed << "\n";
-            turretMotor->Set(turretSpeed);
+            turretMotor->Set(-turretSpeed);
         } else {
             // Closed Loop control
             double speed = 0.0;
@@ -79,14 +86,17 @@ public:
         frc::SmartDashboard::PutBoolean("ShooterEnabled", shooterEnabled);
 
         UpdateShooterPID();
-        rev::CANPIDController shooterPIDController = shooterMotor->GetPIDController();
-        double shooterRPM = 0.0;
         if (shooterEnabled) {
-            shooterRPM = shooterPIDConfig.kRpm1;
+            rev::CANPIDController shooterPIDController = shooterMotor->GetPIDController();
+            double shooterRPM = shooterPIDConfig.kRpm1;
+            frc::SmartDashboard::PutNumber("Velocity1", shooterMotor->GetEncoder().GetVelocity());
+            frc::SmartDashboard::PutNumber("ShooterSetpoint", shooterRPM);
+            shooterPIDController.SetReference(shooterRPM, rev::ControlType::kVelocity);
+        } else {
+            // Go open loop
+            shooterMotor->Set(0.0);
         }
-        frc::SmartDashboard::PutNumber("Velocity1", shooterMotor->GetEncoder().GetVelocity());
-        frc::SmartDashboard::PutNumber("ShooterSetpoint", shooterRPM);
-        shooterPIDController.SetReference(shooterRPM, rev::ControlType::kVelocity);
+        
     }
 
 	// override void Instrument() {}

@@ -17,8 +17,8 @@ VisionSystem::VisionSystem() {
     limelight.reset(new Limelight());
     xoffsetController.reset(new XOffsetController(limelight));
 
-    double P = frc::SmartDashboard::PutNumber("Vision.x.P", 1.0);
-    double I = frc::SmartDashboard::PutNumber("Vision.x.I", 0.0);
+    double P = frc::SmartDashboard::PutNumber("Vision.x.P", 0.13);
+    double I = frc::SmartDashboard::PutNumber("Vision.x.I", 0.02);
     double D = frc::SmartDashboard::PutNumber("Vision.x.D", 0.03);
 
     // double P = BSPrefs::GetInstance()->GetDouble("Vision.x.P", 0.5);

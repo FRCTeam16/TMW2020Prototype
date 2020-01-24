@@ -84,6 +84,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+	// std::cout << "TeleopPeriodic\n";
     double startTime = frc::Timer::GetFPGATimestamp();
 	frc::Scheduler::GetInstance()->Run();
 	
@@ -108,7 +109,6 @@ void Robot::TeleopPeriodic() {
 	}
 	HandleGlobalInputs();
 
-
 	
 	/**********************************************************
 	 * Turret Control
@@ -117,7 +117,7 @@ void Robot::TeleopPeriodic() {
 		turret->ToggleShooterEnabled();
 	}
 
-	const double kTurretSpeed = frc::SmartDashboard::GetNumber("TurretSpeed", 0.2);;
+	const double kTurretSpeed = frc::SmartDashboard::GetNumber("TurretSpeed", 1.0);;
 
 	if (oi->GPX->Pressed()) {
 		// std::cout << "Turret => Vision Tracking\n";
@@ -149,7 +149,7 @@ void Robot::TeleopPeriodic() {
 	const bool dmsMode = oi->DL11->Pressed();
 	dmsProcessManager->SetRunning(dmsMode);
 
-
+	
 	/**********************************************************
 	 * Drive Control
 	**********************************************************/
@@ -173,11 +173,11 @@ void Robot::TeleopPeriodic() {
 				twistInput *= 0.5;
 				useGyro = false;
 			}
-			driveBase->Crab(
-				twistInput,
-				yMove,
-				xMove,
-				useGyro);
+			// driveBase->Crab(
+			// 	twistInput,
+			// 	yMove,
+			// 	xMove,
+			// 	useGyro);
 		} else {
 			driveBase->Crab(0, 0, 0, true);
 		}
@@ -206,6 +206,7 @@ void Robot::InitSubsystems() {
 }
 
 void Robot::RunSubsystems() {
+	// std::cout << "RunSubsystems() =>\n";
     double start = frc::Timer::GetFPGATimestamp();
     dmsProcessManager->Run();
 	visionSystem->Run(); 
@@ -214,6 +215,7 @@ void Robot::RunSubsystems() {
 	// liftController takes over driving so is in teleop loop
 	double now = frc::Timer::GetFPGATimestamp();
 	SmartDashboard::PutNumber("Subsystem Times", (now-start) * 1000);
+	// std::cout << "RunSubsystems() <=\n";
 }
 
 void Robot::InstrumentSubsystems() {
