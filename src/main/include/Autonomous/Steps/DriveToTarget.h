@@ -12,7 +12,7 @@ private:
   const double angle;
   const double yspeed;
   const double targetArea;
-  const double maxTargetArea;
   const double timeout;
+  const double maxTargetArea;
   bool fieldCentric = false;
 };

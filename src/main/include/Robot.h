@@ -51,7 +51,6 @@ private:
   std::unique_ptr<DmsProcessManager> dmsProcessManager;
   std::unique_ptr<AutoManager> autoManager;
   std::shared_ptr<World> world;
-  bool autoInitialized = false;
   bool runInstrumentation = false;  // whether to run subsystem instrumentation
   bool initialized = false;
 };

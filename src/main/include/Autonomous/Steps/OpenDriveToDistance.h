@@ -12,11 +12,11 @@ private:
   const double angle;
   const double ySpeed;
   const double xSpeed;
+  const double distance;
+  const double distanceThreshold;
   const double rampUpTime;
   const double rampDownDist;
   const double timeOut;
-  const double distance;
-  const double distanceThreshold;
   double startTime = -1;
 
   std::unique_ptr<FrontTwoAveragingDriveEncoderPIDSource> encoder;

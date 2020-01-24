@@ -1,32 +1,20 @@
 #pragma once
 
-#include "Subsystems/SubsystemManager.h"
-#include "RobotMap.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/Phoenix.h>
 #include <rev/CANSparkMax.h>
-#include "Util/BSPrefs.h"
+#include "Subsystems/SubsystemManager.h"
 #include "Subsystems/Vision/VisionSystem.h"
-
-#include <frc/smartdashboard/SmartDashboard.h>
-
-struct PIDConfig {
-    double kP = 0;
-    double kI = 0;
-    double kD = 0;
-    double kIz = 0;
-    double kFF = 0.0;
-    double kMaxOutput = 1.0;
-    double kMinOutput = -1.0;
-
-    double kRpm1 = 0.0;
-};
+#include "RobotMap.h"
+#include "Util/BSPrefs.h"
+#include "Util/PIDConfig.h"
 
 
 class Turret : public SubsystemManager {
 public:
     explicit Turret(std::shared_ptr<VisionSystem> visionSystem) 
-        : turretRunMode(Turret::TurretRunMode::kOpenLoop),
-          visionSystem(visionSystem)
+        : visionSystem(visionSystem),
+          turretRunMode(Turret::TurretRunMode::kOpenLoop)
     {
         shooterMotor->SetInverted(false);
         shooterMotor->SetClosedLoopRampRate(0.5);
@@ -34,11 +22,7 @@ public:
         std::cout << "Turret shooterMotor: " << shooterMotor.get() << "\n";
         std::cout << "Turret shooterMotorFollower: " << shooterMotorFollower.get() << "\n";
         std::cout << "Turret initialized\n";
-    }
 
-    enum TurretRunMode { kOpenLoop, kClosedLoop };
-
-    void Init() override {
         //-------------------------------
         // Shooter PID Dashboard Controls
         //-------------------------------
@@ -58,6 +42,8 @@ public:
         frc::SmartDashboard::PutNumber("SetPoint1", 0);
     }
 
+    enum TurretRunMode { kOpenLoop, kClosedLoop };
+
     void Run() override {
         //----------------
         // Turret Control
@@ -69,21 +55,15 @@ public:
             // Closed Loop control
             double speed = 0.0;
             auto visionInfo = visionSystem->GetLastVisionInfo();
-            frc::SmartDashboard::PutBoolean("Has Target", visionInfo->hasTarget);
-            frc::SmartDashboard::PutBoolean("Vision xSpeed", visionInfo->xSpeed);
             if (visionInfo->hasTarget) {
                 speed = -visionInfo->xSpeed;
             }
-            std::cout << "Vision Turret Speed: " << speed << "\n";
             turretMotor->Set(speed);  // Zero until we have closed loop control
         }
-        frc::SmartDashboard::PutNumber("Turret Position", turretMotor->GetEncoder().GetPosition());
-        frc::SmartDashboard::PutNumber("Turret Velocity", turretMotor->GetEncoder().GetVelocity());
-
+        
         //----------------
         // Shooter Control
         //----------------
-        frc::SmartDashboard::PutBoolean("ShooterEnabled", shooterEnabled);
 
         UpdateShooterPID();
         if (shooterEnabled) {
@@ -99,7 +79,11 @@ public:
         
     }
 
-	// override void Instrument() {}
+	void Instrument() override {
+        frc::SmartDashboard::PutNumber("Turret Position", turretMotor->GetEncoder().GetPosition());
+        frc::SmartDashboard::PutNumber("Turret Velocity", turretMotor->GetEncoder().GetVelocity());
+        frc::SmartDashboard::PutBoolean("ShooterEnabled", shooterEnabled);
+    }
 
     void SetTurretSpeed(double _speed) {
         turretRunMode = Turret::TurretRunMode::kOpenLoop;

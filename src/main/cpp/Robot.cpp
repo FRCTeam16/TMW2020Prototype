@@ -54,15 +54,13 @@ void Robot::AutonomousInit() {
 	RobotMap::gyro->ZeroYaw();
 	world.reset(new World());
 	autoManager->Init(world);
-	autoInitialized = false;			// flag for when autonomous routines are running
 	InitSubsystems();
 	driveBase->InitTeleop();
 	initialized = true;
 }
 void Robot::AutonomousPeriodic() {
-	// cout << "AutonomousPeriodic => TeleopPeriodic\n";
-	// if teleop call removed add frc::Scheduler::GetInstance()->Run();
-	TeleopPeriodic();
+	frc::Scheduler::GetInstance()->Run();
+	autoManager->Periodic(world);
 }
 
 void Robot::TeleopInit() {
@@ -71,11 +69,6 @@ void Robot::TeleopInit() {
 		InitSubsystems();
 		driveBase->InitTeleop();
 		initialized = true;
-		autoInitialized = false;
-
-	// Debug
-	frc::SmartDashboard::PutNumber("TurretSpeed", 0.2);
-
 	} else {
 		std::cout << " --- already initialized, ignoring\n";
 	}
@@ -100,12 +93,10 @@ void Robot::TeleopPeriodic() {
 	 * Vision
 	**********************************************************/
 	const bool visionMode = oi->DR3->Pressed();	// controls drive
-	if (!autoInitialized) {
-		 if (!visionMode) {
-		 	visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::ImageProcessing);
-		 } else {
-		 	visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::DriverCamera);
-		 }
+	if (!visionMode) {
+		visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::ImageProcessing);
+	} else {
+		visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::DriverCamera);
 	}
 	HandleGlobalInputs();
 
@@ -145,7 +136,6 @@ void Robot::TeleopPeriodic() {
 	/**********************************************************
 	 * Testing and Diagnostics
 	**********************************************************/
-	const bool speedModeTest = false; // oi->DL7->Pressed();
 	const bool dmsMode = oi->DL11->Pressed();
 	dmsProcessManager->SetRunning(dmsMode);
 
@@ -155,13 +145,8 @@ void Robot::TeleopPeriodic() {
 	**********************************************************/
 	double twistInput = oi->GetJoystickTwist(threshold);
 	double start = frc::Timer::GetFPGATimestamp();
-	if (speedModeTest) {
-		// driveBase->SetConstantVelocity(twistInput, 0.60);
-		// driveBase->Diagnostics();
-	} else if (dmsMode) {
+	if (dmsMode) {
 		// DriveBase input handled via DMS->Run()
-	} else if (autoInitialized) {
-		autoManager->Periodic(world);
 	} else {
 		if (!lockWheels) {
 			double yMove = -oi->GetJoystickY(threshold);
@@ -212,7 +197,6 @@ void Robot::RunSubsystems() {
 	visionSystem->Run(); 
 	turret->Run();
 	intake->Run();
-	// liftController takes over driving so is in teleop loop
 	double now = frc::Timer::GetFPGATimestamp();
 	SmartDashboard::PutNumber("Subsystem Times", (now-start) * 1000);
 	// std::cout << "RunSubsystems() <=\n";
@@ -221,27 +205,13 @@ void Robot::RunSubsystems() {
 void Robot::InstrumentSubsystems() {
 	autoManager->Instrument();
 	if (runInstrumentation) {
-		auto wheels = driveBase->GetWheels();
-		frc::SmartDashboard::PutNumber("FL Encoder", wheels.FL->GetDriveEncoderPosition() );
-		frc::SmartDashboard::PutNumber("FR Encoder", wheels.FR->GetDriveEncoderPosition() );
-		frc::SmartDashboard::PutNumber("RL Encoder", wheels.RL->GetDriveEncoderPosition() );
-		frc::SmartDashboard::PutNumber("RR Encoder", wheels.RR->GetDriveEncoderPosition() );
-
-		frc::SmartDashboard::PutNumber("FL Out Amps", wheels.FL->GetDriveOutputCurrent() );
-		frc::SmartDashboard::PutNumber("FR Out Amps", wheels.FR->GetDriveOutputCurrent() );
-		frc::SmartDashboard::PutNumber("RL Out Amps", wheels.RL->GetDriveOutputCurrent() );
-		frc::SmartDashboard::PutNumber("RR Out Amps", wheels.RR->GetDriveOutputCurrent() );
-
-		frc::SmartDashboard::PutNumber("FL Vel", wheels.FL->GetDriveVelocity() );
-		frc::SmartDashboard::PutNumber("FR Vel", wheels.FR->GetDriveVelocity() );
-		frc::SmartDashboard::PutNumber("RL Vel", wheels.RL->GetDriveVelocity() );
-		frc::SmartDashboard::PutNumber("RR Vel", wheels.RR->GetDriveVelocity() );
-
-		// see DriveBase::Instrment for smartdashboard yaw 
 		frc::SmartDashboard::PutNumber("Penguin Temp", RobotMap::gyro->GetPigeon()->GetTemp());
-
+		frc::SmartDashboard::PutNumber("RawYaw",RobotMap::gyro->ReadYaw());
+		frc::SmartDashboard::PutNumber("Yaw",RobotMap::gyro->GetYaw());
 		driveBase->Instrument();
 		visionSystem->Instrument();
+		turret->Instrument();
+		intake->Instrument();
 	}
 }
 

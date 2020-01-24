@@ -76,6 +76,7 @@ void VisionSystem::Instrument() {
     if (currentVisionInfo) {
         frc::SmartDashboard::PutBoolean("Vision Target?", currentVisionInfo->hasTarget);
         frc::SmartDashboard::PutNumber("Vision Threshold?", currentVisionInfo->inThreshold);
+        frc::SmartDashboard::PutNumber("Vision xSpeed", currentVisionInfo->xSpeed);
     }
 }
 
