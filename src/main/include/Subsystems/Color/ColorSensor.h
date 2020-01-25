@@ -5,6 +5,7 @@
 #include "rev/ColorSensorV3.h"
 #include "rev/ColorMatch.h"
 
+#include "Subsystems/Color/WheelColor.h"
 class ColorSensor { 
   static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
 
@@ -35,7 +36,6 @@ class ColorSensor {
 
  public:
 
- enum WheelColor{Blue, Yellow, Red, Green, Unknown};
 
   ColorSensor() {
     m_colorMatcher.AddColorMatch(kBlueTarget);
