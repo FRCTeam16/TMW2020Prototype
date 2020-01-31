@@ -27,5 +27,6 @@ public:
 
 private:
     bool enabled = false;
-    std::shared_ptr<WPI_TalonSRX> intakeMotor = RobotMap::gyroTalon;
+    std::shared_ptr<rev::CANSparkMax> intakeMotor = RobotMap::feederMotor;
+//    std::shared_ptr<WPI_TalonSRX> intakeMotor = RobotMap::gyroTalon;
 };

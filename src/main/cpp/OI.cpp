@@ -20,8 +20,8 @@ OI::OI() {
 
 
     // SmartDashboard Buttons
-    SmartDashboard::PutData("SetWheelOffsets", new SetWheelOffsets());
-    SmartDashboard::PutData("ZeroGyro", new ZeroGyro());
+    SmartDashboard::PutData("SetWheelOffsets1", new SetWheelOffsets());
+    SmartDashboard::PutData("ZeroGyro1", new ZeroGyro());
 
     GPX.reset(new BSButton(gamepad, 3));
     GPY.reset(new BSButton(gamepad, 4));

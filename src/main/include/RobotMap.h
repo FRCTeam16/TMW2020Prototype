@@ -26,6 +26,7 @@ class RobotMap {
 
   static shared_ptr<rev::CANSparkMax> shooterMotor;
   static shared_ptr<rev::CANSparkMax> shooterMotorFollower;
+  static shared_ptr<rev::CANSparkMax> feederMotor;
 
 
   static shared_ptr<WPI_TalonSRX> gyroTalon;
