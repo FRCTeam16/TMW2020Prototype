@@ -94,9 +94,9 @@ void Robot::TeleopPeriodic() {
 	**********************************************************/
 	const bool visionMode = oi->DR3->Pressed();	// controls drive
 	if (!visionMode) {
-		visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::ImageProcessing);
+		visionSystem->EnableVisionTracking();
 	} else {
-		visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::DriverCamera);
+		visionSystem->DisableVisionTracking();
 	}
 	HandleGlobalInputs();
 
@@ -112,8 +112,10 @@ void Robot::TeleopPeriodic() {
 
 	if (oi->GPX->Pressed()) {
 		// std::cout << "Turret => Vision Tracking\n";
+		visionSystem->EnableVisionTracking();	// FIXME: Combine
 		turret->UseVisionTracking();
 	} else {
+		visionSystem->DisableVisionTracking();	// FIXME
 		double turretSpeed = 0.0;
 		if (gamepadLTPressed) {
 			// std::cout << "Turret => Turning Left\n";
@@ -138,11 +140,11 @@ void Robot::TeleopPeriodic() {
 	}
 
 	if (oi->DR1->Pressed()) {
-		feederArm->StartFeeder(); // TODO: handle reverse
+		turret->StartFeeder(); // TODO: handle reverse
 	} else if (oi->DR5->Pressed()) {
-		feederArm->StartFeeder(true);
+		turret->StartFeeder(true);
 	} else {
-		feederArm-> StopFeeder();
+		turret->StopFeeder();
 	}
 
 	double armSpeed = oi->GetGamepadRightStick();

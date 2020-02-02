@@ -89,3 +89,15 @@ void VisionSystem::ResetMaxOutputRange() {
     double range = BSPrefs::GetInstance()->GetDouble("Vision.x.range", 0.3);
     SetMaxOutputRange(range);
 }
+
+void VisionSystem::EnableVisionTracking() {
+    limelight->SetCameraMode(Limelight::CameraMode::ImageProcessing);
+}
+
+void VisionSystem::DisableVisionTracking() {
+    limelight->SetCameraMode(Limelight::CameraMode::DriverCamera);
+}
+
+bool VisionSystem::IsVisionTrackingEnabled() {
+    return limelight->GetCameraMode() == Limelight::CameraMode::ImageProcessing;
+}

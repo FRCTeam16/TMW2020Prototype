@@ -30,6 +30,9 @@ class VisionSystem : public SubsystemManager {
   std::shared_ptr<Limelight> GetLimelight() { return limelight; }
   void SetMaxOutputRange(double _range);
   void ResetMaxOutputRange();
+  void EnableVisionTracking();
+  void DisableVisionTracking();
+  bool IsVisionTrackingEnabled();
 private:
   std::shared_ptr<Limelight> limelight;
   std::unique_ptr<XOffsetController> xoffsetController;
