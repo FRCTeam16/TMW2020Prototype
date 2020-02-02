@@ -1,6 +1,7 @@
 #pragma once
 
 #include <frc/Compressor.h>
+#include <frc/Solenoid.h>
 #include <ctre/Phoenix.h>
 #include <rev/CANSparkMax.h>
 #include "Util/BSGyro.h"
@@ -28,9 +29,13 @@ class RobotMap {
   static shared_ptr<rev::CANSparkMax> shooterMotorFollower;
   static shared_ptr<rev::CANSparkMax> feederMotor;
 
+  static shared_ptr<WPI_TalonFX> armMotor;
+  static shared_ptr<WPI_TalonFX> armMotorFollower;
+
 
   static shared_ptr<WPI_TalonSRX> gyroTalon;
   static std::shared_ptr<BSGyro> gyro;
 
   static std::shared_ptr<Compressor> compressor;
+  static std::shared_ptr<Solenoid> climberArms;
 };

@@ -14,7 +14,7 @@
 #include "Subsystems/Turret/Turret.h"
 #include "Autonomous/World.h"
 #include "Autonomous/AutoManager.h"
-#include "Subsystems/Prototype/Intake.h"
+#include "Subsystems/FeederArm/FeederArm.h"
 
 
 class Robot : public frc::TimedRobot {
@@ -38,7 +38,7 @@ class Robot : public frc::TimedRobot {
   static std::unique_ptr<OI> oi;
   static std::shared_ptr<VisionSystem> visionSystem;
   static std::unique_ptr<Turret> turret;
-  static std::unique_ptr<Intake> intake;
+  static std::unique_ptr<FeederArm> feederArm;
 
 private:
   void InitSubsystems();

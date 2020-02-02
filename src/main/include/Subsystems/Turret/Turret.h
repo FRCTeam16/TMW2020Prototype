@@ -55,6 +55,7 @@ public:
             // Closed Loop control
             double speed = 0.0;
             auto visionInfo = visionSystem->GetLastVisionInfo();
+            frc::SmartDashboard::PutBoolean("Viz Target?", visionInfo->hasTarget);
             if (visionInfo->hasTarget) {
                 speed = -visionInfo->xSpeed;
             }

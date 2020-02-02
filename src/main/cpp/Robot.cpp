@@ -11,7 +11,7 @@ std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<DriveBase> Robot::driveBase;
 std::shared_ptr<VisionSystem> Robot::visionSystem;
 std::unique_ptr<Turret> Robot::turret;
-std::unique_ptr<Intake> Robot::intake;
+std::unique_ptr<FeederArm> Robot::feederArm;
 
 
 void Robot::RobotInit() {
@@ -28,7 +28,7 @@ void Robot::RobotInit() {
 	visionSystem.reset(new VisionSystem());
     statusReporter.reset(new StatusReporter());
 	turret.reset(new Turret(visionSystem));
-	intake.reset(new Intake());
+	feederArm.reset(new FeederArm());
     // statusReporter->Launch();
     dmsProcessManager.reset(new DmsProcessManager(statusReporter));
 
@@ -127,11 +127,46 @@ void Robot::TeleopPeriodic() {
 	
 
 	/**********************************************************
-	 * Intake Control
+	 * FeederArm  Control
 	**********************************************************/
-	if (oi->GPStart->RisingEdge()) {
-		intake->ToggleEnabled();
+	if (oi->DL1->Pressed()) {
+		feederArm->StartIntake(); // TODO: handle reverse
+	} else if (oi->DR2->Pressed()) {
+		feederArm->StartIntake(true);
+	} else {
+		feederArm-> StopIntake();
 	}
+
+	if (oi->DR1->Pressed()) {
+		feederArm->StartFeeder(); // TODO: handle reverse
+	} else if (oi->DR5->Pressed()) {
+		feederArm->StartFeeder(true);
+	} else {
+		feederArm-> StopFeeder();
+	}
+
+	double armSpeed = oi->GetGamepadRightStick();
+	if (fabs(armSpeed)<0.05) {
+		armSpeed = 0;
+	}
+	feederArm->RunArm(armSpeed);
+
+	if (oi->DL5->RisingEdge()) {
+		feederArm->ZeroArmPosition();
+	}
+
+
+	/**********************************************************
+	 * Climber Arms
+	**********************************************************/
+	OI::DPad dPad = oi->GetGamepadDPad();
+	if (dPad == OI::DPad::kUp) {
+		feederArm->ExtendClimberArms();
+	}
+	if (dPad == OI::DPad::kDown) {
+		feederArm->RetractClimberArms();
+	}
+
 
 	/**********************************************************
 	 * Testing and Diagnostics
@@ -185,7 +220,7 @@ void Robot::InitSubsystems() {
     std::cout << "Robot::InitSubsystems =>\n";
 	visionSystem->Init();
 	turret->Init();
-	intake->Init();
+	feederArm->Init();
 	// status & dms currently don't have init
 	std::cout << "Robot::InitSubsystems <=\n";
 }
@@ -196,7 +231,7 @@ void Robot::RunSubsystems() {
     dmsProcessManager->Run();
 	visionSystem->Run(); 
 	turret->Run();
-	intake->Run();
+	feederArm->Run();
 	double now = frc::Timer::GetFPGATimestamp();
 	SmartDashboard::PutNumber("Subsystem Times", (now-start) * 1000);
 	// std::cout << "RunSubsystems() <=\n";
@@ -211,7 +246,7 @@ void Robot::InstrumentSubsystems() {
 		driveBase->Instrument();
 		visionSystem->Instrument();
 		turret->Instrument();
-		intake->Instrument();
+		feederArm->Instrument();
 	}
 }
 

@@ -16,6 +16,9 @@
   shared_ptr<rev::CANSparkMax> RobotMap::driveBaseRearRightDrive;
   shared_ptr<WPI_TalonSRX> RobotMap::driveBaseRearRightSteer;
 
+  shared_ptr<WPI_TalonFX> RobotMap::armMotor;
+  shared_ptr<WPI_TalonFX> RobotMap::armMotorFollower;
+
   shared_ptr<rev::CANSparkMax> RobotMap::turretMotor;
   shared_ptr<rev::CANSparkMax> RobotMap::shooterMotor;
   shared_ptr<rev::CANSparkMax> RobotMap::shooterMotorFollower;
@@ -25,6 +28,7 @@
   std::shared_ptr<BSGyro> RobotMap::gyro;
   
   std::shared_ptr<Compressor> RobotMap::compressor;
+  std::shared_ptr<Solenoid> RobotMap::climberArms;
 
 
 RobotMap::RobotMap() {
@@ -43,9 +47,13 @@ RobotMap::RobotMap() {
   shooterMotorFollower.reset(new rev::CANSparkMax{62, rev::CANSparkMax::MotorType::kBrushless});
   feederMotor.reset(new rev::CANSparkMax{56, rev::CANSparkMax::MotorType::kBrushless});
 
+  armMotor.reset(new WPI_TalonFX{12});
+  armMotorFollower.reset(new WPI_TalonFX{13});
+
   gyroTalon.reset(new WPI_TalonSRX{10});
   gyro.reset(new BSGyro(gyroTalon.get())); 
 
   compressor.reset(new Compressor{0});
   compressor->SetClosedLoopControl(true);
+  climberArms.reset(new Solenoid{4});
 }
