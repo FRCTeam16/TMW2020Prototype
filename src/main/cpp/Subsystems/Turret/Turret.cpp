@@ -30,6 +30,10 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("SetPoint1", 0);
 }
 
+void Turret::Init() {
+    shooterEnabled = false;
+}
+
 void Turret::Run() 
 {
     const double now = Timer::GetFPGATimestamp();
@@ -67,7 +71,7 @@ void Turret::Run()
         // if ((tracking && timeAcquired) || !tracking) {
         //     feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -0.8);
         // }
-        feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -0.8);
+        feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", 0.8);
         if (feederReversed) {
             feederSpeed = -feederSpeed;
         }

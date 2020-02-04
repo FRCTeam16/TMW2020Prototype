@@ -28,7 +28,13 @@ public:
     }
 
     void RunArm(double speed){
+        runArmControlled = false;
         armSpeed = speed;
+    }
+
+    // TODO: Temp for testing
+    void RunArmControlled() {
+        runArmControlled = true;
     }
 
     void ZeroArmPosition() {
@@ -36,11 +42,13 @@ public:
     }
 
     void ExtendClimberArms() {
-        climberArms->Set(true);
+        climberMessageSent = false;
+        climberExtended = true;
     }
 
     void RetractClimberArms() {
-        climberArms->Set(false);
+        climberMessageSent = false;
+        climberExtended = false;
     }
 
 private : 
@@ -52,7 +60,13 @@ private :
     bool intakeEnabled = false;
     bool intakeReversed = false;
 
+    bool climberExtended = false;
+    bool climberMessageSent = false;
+
     bool runArmControlled = false;
     double armSpeed = 0.0;
+
+    PIDConfig armPIDConfig;
+    double armSetpoint = 0.0;
 
 };

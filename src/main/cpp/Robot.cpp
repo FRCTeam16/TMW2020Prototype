@@ -65,13 +65,13 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     std::cout << "Robot::TeleopInit => initialized? " << initialized << "\n";
-	if (!initialized) {
+	// if (!initialized) {
 		InitSubsystems();
 		driveBase->InitTeleop();
 		initialized = true;
-	} else {
-		std::cout << " --- already initialized, ignoring\n";
-	}
+	// } else {
+	// 	std::cout << " --- already initialized, ignoring\n";
+	// }
 	visionSystem->ResetMaxOutputRange();
     std::cout << "Robot::TeleopInit <=\n";
 }
@@ -132,7 +132,7 @@ void Robot::TeleopPeriodic() {
 	 * FeederArm  Control
 	**********************************************************/
 	if (oi->DL1->Pressed()) {
-		feederArm->StartIntake(); // TODO: handle reverse
+		feederArm->StartIntake();
 	} else if (oi->DR2->Pressed()) {
 		feederArm->StartIntake(true);
 	} else {
@@ -140,33 +140,41 @@ void Robot::TeleopPeriodic() {
 	}
 
 	if (oi->DR1->Pressed()) {
-		turret->StartFeeder(); // TODO: handle reverse
+		turret->StartFeeder();
 	} else if (oi->DR5->Pressed()) {
 		turret->StartFeeder(true);
 	} else {
 		turret->StopFeeder();
 	}
 
-	double armSpeed = oi->GetGamepadRightStick();
-	if (fabs(armSpeed)<0.05) {
-		armSpeed = 0;
+	// TODO: Uncomment when we want to run arm
+	/*
+	if (oi->GPB->Pressed()) {
+		feederArm->RunArmControlled();
+	} else {
+		double armSpeed = oi->GetGamepadRightStick();
+		if (fabs(armSpeed)<0.05) {
+			armSpeed = 0;
+		}
+		feederArm->RunArm(armSpeed);
 	}
-	feederArm->RunArm(armSpeed);
 
 	if (oi->DL5->RisingEdge()) {
 		feederArm->ZeroArmPosition();
 	}
-
+	*/
 
 	/**********************************************************
 	 * Climber Arms
 	**********************************************************/
 	OI::DPad dPad = oi->GetGamepadDPad();
-	if (dPad == OI::DPad::kUp) {
-		feederArm->ExtendClimberArms();
-	}
-	if (dPad == OI::DPad::kDown) {
-		feederArm->RetractClimberArms();
+	if (oi->GPStart->Pressed()) {
+		if (dPad == OI::DPad::kUp) {
+			feederArm->ExtendClimberArms();
+		}
+		if (dPad == OI::DPad::kDown) {
+			feederArm->RetractClimberArms();
+		}
 	}
 
 
@@ -241,6 +249,7 @@ void Robot::RunSubsystems() {
 
 void Robot::InstrumentSubsystems() {
 	autoManager->Instrument();
+	frc::SmartDashboard::PutNumber("ArmPos", RobotMap::armMotor->GetSelectedSensorPosition());
 	if (runInstrumentation) {
 		frc::SmartDashboard::PutNumber("Penguin Temp", RobotMap::gyro->GetPigeon()->GetTemp());
 		frc::SmartDashboard::PutNumber("RawYaw",RobotMap::gyro->ReadYaw());
