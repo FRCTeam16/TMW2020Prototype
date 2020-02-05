@@ -85,9 +85,6 @@ void Robot::TeleopPeriodic() {
 	// const bool lockWheels = oi->DL6->Pressed();  Removed for auto testing
 	const bool lockWheels = false;
 
-	const bool gamepadLTPressed = oi->GetGamepadLT() > 0.75;
-	const bool gamepadRTPressed = oi->GetGamepadRT() > 0.75;
-
 
 	/**********************************************************
 	 * Vision
@@ -108,25 +105,25 @@ void Robot::TeleopPeriodic() {
 		turret->ToggleShooterEnabled();
 	}
 
-	const double kTurretSpeed = frc::SmartDashboard::GetNumber("TurretSpeed", 1.0);;
-
-	if (oi->GPX->Pressed()) {
-		// std::cout << "Turret => Vision Tracking\n";
-		visionSystem->EnableVisionTracking();	// FIXME: Combine
-		turret->UseVisionTracking();
-	} else {
-		visionSystem->DisableVisionTracking();	// FIXME
-		double turretSpeed = 0.0;
-		if (gamepadLTPressed) {
-			// std::cout << "Turret => Turning Left\n";
-			turretSpeed = -kTurretSpeed;
-		} else if (gamepadRTPressed) {
-			// std::cout << "Turret => Turning Right\n";
-			turretSpeed = kTurretSpeed;
-		}
-		turret->SetTurretSpeed(turretSpeed);
-	}
+	if (oi->GPX->RisingEdge()) {
+		turret->ToggleVisionTracking();
+	} 
 	
+	// TODO: Fixme to track state
+	const bool gamepadLTPressed = oi->GetGamepadLT() > 0.05;
+	const bool gamepadRTPressed = oi->GetGamepadRT() > 0.05;
+	double turretSpeed = 0.0;
+	if (gamepadLTPressed) {
+		// std::cout << "Turret => Turning Left\n";
+		turretSpeed = oi->GetGamepadLT();
+		turret->SetTurretSpeed(turretSpeed);
+	} else if (gamepadRTPressed) {
+		// std::cout << "Turret => Turning Right\n";
+		turretSpeed = oi->GetGamepadRT();
+		turret->SetTurretSpeed(-turretSpeed);
+	} else {
+		turret->HaltManualTurret();
+	}
 
 	/**********************************************************
 	 * FeederArm  Control
@@ -148,10 +145,17 @@ void Robot::TeleopPeriodic() {
 	}
 
 	// TODO: Uncomment when we want to run arm
-	/*
-	if (oi->GPB->Pressed()) {
-		feederArm->RunArmControlled();
-	} else {
+	
+	if (oi->GPB->RisingEdge()) {
+		feederArm->DebugSetPoint(10000);
+	} else if (oi->GPY->RisingEdge()) {
+		feederArm->DebugSetPoint(100000);
+	} else if (oi->GPRB->RisingEdge()) {
+		feederArm->DebugSetPoint(0);
+	} else if (oi->GPLB->RisingEdge()) {
+		feederArm->RunArm(0.0);
+	}
+	/*else {
 		double armSpeed = oi->GetGamepadRightStick();
 		if (fabs(armSpeed)<0.05) {
 			armSpeed = 0;

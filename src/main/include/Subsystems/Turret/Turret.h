@@ -14,8 +14,6 @@ class Turret : public SubsystemManager {
 public:
     explicit Turret(std::shared_ptr<VisionSystem> visionSystem);
 
-    enum TurretRunMode { kOpenLoop, kClosedLoop };
-
     void Init() override;
 
     void Run() override;
@@ -23,12 +21,36 @@ public:
 	void Instrument() override;
 
     void SetTurretSpeed(double _speed) {
-        turretRunMode = Turret::TurretRunMode::kOpenLoop;
+        openLoopMessage = true;
         turretSpeed = _speed;
     }
 
-    void UseVisionTracking() {
-        turretRunMode = Turret::TurretRunMode::kClosedLoop;
+    void HaltManualTurret() {
+        turretSpeed = 0.0;
+    }
+
+    void EnableVisionTracking() {
+        visionTrackingEnabled = true;
+    }
+
+    void DisableVisionTracking() {
+        visionTrackingEnabled = false;
+    }
+
+    void ToggleVisionTracking() {
+        if (visionTrackingEnabled) {
+            // turn off
+            visionSystem->DisableVisionTracking();
+            this->DisableVisionTracking();
+        } else {
+            // turn on
+            visionSystem->EnableVisionTracking();
+            this->EnableVisionTracking();
+        }
+    }
+
+    bool IsVisionTracking() {
+        return visionTrackingEnabled;
     }
 
     void SetShooterEnabled(bool _enabled) {
@@ -56,7 +78,8 @@ private:
     std::shared_ptr<WPI_TalonSRX> feederMotor = RobotMap::feederMotor;
     std::shared_ptr<VisionSystem> visionSystem;
 
-    Turret::TurretRunMode turretRunMode;
+    bool openLoopMessage = false;
+    bool visionTrackingEnabled = false;
     double turretSpeed = 0.0;
 
     PIDConfig shooterPIDConfig;

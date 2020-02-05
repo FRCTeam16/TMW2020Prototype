@@ -1,35 +1,33 @@
 #include "Subsystems/FeederArm/FeederArm.h"
 
+static int kVelocity = 10000;
+static int kAcceleration = 120000;
+
 FeederArm::FeederArm()
 {
     armMotorFollower->Follow(*armMotor);
     armMotorFollower->SetInverted(true);
 
-    armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
     this->ZeroArmPosition();
-    armMotor->ConfigForwardSoftLimitThreshold(10000);
+
+    armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 0);
+    armMotor->ConfigForwardSoftLimitThreshold(130000);
     armMotor->ConfigForwardSoftLimitEnable(true);
     armMotor->ConfigReverseSoftLimitThreshold(5000);
     armMotor->ConfigReverseSoftLimitEnable(true);
+    armMotor->ConfigPeakOutputForward(0.5);
+    armMotor->ConfigPeakOutputReverse(-0.5);
+    
 
-/*
-    armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
-    armMotor->ConfigForwardLimitSwitchSource(
-        RemoteLimitSwitchSource::RemoteLimitSwitchSource_RemoteTalonSRX,
-        LimitSwitchNormal::LimitSwitchNormal_NormallyOpen,
-        RobotMap::,
-        0);
-    armMotor->ConfigReverseLimitSwitchSource(
-        RemoteLimitSwitchSource::RemoteLimitSwitchSource_RemoteTalonSRX,
-        LimitSwitchNormal::LimitSwitchNormal_NormallyOpen,
-        RobotMap::,
-        0);
-*/
+    armPIDConfig.kP = 0.01999998;
+
 }
 
 void FeederArm::Init()
 {
     this->RetractClimberArms();
+    armSetpoint = 0.0;
+    runArmControlled = false;   // FIXME: Determine if this is true
 
     frc::SmartDashboard::PutNumber("IntakeSpeed", 1.0);
     frc::SmartDashboard::PutNumber("FeederSpeed", 0.8);
@@ -41,8 +39,8 @@ void FeederArm::Init()
 
     frc::SmartDashboard::PutNumber("Arm.Setpoint", 0.0);
 
-    // frc::SmartDashboard::PutNumber("Arm.V", 0.0);
-    // frc::SmartDashboard::PutNumber("Arm.A", 0.0);
+    frc::SmartDashboard::PutNumber("Arm.V", kVelocity);
+    frc::SmartDashboard::PutNumber("Arm.A", kAcceleration);
 }
 
 void FeederArm::Run()
@@ -82,13 +80,17 @@ void FeederArm::Run()
         armPIDConfig.kFF = frc::SmartDashboard::GetNumber("Arm.F", 0.0);
         armSetpoint = frc::SmartDashboard::GetNumber("Arm.Setpoint", 0.0);
 
-        armMotor->Config_kP(0, armPIDConfig.kP, 20);
-        armMotor->Config_kI(0, armPIDConfig.kI, 20);
-        armMotor->Config_kD(0, armPIDConfig.kD, 20);
-        armMotor->Config_kF(0, armPIDConfig.kFF, 20);
+        double velocity = frc::SmartDashboard::GetNumber("Arm.V", kVelocity);
+        double acceleration = frc::SmartDashboard::GetNumber("Arm.A", kAcceleration);
 
+        armMotor->Config_kP(0, armPIDConfig.kP, 2);
+        armMotor->Config_kI(0, armPIDConfig.kI, 2);
+        armMotor->Config_kD(0, armPIDConfig.kD, 2);
+        armMotor->Config_kF(0, armPIDConfig.kFF, 2);
+        armMotor->ConfigMotionCruiseVelocity(velocity, 2);
+        armMotor->ConfigMotionAcceleration(acceleration, 2);
 
-        armMotor->Set(ControlMode::Position, armSetpoint);
+        armMotor->Set(ControlMode::MotionMagic, armSetpoint);
     }
     frc::SmartDashboard::PutNumber("Arm.Position", armMotor->GetSelectedSensorPosition());
     frc::SmartDashboard::PutNumber("Arm.Speed", armSpeed);

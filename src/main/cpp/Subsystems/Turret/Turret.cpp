@@ -1,8 +1,7 @@
 #include "Subsystems/Turret/Turret.h"
 
 Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
-    : visionSystem(visionSystem),
-      turretRunMode(Turret::TurretRunMode::kOpenLoop)
+    : visionSystem(visionSystem)
 {
     shooterMotor->SetInverted(false);
     shooterMotor->SetClosedLoopRampRate(0.5);
@@ -32,6 +31,8 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
 
 void Turret::Init() {
     shooterEnabled = false;
+    visionTrackingEnabled = false;
+    openLoopMessage = false;
 }
 
 void Turret::Run() 
@@ -42,9 +43,9 @@ void Turret::Run()
     //----------------
     // Turret Control
     //----------------
-    if (Turret::TurretRunMode::kOpenLoop == turretRunMode) {
-        // std::cout << "Turret Speed: " << turretSpeed << "\n";
-        turretMotor->Set(-turretSpeed);
+    if (!visionTrackingEnabled || openLoopMessage) {
+        turretMotor->Set(turretSpeed);
+        openLoopMessage = false;
     } else {
         // Closed Loop control
         double speed = 0.0;

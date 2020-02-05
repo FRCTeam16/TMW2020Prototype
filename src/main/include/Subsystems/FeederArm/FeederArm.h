@@ -51,6 +51,13 @@ public:
         climberExtended = false;
     }
 
+    void DebugSetPoint(double _setpoint) {
+        std::cout << "**** FeederARm::DebugSetPoint: " << _setpoint << "\n";
+        runArmControlled = true;
+        armSetpoint = _setpoint;
+        frc::SmartDashboard::PutNumber("Arm.Setpoint", armSetpoint);
+    }
+
 private : 
     std::shared_ptr<WPI_TalonSRX>  intakeMotor = RobotMap::gyroTalon; 
     std::shared_ptr<WPI_TalonFX> armMotor = RobotMap::armMotor; 
