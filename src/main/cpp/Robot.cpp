@@ -149,7 +149,7 @@ void Robot::TeleopPeriodic() {
 	if (oi->GPB->RisingEdge()) {
 		feederArm->DebugSetPoint(10000);
 	} else if (oi->GPY->RisingEdge()) {
-		feederArm->DebugSetPoint(100000);
+		feederArm->DebugSetPoint(135000);
 	} else if (oi->GPRB->RisingEdge()) {
 		feederArm->DebugSetPoint(0);
 	} else if (oi->GPLB->RisingEdge()) {
