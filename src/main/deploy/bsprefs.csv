@@ -8,7 +8,7 @@ DriveD, 0
 DriveF, 0
 DriveI, 0
 DriveIZone, 0
-DriveP, 0.4
+DriveP, 0.00035
 PulsesPerInch, 0.4657
 Steer.ContinuousCurrentLimit, 20
 TwistD, 0.01

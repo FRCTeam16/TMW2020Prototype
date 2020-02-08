@@ -19,6 +19,6 @@ public:
     }
 private:
     bool enableIntake;
-    bool reversed;
+    bool reversed = false;
 
-}
+};

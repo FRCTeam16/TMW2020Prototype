@@ -39,8 +39,7 @@ void Robot::RobotInit() {
 }
 
 void Robot::DisabledInit() {
-	visionSystem->GetLimelight()->SetCameraMode(Limelight::CameraMode::DriverCamera);
-	// initialized = false;
+	visionSystem->DisableVisionTracking();
 }
 
 void Robot::DisabledPeriodic() {
@@ -61,6 +60,7 @@ void Robot::AutonomousInit() {
 void Robot::AutonomousPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
 	autoManager->Periodic(world);
+	RunSubsystems();
 }
 
 void Robot::TeleopInit() {
