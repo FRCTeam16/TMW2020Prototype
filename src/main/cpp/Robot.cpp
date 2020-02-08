@@ -89,12 +89,9 @@ void Robot::TeleopPeriodic() {
 	/**********************************************************
 	 * Vision
 	**********************************************************/
-	const bool visionMode = oi->DR3->Pressed();	// controls drive
-	if (!visionMode) {
-		visionSystem->EnableVisionTracking();
-	} else {
-		visionSystem->DisableVisionTracking();
-	}
+	if (oi->DR3->RisingEdge()) {
+		turret->ToggleVisionTracking();
+	} 
 	HandleGlobalInputs();
 
 	
@@ -105,9 +102,6 @@ void Robot::TeleopPeriodic() {
 		turret->ToggleShooterEnabled();
 	}
 
-	if (oi->GPX->RisingEdge()) {
-		turret->ToggleVisionTracking();
-	} 
 	
 	// TODO: Fixme to track state
 	const bool gamepadLTPressed = oi->GetGamepadLT() > 0.05;
@@ -131,7 +125,7 @@ void Robot::TeleopPeriodic() {
 	if (oi->DR1->Pressed()) {
 		feederArm->StartIntake();
 	} else if (oi->DR2->Pressed()) {
-		feederArm->StartIntake(true);
+		feederArm->StartIntake(true);	// reversed
 	} else {
 		feederArm-> StopIntake();
 	}
@@ -146,13 +140,13 @@ void Robot::TeleopPeriodic() {
 	} else {
 		turret->StopFeeder();
 	}
-
-	// TODO: Uncomment when we want to run arm
 	
 	if (oi->GPB->RisingEdge()) {
 		feederArm->DebugSetPoint(10000);
 	} else if (oi->GPY->RisingEdge()) {
 		feederArm->DebugSetPoint(135000);
+	} else if (oi->GPX->RisingEdge()) {
+		feederArm->DebugSetPoint(70000);
 	} else if (oi->GPRB->RisingEdge()) {
 		feederArm->DebugSetPoint(0);
 	} else if (oi->GPLB->RisingEdge()) {

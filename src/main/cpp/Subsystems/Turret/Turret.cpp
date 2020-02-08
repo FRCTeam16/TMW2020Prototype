@@ -29,6 +29,7 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("SetPoint1", 0);
 
     // Feeder Control
+    frc::SmartDashboard::PutNumber("Feeder.Speed.Out", 0.0);
     frc::SmartDashboard::PutNumber("Feeder.Preload.Time", 0.4);
     frc::SmartDashboard::PutNumber("Feeder.Preload.Speed", -0.2);
 }
@@ -73,7 +74,6 @@ void Turret::Run()
     if (preloadFeederRunning) {
         const double MAX_ELAPSED = frc::SmartDashboard::GetNumber("Feeder.Preload.Time", 0.4);
         const double PRELOAD_SPEED = frc::SmartDashboard::GetNumber("Feeder.Preload.Speed", -0.2);
-        const double now = frc::Timer::GetFPGATimestamp();
         if ((now - preloadFeederStarted) < MAX_ELAPSED) {
             std::cout << "~~ Preload Running ~~\n";
             feederSpeed = PRELOAD_SPEED;
@@ -93,6 +93,7 @@ void Turret::Run()
         }
     }
     feederMotor->Set(feederSpeed);
+    frc::SmartDashboard::PutNumber("Feeder.Speed.Out", feederSpeed);
     
     //----------------
     // Shooter Control
