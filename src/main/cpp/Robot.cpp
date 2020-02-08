@@ -135,7 +135,11 @@ void Robot::TeleopPeriodic() {
 	} else {
 		feederArm-> StopIntake();
 	}
-	if (oi->DL1->Pressed()) {
+
+
+	if (oi->DL4->RisingEdge()){
+		turret->PreloadBall();
+	} else if (oi->DL1->Pressed()) {
 		turret->StartFeeder();
 	} else if (oi->DR5->Pressed()) {
 		turret->StartFeeder(true);

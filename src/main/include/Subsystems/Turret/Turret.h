@@ -8,6 +8,7 @@
 #include "RobotMap.h"
 #include "Util/BSPrefs.h"
 #include "Util/PIDConfig.h"
+#include <frc/Timer.h>
 
 
 class Turret : public SubsystemManager {
@@ -70,6 +71,13 @@ public:
         feederEnabled = false;
     }
 
+    void PreloadBall(){
+        if (!preloadFeederRunning) {
+            preloadFeederRunning = true;
+            preloadFeederStarted = frc::Timer::GetFPGATimestamp();
+
+        }
+    }
 
 private:
     std::shared_ptr<rev::CANSparkMax> turretMotor = RobotMap::turretMotor;
@@ -89,6 +97,9 @@ private:
 
     bool feederEnabled = false;
     bool feederReversed = false;
+
+    bool preloadFeederRunning = false;
+    double preloadFeederStarted = 0.0;
 
     void UpdateShooterPID();
 };

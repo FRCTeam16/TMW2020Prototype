@@ -27,6 +27,10 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("#1 RPM", shooterPIDConfig.kRpm1);
 
     frc::SmartDashboard::PutNumber("SetPoint1", 0);
+
+    // Feeder Control
+    frc::SmartDashboard::PutNumber("Feeder.Preload.Time", 0.4);
+    frc::SmartDashboard::PutNumber("Feeder.Preload.Speed", -0.2);
 }
 
 void Turret::Init() {
@@ -66,16 +70,26 @@ void Turret::Run()
     // Feeder Control
     //----------------
     double feederSpeed = 0.0;
-    if (feederEnabled) {
-        const bool tracking = visionSystem->IsVisionTrackingEnabled();
-        const double timeAcquired = (now - visionTargetAcquiredTime) > kVisionTargetAcquiredMinWait;
+    if (preloadFeederRunning) {
+        const double MAX_ELAPSED = frc::SmartDashboard::GetNumber("Feeder.Preload.Time", 0.4);
+        const double PRELOAD_SPEED = frc::SmartDashboard::GetNumber("Feeder.Preload.Speed", -0.2);
+        const double now = frc::Timer::GetFPGATimestamp();
+        if ((now - preloadFeederStarted) < MAX_ELAPSED) {
+            std::cout << "~~ Preload Running ~~\n";
+            feederSpeed = PRELOAD_SPEED;
+        } else {
+            std::cout << "~~ Preload Stopped ~~\n";
+            preloadFeederRunning = false;
+        }
+    } else if (feederEnabled) {
+        // const bool tracking = visionSystem->IsVisionTrackingEnabled();
+        // const double timeAcquired = (now - visionTargetAcquiredTime) > kVisionTargetAcquiredMinWait;
         // if ((tracking && timeAcquired) || !tracking) {
         //     feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -0.8);
         // }
         feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -1.0);
         if (feederReversed) {
             feederSpeed = -feederSpeed;
-            // feederSpeed = -1.0;
         }
     }
     feederMotor->Set(feederSpeed);
