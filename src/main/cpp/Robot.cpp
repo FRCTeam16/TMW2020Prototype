@@ -128,15 +128,14 @@ void Robot::TeleopPeriodic() {
 	/**********************************************************
 	 * FeederArm  Control
 	**********************************************************/
-	if (oi->DL1->Pressed()) {
+	if (oi->DR1->Pressed()) {
 		feederArm->StartIntake();
 	} else if (oi->DR2->Pressed()) {
 		feederArm->StartIntake(true);
 	} else {
 		feederArm-> StopIntake();
 	}
-
-	if (oi->DR1->Pressed()) {
+	if (oi->DL1->Pressed()) {
 		turret->StartFeeder();
 	} else if (oi->DR5->Pressed()) {
 		turret->StartFeeder(true);
@@ -254,7 +253,7 @@ void Robot::RunSubsystems() {
 void Robot::InstrumentSubsystems() {
 	autoManager->Instrument();
 	frc::SmartDashboard::PutNumber("ArmPos", RobotMap::armMotor->GetSelectedSensorPosition());
-	if (runInstrumentation) {
+	if (true || runInstrumentation) {
 		frc::SmartDashboard::PutNumber("Penguin Temp", RobotMap::gyro->GetPigeon()->GetTemp());
 		frc::SmartDashboard::PutNumber("RawYaw",RobotMap::gyro->ReadYaw());
 		frc::SmartDashboard::PutNumber("Yaw",RobotMap::gyro->GetYaw());

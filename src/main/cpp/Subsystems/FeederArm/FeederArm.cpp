@@ -15,8 +15,8 @@ FeederArm::FeederArm()
     armMotor->ConfigForwardSoftLimitEnable(true);
     armMotor->ConfigReverseSoftLimitThreshold(5000);
     armMotor->ConfigReverseSoftLimitEnable(true);
-    armMotor->ConfigPeakOutputForward(0.5);
-    armMotor->ConfigPeakOutputReverse(-0.5);
+    // armMotor->ConfigPeakOutputForward(0.5);
+    // armMotor->ConfigPeakOutputReverse(-0.5);
     
 
     armPIDConfig.kP = 0.01999998;
@@ -30,7 +30,7 @@ void FeederArm::Init()
     runArmControlled = false;   // FIXME: Determine if this is true
 
     frc::SmartDashboard::PutNumber("IntakeSpeed", 1.0);
-    frc::SmartDashboard::PutNumber("FeederSpeed", 0.8);
+    frc::SmartDashboard::PutNumber("FeederSpeed", -1.0);
 
     frc::SmartDashboard::PutNumber("Arm.P", armPIDConfig.kP);
     frc::SmartDashboard::PutNumber("Arm.I", armPIDConfig.kI);

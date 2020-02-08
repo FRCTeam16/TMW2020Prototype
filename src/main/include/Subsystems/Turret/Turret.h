@@ -75,7 +75,7 @@ private:
     std::shared_ptr<rev::CANSparkMax> turretMotor = RobotMap::turretMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotor = RobotMap::shooterMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotorFollower = RobotMap::shooterMotorFollower;
-    std::shared_ptr<WPI_TalonSRX> feederMotor = RobotMap::feederMotor;
+    std::shared_ptr<rev::CANSparkMax> feederMotor = RobotMap::feederMotor;
     std::shared_ptr<VisionSystem> visionSystem;
 
     bool openLoopMessage = false;

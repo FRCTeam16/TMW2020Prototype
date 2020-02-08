@@ -22,7 +22,7 @@
   shared_ptr<rev::CANSparkMax> RobotMap::turretMotor;
   shared_ptr<rev::CANSparkMax> RobotMap::shooterMotor;
   shared_ptr<rev::CANSparkMax> RobotMap::shooterMotorFollower;
-  shared_ptr<WPI_TalonSRX> RobotMap::feederMotor;
+  shared_ptr<rev::CANSparkMax> RobotMap::feederMotor;
 
   shared_ptr<WPI_TalonSRX> RobotMap::gyroTalon;
   std::shared_ptr<BSGyro> RobotMap::gyro;
@@ -45,7 +45,7 @@ RobotMap::RobotMap() {
   turretMotor.reset(new rev::CANSparkMax{11, rev::CANSparkMax::MotorType::kBrushless});
   shooterMotor.reset(new rev::CANSparkMax{61, rev::CANSparkMax::MotorType::kBrushless});
   shooterMotorFollower.reset(new rev::CANSparkMax{62, rev::CANSparkMax::MotorType::kBrushless});
-  feederMotor.reset(new WPI_TalonSRX{9});
+  feederMotor.reset(new rev::CANSparkMax{9, rev::CANSparkMax::MotorType::kBrushless});
 
   armMotor.reset(new WPI_TalonFX{12});
   armMotorFollower.reset(new WPI_TalonFX{13});

@@ -72,9 +72,10 @@ void Turret::Run()
         // if ((tracking && timeAcquired) || !tracking) {
         //     feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -0.8);
         // }
-        feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", 0.8);
+        feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -1.0);
         if (feederReversed) {
             feederSpeed = -feederSpeed;
+            // feederSpeed = -1.0;
         }
     }
     feederMotor->Set(feederSpeed);
@@ -100,6 +101,8 @@ void Turret::Instrument()
     frc::SmartDashboard::PutNumber("Turret Position", turretMotor->GetEncoder().GetPosition());
     frc::SmartDashboard::PutNumber("Turret Velocity", turretMotor->GetEncoder().GetVelocity());
     frc::SmartDashboard::PutBoolean("ShooterEnabled", shooterEnabled); 
+
+    frc::SmartDashboard::PutNumber("Feeder Amps", feederMotor->GetOutputCurrent());
 }
 
 void Turret::UpdateShooterPID()
