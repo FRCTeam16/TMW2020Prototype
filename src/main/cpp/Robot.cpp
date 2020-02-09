@@ -54,8 +54,7 @@ void Robot::AutonomousInit() {
 	world.reset(new World());
 	autoManager->Init(world);
 	InitSubsystems();
-	driveBase->InitTeleop();
-	initialized = true;
+	driveBase->InitAuto();
 }
 void Robot::AutonomousPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
@@ -64,14 +63,8 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    std::cout << "Robot::TeleopInit => initialized? " << initialized << "\n";
-	// if (!initialized) {
-		InitSubsystems();
-		driveBase->InitTeleop();
-		initialized = true;
-	// } else {
-	// 	std::cout << " --- already initialized, ignoring\n";
-	// }
+	InitSubsystems();
+	driveBase->InitTeleop();
 	visionSystem->ResetMaxOutputRange();
     std::cout << "Robot::TeleopInit <=\n";
 }
@@ -153,14 +146,14 @@ void Robot::TeleopPeriodic() {
 	}
 	
 	if (oi->GPB->RisingEdge()) {
-		feederArm->DebugSetPoint(10000);
+		feederArm->DebugSetPoint(-10000);
 	} 
 	// FIXME: Re-enable during climber
 	// else if (oi->GPY->RisingEdge()) {
 	// 	feederArm->DebugSetPoint(135000);
 	// } 
 	else if (oi->GPX->RisingEdge()) {
-		feederArm->DebugSetPoint(70000);
+		feederArm->DebugSetPoint(-70000);
 	} else if (oi->GPRB->RisingEdge()) {
 		feederArm->DebugSetPoint(0);
 	} else if (oi->GPLB->RisingEdge()) {
@@ -220,8 +213,8 @@ void Robot::TeleopPeriodic() {
 			bool useGyro = true;
 			if (oi->DR4->Pressed()) {
 				// robot centric
-				xMove = std::copysign(xMove*xMove, xMove);
-				twistInput *= 0.5;
+				// xMove = std::copysign(xMove*xMove, xMove);
+				// twistInput *= 0.5;
 				useGyro = false;
 			}
 			driveBase->Crab(

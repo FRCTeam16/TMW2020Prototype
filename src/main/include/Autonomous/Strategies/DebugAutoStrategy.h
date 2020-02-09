@@ -19,6 +19,7 @@ public:
 
 private:
 	void DebugSimple();
+	void Measure();
 };
 
 #endif /* SRC_AUTONOMOUS_DEBUGAUTOSTRATEGY_H_ */

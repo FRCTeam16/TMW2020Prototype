@@ -11,9 +11,11 @@ FeederArm::FeederArm()
     this->ZeroArmPosition();
 
     armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 0);
-    armMotor->ConfigForwardSoftLimitThreshold(130000);
+    // armMotor->ConfigForwardSoftLimitThreshold(130000);
+    // armMotor->ConfigReverseSoftLimitThreshold(5000);
+    armMotor->ConfigForwardSoftLimitThreshold(-5000);
+    armMotor->ConfigReverseSoftLimitThreshold(-130000);
     armMotor->ConfigForwardSoftLimitEnable(true);
-    armMotor->ConfigReverseSoftLimitThreshold(5000);
     armMotor->ConfigReverseSoftLimitEnable(true);
     // armMotor->ConfigPeakOutputForward(0.5);
     // armMotor->ConfigPeakOutputReverse(-0.5);
@@ -99,5 +101,5 @@ void FeederArm::Run()
 
 void FeederArm::Instrument()
 {
-    
+    frc::SmartDashboard::PutNumber("Arm.Amps.Out", armMotor->GetOutputCurrent());
 }

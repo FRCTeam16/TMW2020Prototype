@@ -47,8 +47,8 @@ RobotMap::RobotMap() {
   shooterMotorFollower.reset(new rev::CANSparkMax{62, rev::CANSparkMax::MotorType::kBrushless});
   feederMotor.reset(new rev::CANSparkMax{9, rev::CANSparkMax::MotorType::kBrushless});
 
-  armMotor.reset(new WPI_TalonFX{12});
-  armMotorFollower.reset(new WPI_TalonFX{13});
+  armMotor.reset(new WPI_TalonFX{13});
+  armMotorFollower.reset(new WPI_TalonFX{12});
 
   gyroTalon.reset(new WPI_TalonSRX{10});
   gyro.reset(new BSGyro(gyroTalon.get())); 

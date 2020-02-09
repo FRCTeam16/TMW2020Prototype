@@ -21,10 +21,8 @@
 #include "Autonomous/Steps/2020/EnableIntake.h"
 
 DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
-	// DebugStraight();
-	// DebugAutoHalt();
-	// DebugControlled();
-	DebugSimple();
+	// DebugSimple();
+	Measure();
 	std::cout << "--- DEBUG Autonomous ---\n";
 }
 	
@@ -32,9 +30,6 @@ DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 void DebugAutoStrategy::Init(std::shared_ptr<World> world) {
 	std::cout << "DebugAutoStrategy::Init()\n";
 	AutoStartPosition startPosition = world->GetStartPosition();
-	// const double angle = -180;
-	// SetGyroOffset *step = new SetGyroOffset(angle);
-	// step->Run(world);
 }
 
 void DebugAutoStrategy::DebugSimple() {
@@ -56,5 +51,8 @@ void DebugAutoStrategy::DebugSimple() {
 	steps.push_back(new ClosedLoopDrive2(startAngle, driveSpeed, 0, 60.0, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
 	steps.push_back(new ClosedLoopDrive2(startAngle, driveSpeed, 0, -60.0, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
 	steps.push_back(new EnableIntake(false));
+}
 
+void DebugAutoStrategy::Measure() {
+	steps.push_back(new ClosedLoopDrive2(0.0, 0.3, 0, 50.0, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
 }

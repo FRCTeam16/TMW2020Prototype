@@ -1,6 +1,6 @@
 #include "Subsystems/Turret/Turret.h"
 
-const double kMinRPMToShoot = 3000.0;
+const double kMinRPMToShoot = 2500.0;
 
 Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     : visionSystem(visionSystem)
