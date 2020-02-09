@@ -1,5 +1,7 @@
 #include "Subsystems/Turret/Turret.h"
 
+const double kMinRPMToShoot = 3000.0;
+
 Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     : visionSystem(visionSystem)
 {
@@ -15,7 +17,7 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     //-------------------------------
     shooterPIDConfig.kP = 0.0004;
     shooterPIDConfig.kFF = 0.000173;
-    shooterPIDConfig.kRpm1 = 4300;
+    shooterPIDConfig.kRpm1 = 4800;
 
     frc::SmartDashboard::PutNumber("#1 P Gain", shooterPIDConfig.kP);
     frc::SmartDashboard::PutNumber("#1 I Gain", shooterPIDConfig.kI);
@@ -29,6 +31,7 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("SetPoint1", 0);
 
     // Feeder Control
+    frc::SmartDashboard::SetDefaultNumber("FeederSpeed", -1.0);
     frc::SmartDashboard::PutNumber("Feeder.Speed.Out", 0.0);
     frc::SmartDashboard::PutNumber("Feeder.Preload.Time", 0.4);
     frc::SmartDashboard::PutNumber("Feeder.Preload.Speed", -0.2);
@@ -82,14 +85,13 @@ void Turret::Run()
             preloadFeederRunning = false;
         }
     } else if (feederEnabled) {
-        // const bool tracking = visionSystem->IsVisionTrackingEnabled();
-        // const double timeAcquired = (now - visionTargetAcquiredTime) > kVisionTargetAcquiredMinWait;
-        // if ((tracking && timeAcquired) || !tracking) {
-        //     feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -0.8);
-        // }
-        feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -1.0);
-        if (feederReversed) {
-            feederSpeed = -feederSpeed;
+        if (shooterMotor->GetEncoder().GetVelocity() > kMinRPMToShoot) {
+            feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -.70);
+            if (feederReversed) {
+                feederSpeed = -feederSpeed;
+            }
+        } else {
+            std::cout << "!!! SHOOTER NOT ENABLED, IGNORING REQUEST TO FIRE FEEDER !!!\n";
         }
     }
     feederMotor->Set(feederSpeed);
@@ -104,6 +106,8 @@ void Turret::Run()
         double shooterRPM = shooterPIDConfig.kRpm1;
         frc::SmartDashboard::PutNumber("Velocity1", shooterMotor->GetEncoder().GetVelocity());
         frc::SmartDashboard::PutNumber("ShooterSetpoint", shooterRPM);
+        frc::SmartDashboard::PutNumber("Shooter Amps", shooterMotor->GetOutputCurrent());
+        frc::SmartDashboard::PutNumber("Shooter Output", shooterMotor->GetAppliedOutput());
         shooterPIDController.SetReference(shooterRPM, rev::ControlType::kVelocity);
     } else {
         // Go open loop
@@ -116,7 +120,6 @@ void Turret::Instrument()
     frc::SmartDashboard::PutNumber("Turret Position", turretMotor->GetEncoder().GetPosition());
     frc::SmartDashboard::PutNumber("Turret Velocity", turretMotor->GetEncoder().GetVelocity());
     frc::SmartDashboard::PutBoolean("ShooterEnabled", shooterEnabled); 
-
     frc::SmartDashboard::PutNumber("Feeder Amps", feederMotor->GetOutputCurrent());
 }
 

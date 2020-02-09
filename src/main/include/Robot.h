@@ -53,4 +53,7 @@ private:
   std::shared_ptr<World> world;
   bool runInstrumentation = false;  // whether to run subsystem instrumentation
   bool initialized = false;
+
+  // Operator input flags
+  bool preloadPressed = false;
 };

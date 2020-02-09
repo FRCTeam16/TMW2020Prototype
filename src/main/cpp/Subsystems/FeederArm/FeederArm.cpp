@@ -21,26 +21,27 @@ FeederArm::FeederArm()
 
     armPIDConfig.kP = 0.01999998;
 
+    frc::SmartDashboard::SetDefaultNumber("IntakeSpeed", 1.0);
+
+    frc::SmartDashboard::SetDefaultNumber("Arm.P", armPIDConfig.kP);
+    frc::SmartDashboard::SetDefaultNumber("Arm.I", armPIDConfig.kI);
+    frc::SmartDashboard::SetDefaultNumber("Arm.D", armPIDConfig.kD);
+    frc::SmartDashboard::SetDefaultNumber("Arm.F", armPIDConfig.kFF);
+
+    frc::SmartDashboard::SetDefaultNumber("Arm.Setpoint", 0.0);
+
+    frc::SmartDashboard::SetDefaultNumber("Arm.V", kVelocity);
+    frc::SmartDashboard::SetDefaultNumber("Arm.A", kAcceleration);
+
 }
 
 void FeederArm::Init()
 {
     this->RetractClimberArms();
     armSetpoint = 0.0;
-    runArmControlled = false;   // FIXME: Determine if this is true
+    runArmControlled = false;   // FIXME: Determine if we want to start controlled or not
 
-    frc::SmartDashboard::PutNumber("IntakeSpeed", 1.0);
-    frc::SmartDashboard::PutNumber("FeederSpeed", -1.0);
-
-    frc::SmartDashboard::PutNumber("Arm.P", armPIDConfig.kP);
-    frc::SmartDashboard::PutNumber("Arm.I", armPIDConfig.kI);
-    frc::SmartDashboard::PutNumber("Arm.D", armPIDConfig.kD);
-    frc::SmartDashboard::PutNumber("Arm.F", armPIDConfig.kFF);
-
-    frc::SmartDashboard::PutNumber("Arm.Setpoint", 0.0);
-
-    frc::SmartDashboard::PutNumber("Arm.V", kVelocity);
-    frc::SmartDashboard::PutNumber("Arm.A", kAcceleration);
+    
 }
 
 void FeederArm::Run()

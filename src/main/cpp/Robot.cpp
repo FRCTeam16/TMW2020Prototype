@@ -85,6 +85,8 @@ void Robot::TeleopPeriodic() {
 	// const bool lockWheels = oi->DL6->Pressed();  Removed for auto testing
 	const bool lockWheels = false;
 
+	const OI::DPad dPad = oi->GetGamepadDPad();
+
 
 	/**********************************************************
 	 * Vision
@@ -121,6 +123,7 @@ void Robot::TeleopPeriodic() {
 
 	/**********************************************************
 	 * FeederArm  Control
+	 * Intake will be overridden by shooting
 	**********************************************************/
 	if (oi->DR1->Pressed()) {
 		feederArm->StartIntake();
@@ -130,11 +133,19 @@ void Robot::TeleopPeriodic() {
 		feederArm-> StopIntake();
 	}
 
+	if (!preloadPressed && dPad == OI::DPad::kLeft) {
+		turret->PreloadBall();
+		preloadPressed = true;
+	} else {
+		preloadPressed = false;
+	}
 
-	if (oi->DL4->RisingEdge()){
+
+	if (oi->DL3->RisingEdge()){
 		turret->PreloadBall();
 	} else if (oi->DL1->Pressed()) {
 		turret->StartFeeder();
+		feederArm->StartIntake();
 	} else if (oi->DR5->Pressed()) {
 		turret->StartFeeder(true);
 	} else {
@@ -143,9 +154,12 @@ void Robot::TeleopPeriodic() {
 	
 	if (oi->GPB->RisingEdge()) {
 		feederArm->DebugSetPoint(10000);
-	} else if (oi->GPY->RisingEdge()) {
-		feederArm->DebugSetPoint(135000);
-	} else if (oi->GPX->RisingEdge()) {
+	} 
+	// FIXME: Re-enable during climber
+	// else if (oi->GPY->RisingEdge()) {
+	// 	feederArm->DebugSetPoint(135000);
+	// } 
+	else if (oi->GPX->RisingEdge()) {
 		feederArm->DebugSetPoint(70000);
 	} else if (oi->GPRB->RisingEdge()) {
 		feederArm->DebugSetPoint(0);
@@ -168,7 +182,7 @@ void Robot::TeleopPeriodic() {
 	/**********************************************************
 	 * Climber Arms
 	**********************************************************/
-	OI::DPad dPad = oi->GetGamepadDPad();
+	
 	if (oi->GPStart->Pressed()) {
 		if (dPad == OI::DPad::kUp) {
 			feederArm->ExtendClimberArms();
@@ -191,6 +205,12 @@ void Robot::TeleopPeriodic() {
 	**********************************************************/
 	double twistInput = oi->GetJoystickTwist(threshold);
 	double start = frc::Timer::GetFPGATimestamp();
+
+	// Lock angle
+	if (oi->DL2->Pressed()) {
+		driveBase->SetTargetAngle(0.0);
+		twistInput = driveBase->GetTwistControlOutput();
+	}
 	if (dmsMode) {
 		// DriveBase input handled via DMS->Run()
 	} else {
