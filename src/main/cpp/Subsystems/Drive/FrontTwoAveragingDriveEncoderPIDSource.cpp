@@ -22,12 +22,13 @@ double FrontTwoAveragingDriveEncoderPIDSource::PIDGet() {
 	DriveInfo<double> error;
 	DriveInfo<bool> motorEnabled {true};
 
-
 	error.FL = fabs(wheels.FL->GetDriveEncoderPosition() - initialEncoderValue.FL);
 	error.FR = fabs(wheels.FR->GetDriveEncoderPosition() - initialEncoderValue.FR);
 
 	SmartDashboard::PutNumber("FLEncoderTravel", error.FL);
 	SmartDashboard::PutNumber("FREncoderTravel", error.FR);
+	SmartDashboard::PutNumber("RLEncoderTravel", (wheels.RL->GetDriveEncoderPosition() - initialEncoderValue.RL));
+	SmartDashboard::PutNumber("RREncoderTravel", (wheels.RR->GetDriveEncoderPosition() - initialEncoderValue.RR));
 
 	if (showDebug) {
 		std::cout << "AvgDrivePID error.FL " << error.FL << "\n";
