@@ -29,6 +29,7 @@
   
   std::shared_ptr<Compressor> RobotMap::compressor;
   std::shared_ptr<Solenoid> RobotMap::climberArms;
+  std::shared_ptr<Solenoid> RobotMap::lidTop;
 
 
 RobotMap::RobotMap() {
@@ -56,4 +57,5 @@ RobotMap::RobotMap() {
   compressor.reset(new Compressor{0});
   compressor->SetClosedLoopControl(true);
   climberArms.reset(new Solenoid{4});
+  lidTop.reset(new Solenoid{2});
 }

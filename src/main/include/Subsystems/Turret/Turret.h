@@ -9,6 +9,7 @@
 #include "Util/BSPrefs.h"
 #include "Util/PIDConfig.h"
 #include <frc/Timer.h>
+#include <frc/Solenoid.h>
 
 
 class Turret : public SubsystemManager {
@@ -79,11 +80,22 @@ public:
         }
     }
 
+    void SetLidToLongShot() {
+        lidTopShort = false;
+        lidTopMessageSent = false;
+    }
+
+    void SetLidToShortShot() {
+        lidTopShort = true;
+        lidTopMessageSent = false;
+    }
+
 private:
     std::shared_ptr<rev::CANSparkMax> turretMotor = RobotMap::turretMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotor = RobotMap::shooterMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotorFollower = RobotMap::shooterMotorFollower;
     std::shared_ptr<rev::CANSparkMax> feederMotor = RobotMap::feederMotor;
+    std::shared_ptr<Solenoid> lidTop = RobotMap::lidTop;
     std::shared_ptr<VisionSystem> visionSystem;
 
     bool openLoopMessage = false;
@@ -100,6 +112,9 @@ private:
 
     bool preloadFeederRunning = false;
     double preloadFeederStarted = 0.0;
+
+    bool lidTopShort = false;
+    bool lidTopMessageSent = true;
 
     void UpdateShooterPID();
 };

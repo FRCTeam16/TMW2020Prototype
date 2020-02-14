@@ -17,7 +17,6 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     //-------------------------------
     shooterPIDConfig.kP = 0.0004;
     shooterPIDConfig.kFF = 0.000173;
-    shooterPIDConfig.kRpm1 = 4800;
 
     frc::SmartDashboard::PutNumber("#1 P Gain", shooterPIDConfig.kP);
     frc::SmartDashboard::PutNumber("#1 I Gain", shooterPIDConfig.kI);
@@ -26,7 +25,9 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("#1 Feed Forward", shooterPIDConfig.kFF);
     frc::SmartDashboard::PutNumber("#1 Max Output", shooterPIDConfig.kMaxOutput);
     frc::SmartDashboard::PutNumber("#1 Min Output", shooterPIDConfig.kMinOutput);
-    frc::SmartDashboard::PutNumber("#1 RPM", shooterPIDConfig.kRpm1);
+
+    frc::SmartDashboard::PutNumber("Turret.RPM.Long", 5000);
+    frc::SmartDashboard::PutNumber("Turret.RPM.Short", 3800);
 
     frc::SmartDashboard::PutNumber("SetPoint1", 0);
 
@@ -41,12 +42,19 @@ void Turret::Init() {
     shooterEnabled = false;
     visionTrackingEnabled = false;
     openLoopMessage = false;
+    this->SetLidToLongShot();
 }
 
 void Turret::Run() 
 {
     const double now = Timer::GetFPGATimestamp();
     auto visionInfo = visionSystem->GetLastVisionInfo();
+
+
+    if (!lidTopMessageSent) {
+        lidTop->Set(lidTopShort);
+        lidTopMessageSent = true;
+    }
     
     //----------------
     // Turret Control
@@ -133,7 +141,14 @@ void Turret::UpdateShooterPID()
     double ff = frc::SmartDashboard::GetNumber("#1 Feed Forward", 0);
     double max = frc::SmartDashboard::GetNumber("#1 Max Output", 0);
     double min = frc::SmartDashboard::GetNumber("#1 Min Output", 0);
-    double rpm1 = frc::SmartDashboard::GetNumber("#1 RPM", 0);
+
+
+    double rpm = 0.0;
+    if (lidTopShort) {        
+        rpm = frc::SmartDashboard::GetNumber("Turret.RPM.Short", 3800);
+    } else {
+        rpm = frc::SmartDashboard::GetNumber("Turret.RPM.Long", 5000);
+    }
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
     auto shooterPIDController = shooterMotor->GetPIDController();
@@ -147,8 +162,8 @@ void Turret::UpdateShooterPID()
         shooterPIDConfig.kMinOutput = min; 
         shooterPIDConfig.kMaxOutput = max; 
     }
-    if((rpm1 != shooterPIDConfig.kRpm1)) { 
-        shooterPIDConfig.kRpm1 = rpm1;
+    if((rpm != shooterPIDConfig.kRpm1)) { 
+        shooterPIDConfig.kRpm1 = rpm;
     }
 }
 

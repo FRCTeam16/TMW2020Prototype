@@ -22,6 +22,7 @@ FeederArm::FeederArm()
     
 
     armPIDConfig.kP = 0.01999998;
+    armPIDConfig.kI = 0.000001;
 
     frc::SmartDashboard::SetDefaultNumber("IntakeSpeed", 1.0);
 
@@ -102,4 +103,5 @@ void FeederArm::Run()
 void FeederArm::Instrument()
 {
     frc::SmartDashboard::PutNumber("Arm.Amps.Out", armMotor->GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("Arm.Position", armMotor->GetSelectedSensorPosition());
 }

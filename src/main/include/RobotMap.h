@@ -38,4 +38,5 @@ class RobotMap {
 
   static std::shared_ptr<Compressor> compressor;
   static std::shared_ptr<Solenoid> climberArms;
+  static std::shared_ptr<Solenoid> lidTop;
 };

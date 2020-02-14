@@ -97,6 +97,13 @@ void Robot::TeleopPeriodic() {
 		turret->ToggleShooterEnabled();
 	}
 
+	if (dPad == OI::DPad::kUp) {
+		turret->SetLidToShortShot();
+	}
+	else if (dPad == OI::DPad::kDown) {
+		turret->SetLidToLongShot();
+	}
+
 	
 	// TODO: Fixme to track state
 	const bool gamepadLTPressed = oi->GetGamepadLT() > 0.05;
