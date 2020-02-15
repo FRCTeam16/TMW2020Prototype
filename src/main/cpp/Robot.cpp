@@ -54,6 +54,7 @@ void Robot::AutonomousInit() {
 	world.reset(new World());
 	autoManager->Init(world);
 	InitSubsystems();
+	feederArm->InitAuto();
 	driveBase->InitAuto();
 }
 void Robot::AutonomousPeriodic() {
@@ -66,6 +67,7 @@ void Robot::TeleopInit() {
 	InitSubsystems();
 	driveBase->InitTeleop();
 	visionSystem->ResetMaxOutputRange();
+	feederArm->InitTeleop();
     std::cout << "Robot::TeleopInit <=\n";
 }
 

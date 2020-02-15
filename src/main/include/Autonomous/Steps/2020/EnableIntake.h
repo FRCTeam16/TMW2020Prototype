@@ -10,6 +10,7 @@ public:
     }
 
     bool Run(std::shared_ptr<World> world) override {
+        std::cout << "EnableIntake(" << enableIntake << ", " << reversed << ")\n";
         if (enableIntake) {
             Robot::feederArm->StartIntake(reversed);
         } else {

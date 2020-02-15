@@ -18,7 +18,15 @@
 #include "Autonomous/Steps/SelectVisionPipeline.h"
 #include "Autonomous/Steps/AlignToTarget.h"
 
+#include "Autonomous/Steps/DriveToDistance.h"
+
 #include "Autonomous/Steps/2020/EnableIntake.h"
+#include "Autonomous/Steps/2020/EnableShooter.h"
+#include "Autonomous/Steps/2020/EnableFeeder.h"
+#include "Autonomous/Steps/2020/EnableVisionTracking.h"
+#include "Autonomous/Steps/2020/SetTurretPosition.h"
+
+#include <units/units.h>
 
 DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 	// DebugSimple();
@@ -54,5 +62,25 @@ void DebugAutoStrategy::DebugSimple() {
 }
 
 void DebugAutoStrategy::Measure() {
-	steps.push_back(new ClosedLoopDrive2(0.0, 0.3, 0, 50.0, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
+	const double firstAngle = 45.0;
+	steps.push_back(new ConcurrentStep({
+		new Rotate(firstAngle),
+		new SetTurretPosition(97),
+		new EnableIntake(true),
+		new EnableShooter(false)
+	}));
+	steps.push_back(new DriveToDistance(firstAngle, 0.3, 0_in, 75_in));
+	auto driveToBar = new DriveToDistance(firstAngle, 0.2, 0_in, 25_in);
+	driveToBar->SetUseGyro(false);
+	steps.push_back(new ConcurrentStep({
+		driveToBar,
+		new EnableVisionTracking(true),
+		new EnableShooter(true)
+	}));
+	steps.push_back(driveToBar);
+	const double secondAngle = 30.0;
+	steps.push_back(new ConcurrentStep({
+		new DriveToDistance(secondAngle, 0.2, -65_in, 130_in),
+		new EnableFeeder(true)
+	}));
 }

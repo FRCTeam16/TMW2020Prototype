@@ -10,6 +10,7 @@ public:
     }
 
     bool Run(std::shared_ptr<World> world) override {
+        std::cout << "EnableFeeder(" << enableFeeder << ")\n";
         if (enableFeeder) {
             Robot::turret->StartFeeder();
         } else {

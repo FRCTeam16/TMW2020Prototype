@@ -14,6 +14,10 @@ public:
 
     void Init() override;
 
+    void InitTeleop();
+
+    void InitAuto();
+
     void Run() override;
 
     void Instrument() override;

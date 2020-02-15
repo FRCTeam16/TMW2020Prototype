@@ -102,6 +102,9 @@ void TMW2019SwerveWheel::UseClosedLoopDrive(double value, double maxOutput) {
 	const double driveD = prefs->GetDouble("DriveD", 0.0);
 	const double driveF = prefs->GetDouble("DriveF", 0.0);
 	const double driveIZone = prefs->GetDouble("DriveIZone", 0.0);
+    const double driveRamp = prefs->GetDouble("DriveRampRate", 0.0);
+    driveMotor->SetClosedLoopRampRate(driveRamp);
+
 
     rev::CANPIDController pid = driveMotor->GetPIDController();
     pid.SetP(driveP);    

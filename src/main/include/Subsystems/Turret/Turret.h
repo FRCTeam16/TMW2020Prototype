@@ -33,6 +33,7 @@ public:
 
     void EnableVisionTracking() {
         visionTrackingEnabled = true;
+        turretPositionControl = false;  
     }
 
     void DisableVisionTracking() {
@@ -90,6 +91,21 @@ public:
         lidTopMessageSent = false;
     }
 
+    void SetTurretSetpoint(double setpoint) {
+        std::cout << "*************** TURRET::SetTurretSetpoint(" << setpoint << ")\n";
+        turretSetpoint = setpoint;
+        frc::SmartDashboard::PutNumber("Turret.Setpoint", turretSetpoint);
+    }
+
+    bool IsTurretInPosition() {
+        double error = fabs(turretSetpoint - turretMotor->GetEncoder().GetPosition());
+        return (error < 1);
+    }
+
+    void SetTurretPositionControl(bool control) {
+        turretPositionControl = control;
+    }
+
 private:
     std::shared_ptr<rev::CANSparkMax> turretMotor = RobotMap::turretMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotor = RobotMap::shooterMotor;
@@ -100,7 +116,10 @@ private:
 
     bool openLoopMessage = false;
     bool visionTrackingEnabled = false;
+
+    double turretSetpoint = 0.0;
     double turretSpeed = 0.0;
+    bool turretPositionControl = false;
 
     PIDConfig shooterPIDConfig;
     bool shooterEnabled = false;
@@ -117,4 +136,5 @@ private:
     bool lidTopMessageSent = true;
 
     void UpdateShooterPID();
+    void UpdateTurretPID();
 };

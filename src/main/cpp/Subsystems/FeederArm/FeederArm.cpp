@@ -19,6 +19,9 @@ FeederArm::FeederArm()
     armMotor->ConfigReverseSoftLimitEnable(true);
     // armMotor->ConfigPeakOutputForward(0.5);
     // armMotor->ConfigPeakOutputReverse(-0.5);
+
+    armMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+    armMotorFollower->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
     
 
     armPIDConfig.kP = 0.01999998;
@@ -43,8 +46,18 @@ void FeederArm::Init()
     this->RetractClimberArms();
     armSetpoint = 0.0;
     runArmControlled = false;   // FIXME: Determine if we want to start controlled or not
+}
 
-    
+void FeederArm::InitTeleop()
+{
+    armMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+    armMotorFollower->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+}
+
+void FeederArm::InitAuto()
+{
+    armMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+    armMotorFollower->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
 }
 
 void FeederArm::Run()

@@ -26,6 +26,11 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("#1 Max Output", shooterPIDConfig.kMaxOutput);
     frc::SmartDashboard::PutNumber("#1 Min Output", shooterPIDConfig.kMinOutput);
 
+
+    frc::SmartDashboard::PutNumber("Turret.Setpoint", turretMotor->GetEncoder().GetPosition());
+    frc::SmartDashboard::PutNumber("Turret.PID.P", 2.0);
+    frc::SmartDashboard::PutNumber("Turret.PID.I", 0);
+    frc::SmartDashboard::PutNumber("Turret.PID.D", 0);
     frc::SmartDashboard::PutNumber("Turret.RPM.Long", 5000);
     frc::SmartDashboard::PutNumber("Turret.RPM.Short", 3800);
 
@@ -43,6 +48,7 @@ void Turret::Init() {
     visionTrackingEnabled = false;
     openLoopMessage = false;
     this->SetLidToLongShot();
+    turretSetpoint = turretMotor->GetEncoder().GetPosition();
 }
 
 void Turret::Run() 
@@ -50,7 +56,9 @@ void Turret::Run()
     const double now = Timer::GetFPGATimestamp();
     auto visionInfo = visionSystem->GetLastVisionInfo();
 
-
+    //-------------------
+    // Turret Lid Control
+    //-------------------
     if (!lidTopMessageSent) {
         lidTop->Set(lidTopShort);
         lidTopMessageSent = true;
@@ -59,11 +67,17 @@ void Turret::Run()
     //----------------
     // Turret Control
     //----------------
-    if (!visionTrackingEnabled || openLoopMessage) {
-        turretMotor->Set(turretSpeed);
-        openLoopMessage = false;
+    std::cout << "Turret(tpc=" << turretPositionControl << ", ol=" << openLoopMessage << ", vt=" << visionTrackingEnabled << ")\n";
+    if (!visionTrackingEnabled || openLoopMessage || turretPositionControl) {
+        if (openLoopMessage) {
+            turretMotor->Set(turretSpeed);
+            openLoopMessage = false;
+        } else if (turretPositionControl) {
+            UpdateTurretPID();
+            turretMotor->GetPIDController().SetReference(turretSetpoint, rev::ControlType::kPosition);
+        }
     } else {
-        // Closed Loop control
+        // Vision Loop control
         double speed = 0.0;
         
         frc::SmartDashboard::PutBoolean("Viz Target?", visionInfo->hasTarget);
@@ -129,6 +143,23 @@ void Turret::Instrument()
     frc::SmartDashboard::PutNumber("Turret Velocity", turretMotor->GetEncoder().GetVelocity());
     frc::SmartDashboard::PutBoolean("ShooterEnabled", shooterEnabled); 
     frc::SmartDashboard::PutNumber("Feeder Amps", feederMotor->GetOutputCurrent());
+}
+
+void Turret::UpdateTurretPID()
+{
+    double setpoint = frc::SmartDashboard::GetNumber("Turret.Setpoint", turretSetpoint);
+    double p =  frc::SmartDashboard::GetNumber("Turret.PID.P", 2.0);
+    double i = frc::SmartDashboard::GetNumber("Turret.PID.I", 0);
+    double d = frc::SmartDashboard::GetNumber("Turret.PID.D", 0);
+
+    if (setpoint != turretSetpoint) {
+        this->SetTurretSetpoint(setpoint);
+    }
+    
+    auto turretPID = turretMotor->GetPIDController();
+    turretPID.SetP(p);
+    turretPID.SetI(i);
+    turretPID.SetD(d);
 }
 
 void Turret::UpdateShooterPID()

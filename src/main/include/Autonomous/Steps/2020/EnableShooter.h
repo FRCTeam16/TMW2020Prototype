@@ -10,6 +10,7 @@ public:
     }
 
     bool Run(std::shared_ptr<World> world) override {
+        std::cout << "EnableShooter(" << enableShooter << ")\n";
         Robot::turret->SetShooterEnabled(enableShooter);
         return true;
     }
