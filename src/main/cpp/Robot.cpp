@@ -157,10 +157,9 @@ void Robot::TeleopPeriodic() {
 	if (oi->GPB->RisingEdge()) {
 		feederArm->DebugSetPoint(-10000);
 	} 
-	// FIXME: Re-enable during climber
-	// else if (oi->GPY->RisingEdge()) {
-	// 	feederArm->DebugSetPoint(135000);
-	// } 
+	else if (oi->GPY->RisingEdge()) {
+		feederArm->DebugSetPoint(-130000);
+	} 
 	else if (oi->GPX->RisingEdge()) {
 		feederArm->DebugSetPoint(-70000);
 	} else if (oi->GPRB->RisingEdge()) {

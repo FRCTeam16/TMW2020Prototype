@@ -28,6 +28,9 @@ public:
     }
 
     void HaltManualTurret() {
+        if (turretSpeed != 0.0) {
+            openLoopMessage = true;
+        }
         turretSpeed = 0.0;
     }
 

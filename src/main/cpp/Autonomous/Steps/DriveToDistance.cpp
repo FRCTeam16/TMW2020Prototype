@@ -10,7 +10,7 @@ bool DriveToDistance::Run(std::shared_ptr<World> world) {
         // const double targetAngle = (!useCurrentAngle) ? angle : RobotMap::gyro->GetYaw();
 		Robot::driveBase->SetTargetAngle(angle);
 
-		if (debug) std::cout << "DriveToDistance: Setting Target Drive Distance:" << targetSetpoint << "| Speed:" << speed << "\n";
+		std::cout << "DriveToDistance: Setting Target Drive Distance:" << targetSetpoint << "| Speed:" << speed << "\n";
 		Robot::driveBase->SetTargetDriveDistance(targetSetpoint, speed);
 		Robot::driveBase->UseClosedLoopDrive();
     }

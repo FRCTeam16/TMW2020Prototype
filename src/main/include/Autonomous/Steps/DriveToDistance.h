@@ -32,5 +32,5 @@ private:
     bool useGyro = true;
     bool debug = false;
     units::second_t startTime = -1_s;
-    units::second_t stepTimeOut = 3.0_s;
+    units::second_t stepTimeOut = 10.0_s;
 };

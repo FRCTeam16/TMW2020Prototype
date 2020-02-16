@@ -67,7 +67,7 @@ void Turret::Run()
     //----------------
     // Turret Control
     //----------------
-    std::cout << "Turret(tpc=" << turretPositionControl << ", ol=" << openLoopMessage << ", vt=" << visionTrackingEnabled << ")\n";
+    // std::cout << "Turret(tpc=" << turretPositionControl << ", ol=" << openLoopMessage << ", vt=" << visionTrackingEnabled << ")\n";
     if (!visionTrackingEnabled || openLoopMessage || turretPositionControl) {
         if (openLoopMessage) {
             turretMotor->Set(turretSpeed);
@@ -80,7 +80,6 @@ void Turret::Run()
         // Vision Loop control
         double speed = 0.0;
         
-        frc::SmartDashboard::PutBoolean("Viz Target?", visionInfo->hasTarget);
         if (visionInfo->hasTarget) {
             if (visionTargetAcquiredTime < 0) {
                 visionTargetAcquiredTime = Timer::GetFPGATimestamp();
@@ -89,7 +88,8 @@ void Turret::Run()
         } else {
             visionTargetAcquiredTime = -1.0;
         }
-        turretMotor->Set(speed);  // Zero until we have closed loop control
+        std::cout << "TurretMotorSpeed (Vision) = " << speed << "\n";
+        turretMotor->Set(speed);
     }
 
     //----------------

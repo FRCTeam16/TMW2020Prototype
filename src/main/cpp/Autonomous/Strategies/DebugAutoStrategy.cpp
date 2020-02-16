@@ -41,36 +41,15 @@ void DebugAutoStrategy::Init(std::shared_ptr<World> world) {
 }
 
 void DebugAutoStrategy::DebugSimple() {
-	// steps.push_back(new SetVisionLight(true));
-
-	const double startAngle = 0.0;
-	const double driveSpeed = 0.4;
-	const double driveX = 0.0;
-	const double driveY = -24.0;
-	auto drive = new ClosedLoopDrive2(startAngle, driveSpeed, driveX, driveY, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6);
-	// auto drive = new TimedDrive(startAngle, -0.2, 0.2, 2.0, 1.0);
-
-	// steps.push_back(drive);
-	// steps.push_back(new ClosedLoopDrive2(startAngle, driveSpeed, 24.0, 0, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
-	// steps.push_back(new ClosedLoopDrive2(startAngle, driveSpeed, 0.0, 24, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
-	// steps.push_back(new ClosedLoopDrive2(startAngle, driveSpeed, -24.0, 0, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
-
-	steps.push_back(new EnableIntake(true));
-	steps.push_back(new ClosedLoopDrive2(startAngle, driveSpeed, 0, 60.0, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
-	steps.push_back(new ClosedLoopDrive2(startAngle, driveSpeed, 0, -60.0, -1, DriveUnit::Units::kInches, 5.0, 1.0, 6));
-	steps.push_back(new EnableIntake(false));
-}
-
-void DebugAutoStrategy::Measure() {
 	const double firstAngle = 45.0;
 	steps.push_back(new ConcurrentStep({
 		new Rotate(firstAngle),
-		new SetTurretPosition(97),
+		new SetTurretPosition(-111),
 		new EnableIntake(true),
 		new EnableShooter(false)
 	}));
-	steps.push_back(new DriveToDistance(firstAngle, 0.3, 0_in, 75_in));
-	auto driveToBar = new DriveToDistance(firstAngle, 0.2, 0_in, 25_in);
+	steps.push_back(new DriveToDistance(firstAngle, 0.3, 0_in, 81_in));
+	auto driveToBar = new DriveToDistance(firstAngle, 0.2, 0_in, 7_in);
 	driveToBar->SetUseGyro(false);
 	steps.push_back(new ConcurrentStep({
 		driveToBar,
@@ -80,7 +59,11 @@ void DebugAutoStrategy::Measure() {
 	steps.push_back(driveToBar);
 	const double secondAngle = 30.0;
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(secondAngle, 0.2, -65_in, 130_in),
-		new EnableFeeder(true)
+		new DriveToDistance(secondAngle, 0.2, -50_in, 110_in),
+		new EnableFeeder(true)			
 	}));
+}
+
+void DebugAutoStrategy::Measure() {
+	steps.push_back(new DriveToDistance(0.0, 0.3, 0_in, 60_in));
 }

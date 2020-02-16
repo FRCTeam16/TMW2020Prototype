@@ -6,6 +6,7 @@
 #include "Robot.h"
 
 #include "Autonomous/Strategies/DebugAutoStrategy.h"
+#include "Autonomous/Strategies/2020/GoalSideSweepStrategy.h"
 
 
 
@@ -13,8 +14,9 @@ AutoManager::AutoManager() :
 		positions(new frc::SendableChooser<int>()),
 		strategies(new frc::SendableChooser<int>())
 {
-	strategies->AddOption("0 - None", AutoStrategy::kNone);
-	strategies->SetDefaultOption("99 - Debug Auto Strategy", AutoStrategy::kDebug);
+	strategies->SetDefaultOption("0 - None", AutoStrategy::kNone);
+	strategies->AddOption("1 - GoalSideSweep 8", AutoStrategy::kGoalSideSweep8);
+	strategies->AddOption("99 - Debug Auto Strategy", AutoStrategy::kDebug);
 
 	positions->SetDefaultOption("2 - Right", AutoStartPosition::kRight);
 	// positions->AddOption("1 - Center", AutoStartPosition::kCenter);
@@ -40,6 +42,10 @@ std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key, s
 	case kDebug:
 		std::cout << "AUTOMAN: Selected DEBUG \n";
 		strategy = new DebugAutoStrategy(world);
+		break;
+	case kGoalSideSweep8:
+		std::cout << "AUTOMAN: Selected GoalSideSweep+8 \n";
+		strategy = new GoalSideSweepStrategy(world, GoalSideSweepStrategy::Mode::EightBall);
 		break;
 	default:
 		// TODO: Fill in sane default
