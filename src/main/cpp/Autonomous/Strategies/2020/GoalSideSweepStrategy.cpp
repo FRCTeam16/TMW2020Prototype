@@ -11,6 +11,51 @@
 #include "Autonomous/Steps/2020/EnableVisionTracking.h"
 
 GoalSideSweepStrategy::GoalSideSweepStrategy(std::shared_ptr<World> world, Mode mode) {
+	steps.push_back(new ConcurrentStep({
+		new DriveToDistance(0.0, 0.3, 0_in, 6_in),
+		new SetTurretPosition(-180),
+		new EnableIntake(true),     // TODO: Pass in desired speed
+		new EnableShooter(true),
+	}));
+	steps.push_back(new ConcurrentStep({
+		new DriveToDistance(0.0, 0.3, 0_in, 54_in),
+		new EnableVisionTracking(true)
+	}));
+	
+	steps.push_back(new ConcurrentStep({
+		new DriveToDistance(0.0, 0.3, 0_in, 80_in),
+		new EnableFeeder(true)
+	}));
+	steps.push_back(new EnableFeeder(false));
+
+	// Turn and drive to bar
+	const double initialBarAngle = 60.0;
+	steps.push_back(new ConcurrentStep({
+		new Rotate(initialBarAngle),
+		new SetTurretPosition(0)
+	}));
+
+	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -2_in, 32_in);
+	driveToBar->SetUseGyro(false);
+	steps.push_back(new ConcurrentStep({
+		driveToBar,
+		new EnableVisionTracking(true)
+	}));
+	steps.push_back(driveToBar);
+
+	// Backup, turn and setup sweep angle
+	auto driveBack = new DriveToDistance(initialBarAngle, -0.2, 0_in, 16_in);
+	driveBack->SetUseGyro(false);
+	steps.push_back(driveBack);
+
+	steps.push_back(new ConcurrentStep({
+		new Rotate(120.0),
+		new SetTurretPosition(70.0)
+	}));
+	
+}
+
+void GoalSideSweepStrategy::OldWork(std::shared_ptr<World> world, Mode mode) {
 
     const double firstAngle = 45.0;
 	steps.push_back(new ConcurrentStep({
@@ -28,27 +73,10 @@ GoalSideSweepStrategy::GoalSideSweepStrategy(std::shared_ptr<World> world, Mode 
 		new EnableShooter(true)
 	}));
 	steps.push_back(driveToBar);
-	
-    
-    switch(mode) {
-        case Mode::EightBall:
-        default:
-            SweepEight();
-            break;
-    }
-}
 
-void GoalSideSweepStrategy::SweepEight() {
-    const double secondAngle = 30.0;
+	const double secondAngle = 30.0;
 	steps.push_back(new ConcurrentStep({
 		new DriveToDistance(secondAngle, 0.2, -50_in, 110_in),
 		new EnableFeeder(true)			
 	}));
-
-    TrenchRun(0.2, -24_in, -120_in);
-}
-
-void GoalSideSweepStrategy::TrenchRun(double speed, units::inch_t xdist, units::inch_t ydist) {
-    const double angle = 30.0;
-    steps.push_back(new DriveToDistance(angle, speed, xdist, ydist));
 }
