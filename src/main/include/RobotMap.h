@@ -4,7 +4,7 @@
 #include <frc/Solenoid.h>
 #include <ctre/Phoenix.h>
 #include <rev/CANSparkMax.h>
-#include "Util/BSGyro.h"
+#include "Gyro/BSGyro.h"
 
 using namespace std;
 
@@ -33,10 +33,10 @@ class RobotMap {
   static shared_ptr<WPI_TalonFX> armMotorFollower;
 
 
-  static shared_ptr<WPI_TalonSRX> gyroTalon;
+  static shared_ptr<WPI_TalonSRX> intakeMotor;
   static std::shared_ptr<BSGyro> gyro;
 
-  static std::shared_ptr<Compressor> compressor;
-  static std::shared_ptr<Solenoid> climberArms;
-  static std::shared_ptr<Solenoid> lidTop;
+  static std::shared_ptr<frc::Compressor> compressor;
+  static std::shared_ptr<frc::Solenoid> climberArms;
+  static std::shared_ptr<frc::Solenoid> lidTop;
 };

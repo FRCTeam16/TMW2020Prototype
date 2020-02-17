@@ -273,9 +273,7 @@ void Robot::InstrumentSubsystems() {
 	autoManager->Instrument();
 	frc::SmartDashboard::PutNumber("ArmPos", RobotMap::armMotor->GetSelectedSensorPosition());
 	if (true || runInstrumentation) {
-		frc::SmartDashboard::PutNumber("Penguin Temp", RobotMap::gyro->GetPigeon()->GetTemp());
-		frc::SmartDashboard::PutNumber("RawYaw",RobotMap::gyro->ReadYaw());
-		frc::SmartDashboard::PutNumber("Yaw",RobotMap::gyro->GetYaw());
+		RobotMap::gyro->Instrument();
 		driveBase->Instrument();
 		visionSystem->Instrument();
 		turret->Instrument();

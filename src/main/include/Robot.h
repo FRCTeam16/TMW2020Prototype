@@ -54,5 +54,5 @@ private:
   bool runInstrumentation = false;  // whether to run subsystem instrumentation
 
   // Operator input flags
-  bool preloadPressed = false;
+  bool preloadPressed = false;    // prevent multiple ball queue commands
 };

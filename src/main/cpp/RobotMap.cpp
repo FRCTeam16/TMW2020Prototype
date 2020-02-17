@@ -1,11 +1,5 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #include "RobotMap.h"
+#include "Gyro/PigeonBSGyro.h"
 
   shared_ptr<rev::CANSparkMax> RobotMap::driveBaseFrontLeftDrive;
   shared_ptr<WPI_TalonSRX> RobotMap::driveBaseFrontLeftSteer;
@@ -24,12 +18,12 @@
   shared_ptr<rev::CANSparkMax> RobotMap::shooterMotorFollower;
   shared_ptr<rev::CANSparkMax> RobotMap::feederMotor;
 
-  shared_ptr<WPI_TalonSRX> RobotMap::gyroTalon;
+  shared_ptr<WPI_TalonSRX> RobotMap::intakeMotor;
   std::shared_ptr<BSGyro> RobotMap::gyro;
   
-  std::shared_ptr<Compressor> RobotMap::compressor;
-  std::shared_ptr<Solenoid> RobotMap::climberArms;
-  std::shared_ptr<Solenoid> RobotMap::lidTop;
+  std::shared_ptr<frc::Compressor> RobotMap::compressor;
+  std::shared_ptr<frc::Solenoid> RobotMap::climberArms;
+  std::shared_ptr<frc::Solenoid> RobotMap::lidTop;
 
 
 RobotMap::RobotMap() {
@@ -51,11 +45,12 @@ RobotMap::RobotMap() {
   armMotor.reset(new WPI_TalonFX{13});
   armMotorFollower.reset(new WPI_TalonFX{12});
 
-  gyroTalon.reset(new WPI_TalonSRX{10});
-  gyro.reset(new BSGyro(gyroTalon.get())); 
+  intakeMotor.reset(new WPI_TalonSRX{10});
+  auto concreteGyro = std::unique_ptr<PigeonBSGyro>(new PigeonBSGyro(intakeMotor.get()));
+  gyro = std::move(concreteGyro); 
 
-  compressor.reset(new Compressor{0});
+  compressor.reset(new frc::Compressor{0});
   compressor->SetClosedLoopControl(true);
-  climberArms.reset(new Solenoid{4});
-  lidTop.reset(new Solenoid{2});
+  climberArms.reset(new frc::Solenoid{4});
+  lidTop.reset(new frc::Solenoid{2});
 }
