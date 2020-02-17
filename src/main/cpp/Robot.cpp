@@ -114,13 +114,13 @@ void Robot::TeleopPeriodic() {
 	if (gamepadLTPressed) {
 		// std::cout << "Turret => Turning Left\n";
 		turretSpeed = oi->GetGamepadLT();
-		turret->SetTurretSpeed(turretSpeed);
+		turret->SetOpenLoopTurretSpeed(turretSpeed);
 	} else if (gamepadRTPressed) {
 		// std::cout << "Turret => Turning Right\n";
 		turretSpeed = oi->GetGamepadRT();
-		turret->SetTurretSpeed(-turretSpeed);
+		turret->SetOpenLoopTurretSpeed(-turretSpeed);
 	} else {
-		turret->HaltManualTurret();
+		turret->OpenLoopHaltTurret();
 	}
 
 	/**********************************************************

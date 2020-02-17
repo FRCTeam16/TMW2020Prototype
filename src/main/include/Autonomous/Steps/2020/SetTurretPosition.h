@@ -15,7 +15,7 @@ public:
         if (startTime < 0_s) {
             std::cout << "SetTurretPosition(" << setpoint << ")\n";
             startTime = now;
-            Robot::turret->SetTurretPositionControl(true);  // FIXME: why no turret move
+            Robot::turret->EnableTurretPositionControl(true);  // FIXME: why no turret move
             Robot::turret->SetTurretSetpoint(setpoint);
         }
         auto elapsed = now - startTime;

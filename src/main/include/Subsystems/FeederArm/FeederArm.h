@@ -13,54 +13,22 @@ public:
     explicit FeederArm();
 
     void Init() override;
-
     void InitTeleop();
-
     void InitAuto();
-
     void Run() override;
-
     void Instrument() override;
 
-    void StartIntake(bool reverse = false){
-        intakeEnabled = true;
-        intakeReversed = reverse; 
-    } 
+    void RunArm(double speed);
+    void RunArmControlled();    // FIXME: Temp for testing
+    void DebugSetPoint(double _setpoint);
+    void ZeroArmPosition();
 
-    void StopIntake(){
-        intakeEnabled = false;
-    }
+    void StartIntake(bool reverse = false);
+    void StopIntake();
 
-    void RunArm(double speed){
-        runArmControlled = false;
-        armSpeed = speed;
-    }
+    void ExtendClimberArms();
+    void RetractClimberArms();
 
-    // TODO: Temp for testing
-    void RunArmControlled() {
-        runArmControlled = true;
-    }
-
-    void ZeroArmPosition() {
-        armMotor->SetSelectedSensorPosition(0, 0, 50);
-    }
-
-    void ExtendClimberArms() {
-        climberMessageSent = false;
-        climberExtended = true;
-    }
-
-    void RetractClimberArms() {
-        climberMessageSent = false;
-        climberExtended = false;
-    }
-
-    void DebugSetPoint(double _setpoint) {
-        std::cout << "**** FeederARm::DebugSetPoint: " << _setpoint << "\n";
-        runArmControlled = true;
-        armSetpoint = _setpoint;
-        frc::SmartDashboard::PutNumber("Arm.Setpoint", armSetpoint);
-    }
 
 private : 
     std::shared_ptr<WPI_TalonSRX>  intakeMotor = RobotMap::gyroTalon; 
@@ -76,7 +44,6 @@ private :
 
     bool runArmControlled = false;
     double armSpeed = 0.0;
-
     PIDConfig armPIDConfig;
     double armSetpoint = 0.0;
 

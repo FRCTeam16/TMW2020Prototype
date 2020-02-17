@@ -17,97 +17,31 @@ public:
     explicit Turret(std::shared_ptr<VisionSystem> visionSystem);
 
     void Init() override;
-
     void Run() override;
-
 	void Instrument() override;
 
-    void SetTurretSpeed(double _speed) {
-        openLoopMessage = true;
-        turretSpeed = _speed;
-    }
+    void SetOpenLoopTurretSpeed(double _speed);
+    void OpenLoopHaltTurret();
+    void SetTurretSetpoint(double setpoint);
+    bool IsTurretInPosition();
+    void EnableTurretPositionControl(bool control);     // FIXME: Need better state management
 
-    void HaltManualTurret() {
-        if (turretSpeed != 0.0) {
-            openLoopMessage = true;
-        }
-        turretSpeed = 0.0;
-    }
+    void EnableVisionTracking();
+    void DisableVisionTracking();
+    void ToggleVisionTracking();
+    bool IsVisionTracking();
 
-    void EnableVisionTracking() {
-        visionTrackingEnabled = true;
-        turretPositionControl = false;  
-    }
+    void SetShooterEnabled(bool _enabled);
+    void ToggleShooterEnabled();
 
-    void DisableVisionTracking() {
-        visionTrackingEnabled = false;
-    }
+    void StartFeeder(bool reverse = false);
+    void StopFeeder();
+    void PreloadBall();
 
-    void ToggleVisionTracking() {
-        if (visionTrackingEnabled) {
-            // turn off
-            visionSystem->DisableVisionTracking();
-            this->DisableVisionTracking();
-        } else {
-            // turn on
-            visionSystem->EnableVisionTracking();
-            this->EnableVisionTracking();
-        }
-    }
+    void SetLidToLongShot();
+    void SetLidToShortShot();
 
-    bool IsVisionTracking() {
-        return visionTrackingEnabled;
-    }
-
-    void SetShooterEnabled(bool _enabled) {
-        shooterEnabled = _enabled;
-    }
-
-    void ToggleShooterEnabled() {
-        shooterEnabled = !shooterEnabled;
-    }
-
-    void StartFeeder(bool reverse = false){
-        feederEnabled = true;
-        feederReversed = reverse;
-    }
-
-    void StopFeeder(){
-        feederEnabled = false;
-    }
-
-    void PreloadBall(){
-        if (!preloadFeederRunning) {
-            preloadFeederRunning = true;
-            preloadFeederStarted = frc::Timer::GetFPGATimestamp();
-
-        }
-    }
-
-    void SetLidToLongShot() {
-        lidTopShort = false;
-        lidTopMessageSent = false;
-    }
-
-    void SetLidToShortShot() {
-        lidTopShort = true;
-        lidTopMessageSent = false;
-    }
-
-    void SetTurretSetpoint(double setpoint) {
-        std::cout << "*************** TURRET::SetTurretSetpoint(" << setpoint << ")\n";
-        turretSetpoint = setpoint;
-        frc::SmartDashboard::PutNumber("Turret.Setpoint", turretSetpoint);
-    }
-
-    bool IsTurretInPosition() {
-        double error = fabs(turretSetpoint - turretMotor->GetEncoder().GetPosition());
-        return (error < 1);
-    }
-
-    void SetTurretPositionControl(bool control) {
-        turretPositionControl = control;
-    }
+    
 
 private:
     std::shared_ptr<rev::CANSparkMax> turretMotor = RobotMap::turretMotor;

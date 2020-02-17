@@ -11,18 +11,14 @@ FeederArm::FeederArm()
     this->ZeroArmPosition();
 
     armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 0);
-    // armMotor->ConfigForwardSoftLimitThreshold(130000);
-    // armMotor->ConfigReverseSoftLimitThreshold(5000);
     armMotor->ConfigForwardSoftLimitThreshold(-5000);
     armMotor->ConfigReverseSoftLimitThreshold(-130000);
     armMotor->ConfigForwardSoftLimitEnable(true);
     armMotor->ConfigReverseSoftLimitEnable(true);
-    // armMotor->ConfigPeakOutputForward(0.5);
-    // armMotor->ConfigPeakOutputReverse(-0.5);
 
+    // FIXME: Is this still eneded
     armMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
     armMotorFollower->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
-    
 
     armPIDConfig.kP = 0.01999998;
     armPIDConfig.kI = 0.000001;
@@ -38,14 +34,13 @@ FeederArm::FeederArm()
 
     frc::SmartDashboard::SetDefaultNumber("Arm.V", kVelocity);
     frc::SmartDashboard::SetDefaultNumber("Arm.A", kAcceleration);
-
 }
 
 void FeederArm::Init()
 {
     this->RetractClimberArms();
     armSetpoint = 0.0;
-    runArmControlled = false;   // FIXME: Determine if we want to start controlled or not
+    runArmControlled = false; // FIXME: Determine if we want to start controlled or not
 }
 
 void FeederArm::InitTeleop()
@@ -63,21 +58,23 @@ void FeederArm::InitAuto()
 void FeederArm::Run()
 {
     //-----------------------
-    // Climber 
+    // Climber
     //-----------------------
-    if (!climberMessageSent) {
+    if (!climberMessageSent)
+    {
         climberArms->Set(climberExtended);
         climberMessageSent = true;
     }
-    
 
     //-----------------------
-    // Intake 
+    // Intake
     //-----------------------
     double intakeSpeed = 0.0;
-    if (intakeEnabled) {
+    if (intakeEnabled)
+    {
         intakeSpeed = frc::SmartDashboard::GetNumber("IntakeSpeed", 1.0);
-        if (intakeReversed) {
+        if (intakeReversed)
+        {
             intakeSpeed = -intakeSpeed;
         }
     }
@@ -86,9 +83,12 @@ void FeederArm::Run()
     //-----------------------
     // Feeder Arm
     //-----------------------
-    if (!runArmControlled) {
+    if (!runArmControlled)
+    {
         armMotor->Set(ControlMode::PercentOutput, armSpeed);
-    } else {
+    }
+    else
+    {
         // run magic motion
         // see https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/C%2B%2B/MotionMagic/src/main/cpp/Robot.cpp
         armPIDConfig.kP = frc::SmartDashboard::GetNumber("Arm.P", 0.0);
@@ -112,6 +112,63 @@ void FeederArm::Run()
     frc::SmartDashboard::PutNumber("Arm.Position", armMotor->GetSelectedSensorPosition());
     frc::SmartDashboard::PutNumber("Arm.Speed", armSpeed);
 }
+
+/*****************************************************************************/
+
+void FeederArm::RunArm(double speed)
+{
+    runArmControlled = false;
+    armSpeed = speed;
+}
+
+void FeederArm::RunArmControlled()
+{
+    runArmControlled = true;
+}
+
+void FeederArm::DebugSetPoint(double _setpoint)
+{
+    std::cout << "**** FeederARm::DebugSetPoint: " << _setpoint << "\n";
+    runArmControlled = true;
+    armSetpoint = _setpoint;
+    frc::SmartDashboard::PutNumber("Arm.Setpoint", armSetpoint);
+}
+
+void FeederArm::ZeroArmPosition()
+{
+    armMotor->SetSelectedSensorPosition(0, 0, 50);
+}
+
+/*****************************************************************************/
+
+void FeederArm::StartIntake(bool reverse)
+{
+    intakeEnabled = true;
+    intakeReversed = reverse;
+}
+
+void FeederArm::StopIntake()
+{
+    intakeEnabled = false;
+}
+
+/*****************************************************************************/
+
+void FeederArm::ExtendClimberArms()
+{
+    climberMessageSent = false;
+    climberExtended = true;
+}
+
+void FeederArm::RetractClimberArms()
+{
+    climberMessageSent = false;
+    climberExtended = false;
+}
+
+/*****************************************************************************/
+
+/*****************************************************************************/
 
 void FeederArm::Instrument()
 {
