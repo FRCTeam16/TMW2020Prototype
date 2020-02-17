@@ -81,6 +81,10 @@ private:
 	double CorrectSteerSetpoint(double setpoint);
 	void SetDriveSpeed(DriveInfo<double> speed);
 
+	// Ackerman support
+	void LeftTurn4Wheels();
+	void RightTurn4Wheels();
+
 	double lastSpeedX = 0.0;	// last speed used for DMS
 	double lastSpeedY = 0.0;
 
@@ -100,6 +104,9 @@ public:
 
 	void Lock();
 	void Crab(double twist, double y, double x, bool useGyro);
+	
+	// Ackerman Steering
+	void Steer(float radian, float speed, float a);
 
 	void SetTargetAngle(double angle);
 	double GetTwistControlOutput();

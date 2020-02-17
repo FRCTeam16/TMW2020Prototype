@@ -510,4 +510,115 @@ DriveInfo<int> DriveBase::GetDMSSteerVelocity() {
 	return info;
 }
 
+void DriveBase::Steer(float radian, float speed, float a) {
+	std::cout << "Radian:" << radian << "|| Speed:" << speed << std::endl;
+
+	A=a;
+
+	thetaRC = M_PI - radian;  //convert steering angle to rear center wheel angle
+	DriveInfo<double> steerRatio;
+
+	if(thetaRC != M_PI / 2)	//If we are not driving straight forward...
+	{
+		if(thetaRC < M_PI / 2)	//Right Turn
+		{
+			RightTurn4Wheels();
+		}
+		else if(thetaRC > M_PI / 2)	//Left Turn
+		{
+			LeftTurn4Wheels();
+		}
+	}
+	else	//thetaRC = M_PI / 2
+	{
+		theta.FL = M_PI / 2;
+		theta.FR = M_PI / 2;
+		theta.RL = M_PI / 2;
+		theta.RR = M_PI / 2;
+
+		steerRatio.FL = 1;
+		steerRatio.FR = 1;
+		steerRatio.RL = 1;
+		steerRatio.RR = 1;
+	}
+	//Solve for fastest wheel speed
+	double speedarray[] = {fabs(steerSpeed.FL), fabs(steerSpeed.FR), fabs(steerSpeed.RL), fabs(steerSpeed.RR)};
+
+	 int length = 4;
+     double maxspeed = speedarray[0];
+     for(int i = 1; i < length; i++)
+     {
+          if(speedarray[i] > maxspeed)
+                maxspeed = speedarray[i];
+     }
+
+	//Set ratios based on maximum wheel speed
+	steerRatio.FL = steerSpeed.FL/maxspeed;
+	steerRatio.FR = steerSpeed.FR/maxspeed;
+	steerRatio.RL = steerSpeed.RL/maxspeed;
+	steerRatio.RR = steerSpeed.RR/maxspeed;
+
+	//Set drive speeds
+	steerRatio.FL = -steerRatio.FL * speed;
+	steerRatio.FR = steerRatio.FR * speed;
+	steerRatio.RL = -steerRatio.RL * speed;
+	steerRatio.RR = steerRatio.RR * speed;
+	SetDriveSpeed(steerRatio);
+
+	//Set Steering PID Setpoints
+	DriveInfo<double> setPoint;
+	setPoint.FL = (1.25 + 2.5/M_PI*theta.FL);
+	setPoint.FR = (1.25 + 2.5/M_PI*theta.FR);
+	setPoint.RL = (1.25 + 2.5/M_PI*theta.RL);
+	setPoint.RR = (1.25 + 2.5/M_PI*theta.RR);
+
+	SetSteering(setPoint);
+}
+
+void DriveBase::LeftTurn4Wheels()
+{
+	const double Z = ((A * wheelbase.X) * tan(M_PI - thetaRC));				//find turning radius
+
+	//calculate angles based on turning radius
+	theta.RL = M_PI - atan((Z - wheelbase.W) / (A * wheelbase.X));
+	theta.RR = M_PI - atan((Z + wheelbase.W) / (A * wheelbase.X));
+	theta.FR = M_PI / 2;
+	theta.FL = M_PI / 2;
+
+	if(A != 1) //not turning about front wheels
+	{
+		theta.FL = atan((Z - wheelbase.Y) / ((1 - A) * wheelbase.X));	//These are identical for right and left turns
+		theta.FR = atan((Z + wheelbase.Y) / ((1 - A) * wheelbase.X));	//These are identical for right and left turns
+	}
+	//Solve each wheel turning radii (wheel speed)
+	steerSpeed.FL = (Z - wheelbase.Y) / sin(theta.FL);
+	steerSpeed.FR = (Z + wheelbase.Y) / sin(theta.FR);
+	steerSpeed.RL = (Z - wheelbase.W) / sin(M_PI - theta.RL);
+	steerSpeed.RR = (Z + wheelbase.W) / sin(M_PI - theta.RR);
+}
+
+void DriveBase::RightTurn4Wheels()
+{
+	const double Z = ((A * wheelbase.X) * tan(thetaRC));				//find turning radius
+
+	//calculate angles based on turning radius
+	theta.RL = atan((Z + wheelbase.W) / (A * wheelbase.X));
+	theta.RR = atan((Z - wheelbase.W) / (A * wheelbase.X));
+	theta.FR = M_PI / 2;
+	theta.FL = M_PI / 2;
+
+
+	if(A != 1)  //not turning about front wheels
+	{
+		theta.FR = M_PI - atan((Z - wheelbase.Y) / ((1 - A) * wheelbase.X));	//These are identical for right and left turns
+		theta.FL = M_PI - atan((Z + wheelbase.Y) / ((1 - A) * wheelbase.X));	//These are identical for right and left turns
+	}
+
+	//Solve each wheel turning radii (wheel speed)
+	steerSpeed.FL = (Z + wheelbase.Y) / sin(M_PI - theta.FL);
+	steerSpeed.FR = (Z - wheelbase.Y) / sin(M_PI - theta.FR);
+	steerSpeed.RL = (Z + wheelbase.W) / sin(theta.RL);
+	steerSpeed.RR = (Z - wheelbase.W) / sin(theta.RR);
+}
+
 
