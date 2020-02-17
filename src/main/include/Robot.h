@@ -16,6 +16,11 @@
 #include "Autonomous/AutoManager.h"
 #include "Subsystems/FeederArm/FeederArm.h"
 
+#include "Poses/ShortShotPose.h"
+#include "Poses/LongShotPose.h"
+
+#include <frc/DigitalInput.h>
+
 
 class Robot : public frc::TimedRobot {
  public:
@@ -37,8 +42,8 @@ class Robot : public frc::TimedRobot {
   static std::shared_ptr<DriveBase> driveBase;
   static std::unique_ptr<OI> oi;
   static std::shared_ptr<VisionSystem> visionSystem;
-  static std::unique_ptr<Turret> turret;
-  static std::unique_ptr<FeederArm> feederArm;
+  static std::shared_ptr<Turret> turret;
+  static std::shared_ptr<FeederArm> feederArm;
 
 private:
   void InitSubsystems();
@@ -55,4 +60,9 @@ private:
 
   // Operator input flags
   bool preloadPressed = false;    // prevent multiple ball queue commands
+  std::unique_ptr<ShortShotPose> shortShotPose;
+  std::unique_ptr<LongShotPose> longShotPose;
+  frc::DigitalInput toggleArmBreakModeButton{0};
+  bool toggleArmBreakModeButtonPressed = false;
+  
 };

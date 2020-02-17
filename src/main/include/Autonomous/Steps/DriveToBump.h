@@ -1,11 +1,8 @@
-#ifndef SRC_AUTONOMOUS_STEPS_DRIVETOBUMP_H_
-#define SRC_AUTONOMOUS_STEPS_DRIVETOBUMP_H_
+#pragma once
 
 #include "Autonomous/Step.h"
-#include "Autonomous/World.h"
-#include "Util/CollisionDetector.h"
 #include "RobotMap.h"
-
+#include "Gyro/CollisionDetector.h"
 
 class DriveToBump : public Step {
 public:
@@ -16,7 +13,7 @@ public:
 		xSpeed(_xSpeed),
 		maxTimeToDrive(_maxDriveTime),
 		delayCheckTime(_delayCheckTime),
-		collisionDetector(new CollisionDetector(RobotMap::gyro, _gThreshold)) {}
+		collisionDetector(RobotMap::gyro->GetCollisionDetector(_gThreshold)) {}
 
 	virtual ~DriveToBump() {}
 	bool Run(std::shared_ptr<World> world) override;
@@ -36,5 +33,3 @@ private:
 
      double rampTime = -1;
 };
-
-#endif /* SRC_AUTONOMOUS_STEPS_DRIVETOBUMP_H_ */

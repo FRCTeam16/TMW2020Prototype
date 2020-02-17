@@ -10,8 +10,8 @@
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<DriveBase> Robot::driveBase;
 std::shared_ptr<VisionSystem> Robot::visionSystem;
-std::unique_ptr<Turret> Robot::turret;
-std::unique_ptr<FeederArm> Robot::feederArm;
+std::shared_ptr<Turret> Robot::turret;
+std::shared_ptr<FeederArm> Robot::feederArm;
 
 
 void Robot::RobotInit() {
@@ -35,6 +35,9 @@ void Robot::RobotInit() {
 	autoManager.reset(new AutoManager());
 	RobotMap::gyro->ZeroYaw();
 
+	shortShotPose.reset(new ShortShotPose(turret, feederArm));
+	longShotPose.reset(new LongShotPose(turret, feederArm));
+
 	std::cout << "Robot::TeleopInit <=\n";
 }
 
@@ -46,6 +49,13 @@ void Robot::DisabledPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
 	InstrumentSubsystems();
 	HandleGlobalInputs();
+
+	if (!toggleArmBreakModeButtonPressed && toggleArmBreakModeButton.Get()) {
+		toggleArmBreakModeButtonPressed = true;
+		feederArm->ToggleArmBreakMode();
+	} else {
+		toggleArmBreakModeButtonPressed = false;
+	}
 }
 
 void Robot::AutonomousInit() {

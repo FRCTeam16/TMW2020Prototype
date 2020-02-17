@@ -109,7 +109,7 @@ bool ClosedLoopDrive2::Run(std::shared_ptr<World> world) {
 		std::cerr << "**** EMERGENCY EXIT OF STEP DUE TO TIMEOUT ***\n";
 		crab->Stop();
 		return hardStopsContinueFromStep;
-	} else if (elapsedTimeSecs > 1.0 &&  collisionDetector.Detect()) {
+	} else if (elapsedTimeSecs > 1.0 &&  collisionDetector->Detect()) {
 		std::cerr << "**** EMERGENCY HALT DUE TO COLLISION ****\n";
 		crab->Stop();
 		return hardStopsContinueFromStep;

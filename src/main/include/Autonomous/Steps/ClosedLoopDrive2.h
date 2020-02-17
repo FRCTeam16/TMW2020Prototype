@@ -4,7 +4,7 @@
 
 #include "Autonomous/Step.h"
 #include "Autonomous/DriveUnit.h"
-#include "Util/CollisionDetector.h"
+#include "Gyro/CollisionDetector.h"
 #include "Util/DistanceControl.h"
 #include "RobotMap.h"
 
@@ -23,7 +23,7 @@ public:
 		timeoutCommand(_timeout),
 		rampUp(_rampUp),
 		rampDown(_rampDown),
-		collisionDetector(CollisionDetector(RobotMap::gyro, 2.0))
+		collisionDetector(RobotMap::gyro->GetCollisionDetector(2.0))
 	{
 	}
 
@@ -60,7 +60,7 @@ private:
 	double rampUpMin = 0.10;	// ramp up min speed
 	double rampDownMin = 0.10;	// ramp down min speed
 
-	CollisionDetector collisionDetector;
+	std::unique_ptr<CollisionDetector> collisionDetector;
 	const bool reverse = false;
 	const bool useGyro = true;
 	const int thresholdCounterTarget = 1;

@@ -53,7 +53,7 @@ void Turret::Init()
 
 void Turret::Run()
 {
-    const double now = Timer::GetFPGATimestamp();
+    const double now = frc::Timer::GetFPGATimestamp();
     auto visionInfo = visionSystem->GetLastVisionInfo();
 
     //-------------------
@@ -91,7 +91,7 @@ void Turret::Run()
         {
             if (visionTargetAcquiredTime < 0)
             {
-                visionTargetAcquiredTime = Timer::GetFPGATimestamp();
+                visionTargetAcquiredTime = frc::Timer::GetFPGATimestamp();
             }
             speed = -visionInfo->xSpeed;
         }

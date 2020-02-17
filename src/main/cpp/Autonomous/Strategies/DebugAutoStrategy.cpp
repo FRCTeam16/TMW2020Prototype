@@ -37,7 +37,7 @@ DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 
 void DebugAutoStrategy::Init(std::shared_ptr<World> world) {
 	std::cout << "DebugAutoStrategy::Init()\n";
-	AutoStartPosition startPosition = world->GetStartPosition();
+	// AutoStartPosition startPosition = world->GetStartPosition();
 }
 
 void DebugAutoStrategy::DebugSimple() {

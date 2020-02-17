@@ -16,7 +16,7 @@ FeederArm::FeederArm()
     armMotor->ConfigForwardSoftLimitEnable(true);
     armMotor->ConfigReverseSoftLimitEnable(true);
 
-    // FIXME: Is this still eneded
+    armNeutralBrake = true;
     armMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
     armMotorFollower->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
@@ -137,6 +137,21 @@ void FeederArm::DebugSetPoint(double _setpoint)
 void FeederArm::ZeroArmPosition()
 {
     armMotor->SetSelectedSensorPosition(0, 0, 50);
+}
+
+void FeederArm::ToggleArmBreakMode() {
+    ctre::phoenix::motorcontrol::NeutralMode neutralMode;
+    if (armNeutralBrake) {
+        std::cout << "FeederArm::ToggleArmBreakMode() -> setting to coast\n";
+        neutralMode = ctre::phoenix::motorcontrol::NeutralMode::Coast;
+    } else {
+        std::cout << "FeederArm::ToggleArmBreakMode() -> setting to brake\n";
+        neutralMode = ctre::phoenix::motorcontrol::NeutralMode::Brake;
+    }
+
+    armNeutralBrake = !armNeutralBrake;
+    armMotor->SetNeutralMode(neutralMode);
+    armMotorFollower->SetNeutralMode(neutralMode);
 }
 
 /*****************************************************************************/

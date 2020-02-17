@@ -59,19 +59,23 @@ void TelemetryLogger::End() {
 }
 
 void TelemetryLogger::Log() {
-	PigeonIMU *imu = RobotMap::gyro->GetPigeon();
-	double ypr[3];
-	short int xyz[3];
-	imu->GetBiasedAccelerometer(xyz);
-	imu->GetYawPitchRoll(ypr);
+	double ypr[3] = {0,0,0};
+	short int xyz[3] = {0,0,0};
+	double fusedHeading = 0; // = imu->GetFusedHeading();
+	double compassHeading = 0; // = imu->GetCompassHeading()
+
+	// FIXME: Update with alternate IMU if desired
+	// PigeonIMU *imu = RobotMap::gyro->GetPigeon();
+	// imu->GetBiasedAccelerometer(xyz);
+	// imu->GetYawPitchRoll(ypr);
 
 	DriveInfo<double> encoders = Robot::driveBase->GetDriveEncoderPositions();
 
 	const char delimiter = ',';
 	logFile << Timer::GetFPGATimestamp() << delimiter
 			<< ypr[0] << delimiter
-			<< imu->GetFusedHeading() << delimiter
-			<< imu->GetCompassHeading() << delimiter
+			<< fusedHeading << delimiter
+			<< compassHeading << delimiter
 			<< ypr[1] << delimiter
 			<< ypr[2] << delimiter
 			<< xyz[0] << delimiter
