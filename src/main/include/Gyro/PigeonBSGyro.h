@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Gyro/BSGyro.h"
 #include "Gyro/PigeonCollisionDetector.h"
 #include <ctre/Phoenix.h>
