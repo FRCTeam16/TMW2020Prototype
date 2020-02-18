@@ -3,8 +3,11 @@
 #include <iostream>
 
 #include <frc/TimedRobot.h>
+#include <frc/DigitalInput.h>
+
 #include "ctre/Phoenix.h"
 #include "rev/CANSparkMax.h"
+
 #include "RobotMap.h"
 #include "Subsystems/Drive/DriveBase.h"
 #include "OI.h"
@@ -15,11 +18,8 @@
 #include "Autonomous/World.h"
 #include "Autonomous/AutoManager.h"
 #include "Subsystems/FeederArm/FeederArm.h"
+#include "Poses/ShotPoses.h"
 
-#include "Poses/ShortShotPose.h"
-#include "Poses/LongShotPose.h"
-
-#include <frc/DigitalInput.h>
 
 
 class Robot : public frc::TimedRobot {
