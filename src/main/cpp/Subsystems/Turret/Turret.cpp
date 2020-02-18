@@ -26,6 +26,9 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("#1 Max Output", shooterPIDConfig.kMaxOutput);
     frc::SmartDashboard::PutNumber("#1 Min Output", shooterPIDConfig.kMinOutput);
 
+    //-------------------------------
+    // Shooter PID Dashboard Controls
+    //-------------------------------
     frc::SmartDashboard::PutNumber("Turret.Setpoint", turretMotor->GetEncoder().GetPosition());
     frc::SmartDashboard::PutNumber("Turret.PID.P", 2.0);
     frc::SmartDashboard::PutNumber("Turret.PID.I", 0);
@@ -35,11 +38,17 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
 
     frc::SmartDashboard::PutNumber("SetPoint1", 0);
 
-    // Feeder Control
-    frc::SmartDashboard::SetDefaultNumber("FeederSpeed", -1.0);
-    frc::SmartDashboard::PutNumber("Feeder.Speed.Out", 0.0);
+    //---------------------------------
+    // Feeder PID Controls and Settings
+    //---------------------------------
     frc::SmartDashboard::PutNumber("Feeder.Preload.Time", 0.4);
     frc::SmartDashboard::PutNumber("Feeder.Preload.Speed", -0.2);
+
+    frc::SmartDashboard::SetDefaultNumber("Feeder.RPM", 0.0);
+    frc::SmartDashboard::PutNumber("Feeder.PID.P", 1.0);
+    frc::SmartDashboard::PutNumber("Feeder.PID.I", 0.0);
+    frc::SmartDashboard::PutNumber("Feeder.PID.D", 0.0);
+    
 }
 
 void Turret::Init()
@@ -102,12 +111,13 @@ void Turret::Run()
         turretMotor->Set(speed);
     }
 
+
     //----------------
     // Feeder Control
     //----------------
-    double feederSpeed = 0.0;
     if (preloadFeederRunning)
     {
+        double feederSpeed = 0.0;
         const double MAX_ELAPSED = frc::SmartDashboard::GetNumber("Feeder.Preload.Time", 0.4);
         const double PRELOAD_SPEED = frc::SmartDashboard::GetNumber("Feeder.Preload.Speed", -0.2);
         if ((now - preloadFeederStarted) < MAX_ELAPSED)
@@ -119,25 +129,29 @@ void Turret::Run()
         {
             std::cout << "~~ Preload Stopped ~~\n";
             preloadFeederRunning = false;
+            feederSpeed = 0.0;
         }
+        feederMotor->Set(feederSpeed);
     }
     else if (feederEnabled)
     {
+        UpdateFeederPID();
         if (shooterMotor->GetEncoder().GetVelocity() > kMinRPMToShoot)
         {
-            feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -.70);
+            double feederRPM = frc::SmartDashboard::GetNumber("Feeder.RPM", 0.0);
             if (feederReversed)
             {
-                feederSpeed = -feederSpeed;
+                feederRPM = -feederRPM;
             }
+            feederMotor->GetPIDController().SetReference(feederRPM, rev::ControlType::kPosition);
         }
         else
         {
             std::cout << "!!! SHOOTER NOT ENABLED, IGNORING REQUEST TO FIRE FEEDER !!!\n";
+            feederMotor->Set(0.0);
         }
     }
-    feederMotor->Set(feederSpeed);
-    frc::SmartDashboard::PutNumber("Feeder.Speed.Out", feederSpeed);
+
 
     //----------------
     // Shooter Control
@@ -305,6 +319,18 @@ void Turret::UpdateTurretPID()
     turretPID.SetP(p);
     turretPID.SetI(i);
     turretPID.SetD(d);
+}
+
+void Turret::UpdateFeederPID()
+{
+    double p = frc::SmartDashboard::GetNumber("Feeder.PID.P", 0.0);
+    double i = frc::SmartDashboard::GetNumber("Feeder.PID.I", 0.0);
+    double d = frc::SmartDashboard::GetNumber("Feeder.PID.D", 0.0);
+
+    auto feederPID = feederMotor->GetPIDController();
+    feederPID.SetP(p);
+    feederPID.SetI(i);
+    feederPID.SetD(d);
 }
 
 void Turret::UpdateShooterPID()
