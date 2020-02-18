@@ -11,29 +11,17 @@
 #include <frc/Timer.h>
 #include <frc/Solenoid.h>
 
+#include "Subsystems/Turret/TurretRotation.h"
 
 class Turret : public SubsystemManager {
 public:
-
-    enum Position { kLeft, kFront, kRight, kBack };
-
     explicit Turret(std::shared_ptr<VisionSystem> visionSystem);
 
     void Init() override;
     void Run() override;
 	void Instrument() override;
 
-    void SetOpenLoopTurretSpeed(double _speed);
-    void OpenLoopHaltTurret();
-    void SetTurretSetpoint(double setpoint);
-    bool IsTurretInPosition();
-    void EnableTurretPositionControl(bool control);     // FIXME: Need better state management
-    void SetTurretPosition(Position position);
-
-    void EnableVisionTracking();
-    void DisableVisionTracking();
-    void ToggleVisionTracking();
-    bool IsVisionTracking();
+    TurretRotation& GetTurretRotation();    // bad practice
 
     void SetShooterEnabled(bool _enabled);
     void ToggleShooterEnabled();
@@ -48,27 +36,16 @@ public:
     
 
 private:
-    std::shared_ptr<rev::CANSparkMax> turretMotor = RobotMap::turretMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotor = RobotMap::shooterMotor;
     std::shared_ptr<rev::CANSparkMax> shooterMotorFollower = RobotMap::shooterMotorFollower;
     std::shared_ptr<rev::CANSparkMax> feederMotor = RobotMap::feederMotor;
     std::shared_ptr<frc::Solenoid> lidTop = RobotMap::lidTop;
     std::shared_ptr<VisionSystem> visionSystem;
+    TurretRotation turretRotation;
 
-    bool openLoopMessage = false;
-    bool visionTrackingEnabled = false;
-
-    double turretStartPosition = 0.0;
-    double turretSetpoint = 0.0;
-    double turretBackPosition = 0.0;
-    double turretFrontPosition = 0.0;
-    double turretSpeed = 0.0;
-    bool turretPositionControl = false;
 
     PIDConfig shooterPIDConfig;
     bool shooterEnabled = false;
-    double visionTargetAcquiredTime = -1.0;
-    const double kVisionTargetAcquiredMinWait = 0.5;
 
     bool feederEnabled = false;
     bool feederReversed = false;

@@ -15,11 +15,10 @@ public:
         if (startTime < 0_s) {
             std::cout << "SetTurretPosition(" << setpoint << ")\n";
             startTime = now;
-            Robot::turret->EnableTurretPositionControl(true);  // FIXME: why no turret move
-            Robot::turret->SetTurretSetpoint(setpoint);
+            Robot::turret->GetTurretRotation().SetTurretSetpoint(setpoint);
         }
         auto elapsed = now - startTime;
-        return ((elapsed > timeout) || Robot::turret->IsTurretInPosition());
+        return ((elapsed > timeout) || Robot::turret->GetTurretRotation().IsTurretInPosition());
     }
 private:
     units::second_t startTime = -1_s;

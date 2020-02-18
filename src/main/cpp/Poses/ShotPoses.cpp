@@ -3,7 +3,7 @@
 void ShortShotPose::Run(bool startShooter) {
     turret->SetLidToShortShot();
     turret->SetShooterEnabled(startShooter);
-    turret->SetTurretPosition(Turret::Position::kFront);
+    turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kFront);
     if (!startShooter) {
         feederArm->DebugSetPoint(0);
     }
@@ -12,6 +12,6 @@ void ShortShotPose::Run(bool startShooter) {
 
 void LongShotPose::Run(bool startShooter) {
     turret->SetLidToLongShot();
-    turret->SetTurretPosition(Turret::Position::kBack);
+    turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kBack);
     feederArm->DebugSetPoint(0);
 }

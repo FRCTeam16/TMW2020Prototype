@@ -109,7 +109,7 @@ void Robot::TeleopPeriodic() {
 	 * Vision
 	**********************************************************/
 	if (oi->DR3->RisingEdge()) {
-		turret->ToggleVisionTracking();
+		turret->GetTurretRotation().ToggleVisionTracking();
 	} 
 	HandleGlobalInputs();
 
@@ -128,13 +128,13 @@ void Robot::TeleopPeriodic() {
 	if (gamepadLTPressed) {
 		// std::cout << "Turret => Turning Left\n";
 		turretSpeed = oi->GetGamepadLT();
-		turret->SetOpenLoopTurretSpeed(turretSpeed);
+		turret->GetTurretRotation().SetOpenLoopTurretSpeed(turretSpeed);
 	} else if (gamepadRTPressed) {
 		// std::cout << "Turret => Turning Right\n";
 		turretSpeed = oi->GetGamepadRT();
-		turret->SetOpenLoopTurretSpeed(-turretSpeed);
+		turret->GetTurretRotation().SetOpenLoopTurretSpeed(-turretSpeed);
 	} else {
-		turret->OpenLoopHaltTurret();
+		turret->GetTurretRotation().OpenLoopHaltTurret();
 	}
 
 	// Must be below open loop turret

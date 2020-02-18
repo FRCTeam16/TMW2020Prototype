@@ -13,9 +13,9 @@ public:
         std::cout << "EnableVisionTracking(" << enable << ")\n";
         Robot::turret->SetShooterEnabled(enable);
         if (enable) {
-            Robot::turret->EnableVisionTracking();
+            Robot::turret->GetTurretRotation().EnableVisionTracking();
         } else {
-            Robot::turret->DisableVisionTracking();
+            Robot::turret->GetTurretRotation().DisableVisionTracking();
         }
         return true;
     }
