@@ -86,11 +86,12 @@ void StatusReporter::SendData() {
 	data[6]  = (char) (dmsMode) ? steerStatus.RL : 0;
 	data[7]  = (char) (dmsMode) ? driveStatus.RR : 0;
 	data[8]  = (char) (dmsMode) ? steerStatus.RR : 0;
-	// data[9]  = (char) Robot::intake->IsPickupTriggered();
+	// Custom Coces
+	// data[9] = Robot::turret->IsShooterEnabled();												FIXME: Add getter for shooter status
 	data[10] = (char) StatusReporterUtil::map(speed, 0.0, 1.0, 0, 250);
 	data[11] = (char) allianceColor;	// 1 red, 2 blue, 0 unknown
 	data[12] = (char) robotState;		// 0 - none, 1 - disabled, 2- auto, 3- tele
-	// data[13] = (char) StatusReporterUtil::map(Robot::elevator->GetElevatorEncoderPosition(), 0, 72500, 0, 250);
+	// data[13] = (char) GetWheelColor   	// 0 - nothing, 1 - looking, 2 - 3 - 4 - 5 -		FIXME: Add Color Subsystem Hook, - when out of wheel mode
 
 	serial->Write(data, DATA_SIZE);
 	serial->Flush();

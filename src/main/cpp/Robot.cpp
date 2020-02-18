@@ -41,6 +41,24 @@ void Robot::RobotInit() {
 	std::cout << "Robot::TeleopInit <=\n";
 }
 
+void Robot::HandleArmBrakeButton()
+{
+	const bool currentValue = toggleArmBreakModeButton.Get();		// current value unpressed is true
+	std::cout << "Current Button Value: " << currentValue << "\n";
+
+	if (!toggleArmBreakModeButtonPressed && !currentValue) {
+		// Set to Coast mode
+		toggleArmBreakModeButtonPressed = true;
+		feederArm->SetArmBrakeMode(false);
+	} else if (toggleArmBreakModeButtonPressed && currentValue) {
+		// Button was pressed, but is no longer
+		feederArm->SetArmBrakeMode(true);
+		toggleArmBreakModeButtonPressed = false;
+	} else if (toggleArmBreakModeButtonPressed && !currentValue) {
+		// button is being held down
+	}
+}
+
 void Robot::DisabledInit() {
 	visionSystem->DisableVisionTracking();
 }
@@ -49,13 +67,8 @@ void Robot::DisabledPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
 	InstrumentSubsystems();
 	HandleGlobalInputs();
-
-	if (!toggleArmBreakModeButtonPressed && toggleArmBreakModeButton.Get()) {
-		toggleArmBreakModeButtonPressed = true;
-		feederArm->ToggleArmBreakMode();
-	} else {
-		toggleArmBreakModeButtonPressed = false;
-	}
+	HandleArmBrakeButton();
+	
 }
 
 void Robot::AutonomousInit() {
@@ -110,10 +123,10 @@ void Robot::TeleopPeriodic() {
 	}
 
 	if (dPad == OI::DPad::kUp) {
-		turret->SetLidToShortShot();
+		shortShotPose->Run();
 	}
 	else if (dPad == OI::DPad::kDown) {
-		turret->SetLidToLongShot();
+		longShotPose->Run();
 	}
 
 	

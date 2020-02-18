@@ -22,7 +22,7 @@ public:
     void RunArmControlled();    // FIXME: Temp for testing
     void DebugSetPoint(double _setpoint);
     void ZeroArmPosition();
-    void ToggleArmBreakMode();
+    void SetArmBrakeMode(bool brakeEnabled);
 
     void StartIntake(bool reverse = false);
     void StopIntake();
@@ -47,6 +47,5 @@ private :
     double armSpeed = 0.0;
     PIDConfig armPIDConfig;
     double armSetpoint = 0.0;
-    bool armNeutralBrake = true;
 
 };

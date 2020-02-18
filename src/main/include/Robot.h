@@ -51,6 +51,8 @@ private:
   void InstrumentSubsystems();
   void HandleGlobalInputs();
 
+  void HandleArmBrakeButton();
+
   std::unique_ptr<RobotMap> robotMap;
   std::shared_ptr<StatusReporter> statusReporter;
   std::unique_ptr<DmsProcessManager> dmsProcessManager;

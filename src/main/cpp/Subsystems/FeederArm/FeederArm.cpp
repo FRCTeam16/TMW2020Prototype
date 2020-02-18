@@ -12,11 +12,10 @@ FeederArm::FeederArm()
 
     armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 0);
     armMotor->ConfigForwardSoftLimitThreshold(-5000);
-    armMotor->ConfigReverseSoftLimitThreshold(-130000);
+    armMotor->ConfigReverseSoftLimitThreshold(-160000);
     armMotor->ConfigForwardSoftLimitEnable(true);
     armMotor->ConfigReverseSoftLimitEnable(true);
 
-    armNeutralBrake = true;
     armMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
     armMotorFollower->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
@@ -139,17 +138,16 @@ void FeederArm::ZeroArmPosition()
     armMotor->SetSelectedSensorPosition(0, 0, 50);
 }
 
-void FeederArm::ToggleArmBreakMode() {
+void FeederArm::SetArmBrakeMode(bool brakeEnabled) {
+    std::cout << "FeederArm::SetArmBrakeMode(" << brakeEnabled << ")\n";
     ctre::phoenix::motorcontrol::NeutralMode neutralMode;
-    if (armNeutralBrake) {
+    if (brakeEnabled) {
         std::cout << "FeederArm::ToggleArmBreakMode() -> setting to coast\n";
-        neutralMode = ctre::phoenix::motorcontrol::NeutralMode::Coast;
+        neutralMode = ctre::phoenix::motorcontrol::NeutralMode::Brake;
     } else {
         std::cout << "FeederArm::ToggleArmBreakMode() -> setting to brake\n";
-        neutralMode = ctre::phoenix::motorcontrol::NeutralMode::Brake;
+        neutralMode = ctre::phoenix::motorcontrol::NeutralMode::Coast;
     }
-
-    armNeutralBrake = !armNeutralBrake;
     armMotor->SetNeutralMode(neutralMode);
     armMotorFollower->SetNeutralMode(neutralMode);
 }
