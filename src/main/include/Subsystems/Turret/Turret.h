@@ -74,4 +74,5 @@ private:
 
     void UpdateShooterPID();
     void UpdateTurretPID();
+    void UpdateFeederPID();
 };
