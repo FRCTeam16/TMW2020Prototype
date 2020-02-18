@@ -10,7 +10,9 @@ public:
 
     bool Detect(bool showOutput) override
     {
-        short xyz[2] { imu->GetYaw(), imu->GetPitch()};
+        short xyz[2];
+        xyz[0] = imu->GetYaw();
+        xyz[1] = imu->GetPitch();
 
         double current_accel_x = xyz[0] / UNIT_SCALE;
         ;

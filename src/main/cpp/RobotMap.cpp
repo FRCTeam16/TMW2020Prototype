@@ -1,5 +1,6 @@
 #include "RobotMap.h"
 #include "Gyro/PigeonBSGyro.h"
+#include "Gyro/NavXBSGyro.h"
 
   shared_ptr<rev::CANSparkMax> RobotMap::driveBaseFrontLeftDrive;
   shared_ptr<WPI_TalonSRX> RobotMap::driveBaseFrontLeftSteer;
@@ -46,7 +47,8 @@ RobotMap::RobotMap() {
   armMotorFollower.reset(new WPI_TalonFX{12});
 
   intakeMotor.reset(new WPI_TalonSRX{10});
-  auto concreteGyro = std::unique_ptr<PigeonBSGyro>(new PigeonBSGyro(intakeMotor.get()));
+  // auto concreteGyro = std::unique_ptr<PigeonBSGyro>(new PigeonBSGyro(intakeMotor.get()));
+  auto concreteGyro = std::unique_ptr<NavXBSGyro>(new NavXBSGyro(frc::I2C::Port::kMXP));
   gyro = std::move(concreteGyro); 
 
   compressor.reset(new frc::Compressor{0});

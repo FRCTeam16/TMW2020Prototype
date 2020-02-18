@@ -8,11 +8,13 @@ class ShortShotPose {
 public:
     ShortShotPose(std::shared_ptr<Turret> turret, std::shared_ptr<FeederArm> feederArm) : turret(turret), feederArm(feederArm) {}
 
-    void Run() {
+    void Run(bool startShooter = true) {
         turret->SetLidToShortShot();
-        turret->SetShooterEnabled(true);
-        // turret->RotateTurret(Turret::TurretPosition::kFront);
-        // arm up?
+        turret->SetShooterEnabled(startShooter);
+        turret->SetTurretPosition(Turret::Position::kFront);
+        if (!startShooter) {
+            feederArm->DebugSetPoint(0);
+        }
     }
 
 private:

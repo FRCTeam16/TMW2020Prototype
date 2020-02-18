@@ -15,7 +15,7 @@
 class Turret : public SubsystemManager {
 public:
 
-    enum Position { kLeft, kCenter, kRight, kBack };
+    enum Position { kLeft, kFront, kRight, kBack };
 
     explicit Turret(std::shared_ptr<VisionSystem> visionSystem);
 
@@ -28,7 +28,7 @@ public:
     void SetTurretSetpoint(double setpoint);
     bool IsTurretInPosition();
     void EnableTurretPositionControl(bool control);     // FIXME: Need better state management
-    // void SetTurretPosition(Position position);
+    void SetTurretPosition(Position position);
 
     void EnableVisionTracking();
     void DisableVisionTracking();

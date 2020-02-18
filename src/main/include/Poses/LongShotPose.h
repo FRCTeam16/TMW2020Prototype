@@ -11,9 +11,8 @@ public:
 
     void Run() {
         turret->SetLidToLongShot();
-        turret->SetShooterEnabled(true);
-        // turret->RotateTurret(Turret::TurretPosition::kFront);
-        // arm up?
+        turret->SetTurretPosition(Turret::Position::kBack);
+        feederArm->DebugSetPoint(0);
     }
 
 private:

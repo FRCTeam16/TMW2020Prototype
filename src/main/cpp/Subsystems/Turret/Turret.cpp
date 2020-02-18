@@ -8,9 +8,12 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     shooterMotor->SetInverted(false);
     shooterMotor->SetClosedLoopRampRate(0.5);
     shooterMotorFollower->Follow(*shooterMotor, true);
-    std::cout << "Turret shooterMotor: " << shooterMotor.get() << "\n";
-    std::cout << "Turret shooterMotorFollower: " << shooterMotorFollower.get() << "\n";
-    std::cout << "Turret initialized\n";
+
+    turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, 0);
+    turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, -715);
+    turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, true);
+    turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, true);
+    
 
     //-------------------------------
     // Shooter PID Dashboard Controls
@@ -54,6 +57,8 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("Feeder.PID.I", 0.0);
     frc::SmartDashboard::PutNumber("Feeder.PID.D", 0.0);
     frc::SmartDashboard::PutNumber("Feeder.PID.F", 0.000185);
+
+    std::cout << "Turret initialized\n";
     
 }
 
@@ -65,6 +70,7 @@ void Turret::Init()
     this->SetLidToLongShot();
     turretStartPosition = turretMotor->GetEncoder().GetPosition();
     turretSetpoint = turretStartPosition;
+    this->EnableTurretPositionControl(true);
 }
 
 void Turret::Run()
@@ -201,8 +207,30 @@ void Turret::OpenLoopHaltTurret()
     if (turretSpeed != 0.0)
     {
         openLoopMessage = true;
+        SetTurretSetpoint(turretMotor->GetEncoder().GetPosition());
     }
     turretSpeed = 0.0;
+}
+
+void Turret::SetTurretPosition(Position position) {
+    double target = turretMotor->GetEncoder().GetPosition();
+    switch (position) {
+        case Position::kBack:
+            target = -210;
+            break;
+        case Position::kLeft:
+            target = 0;
+            break;
+        case Position::kRight:
+            target = -413;
+            break;
+        case Position::kFront:
+            target = -628;
+            break;
+        default:
+            break;
+    }
+    this->SetTurretSetpoint(target);
 }
 
 void Turret::SetTurretSetpoint(double setpoint)

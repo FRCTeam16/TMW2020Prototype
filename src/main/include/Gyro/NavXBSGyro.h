@@ -2,6 +2,7 @@
 
 #include "Gyro/BSGyro.h"
 #include "AHRS.h"
+#include "Gyro/NavXCollisionDetector.h"
 
 class NavXBSGyro : public BSGyro
 {
@@ -20,7 +21,13 @@ public:
         ahrs->ZeroYaw();
     }
 
+    std::unique_ptr<CollisionDetector> GetCollisionDetector(double gThreshold) {
+        auto detector = std::unique_ptr<NavXCollisionDetector>(new NavXCollisionDetector(ahrs, gThreshold));
+        return std::move(detector);
+    }
+
+
 
 private:
     std::shared_ptr<AHRS> ahrs;
-}
+};

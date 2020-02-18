@@ -44,7 +44,6 @@ void Robot::RobotInit() {
 void Robot::HandleArmBrakeButton()
 {
 	const bool currentValue = toggleArmBreakModeButton.Get();		// current value unpressed is true
-	std::cout << "Current Button Value: " << currentValue << "\n";
 
 	if (!toggleArmBreakModeButtonPressed && !currentValue) {
 		// Set to Coast mode
@@ -121,14 +120,6 @@ void Robot::TeleopPeriodic() {
 	if (oi->GPA->RisingEdge()) {
 		turret->ToggleShooterEnabled();
 	}
-
-	if (dPad == OI::DPad::kUp) {
-		shortShotPose->Run();
-	}
-	else if (dPad == OI::DPad::kDown) {
-		longShotPose->Run();
-	}
-
 	
 	// TODO: Fixme to track state
 	const bool gamepadLTPressed = oi->GetGamepadLT() > 0.05;
@@ -144,6 +135,14 @@ void Robot::TeleopPeriodic() {
 		turret->SetOpenLoopTurretSpeed(-turretSpeed);
 	} else {
 		turret->OpenLoopHaltTurret();
+	}
+
+	// Must be below open loop turret
+	if (dPad == OI::DPad::kUp) {
+		shortShotPose->Run();
+	}
+	else if (dPad == OI::DPad::kDown) {
+		longShotPose->Run();
 	}
 
 	/**********************************************************
@@ -208,6 +207,7 @@ void Robot::TeleopPeriodic() {
 	
 	if (oi->GPStart->Pressed()) {
 		if (dPad == OI::DPad::kUp) {
+			shortShotPose->Run(false);
 			feederArm->ExtendClimberArms();
 		}
 		if (dPad == OI::DPad::kDown) {
