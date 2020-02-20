@@ -140,9 +140,10 @@ void Robot::TeleopPeriodic() {
 	// Must be below open loop turret
 	if (dPad == OI::DPad::kUp) {
 		shortShotPose->Run();
-	}
-	else if (dPad == OI::DPad::kDown) {
+	} else if (dPad == OI::DPad::kDown) {
 		longShotPose->Run();
+	} else if (dPad == OI::DPad::kRight) {
+		turret->GetTurretRotation().SetTurretPosition(TurretRotation::kGoalWallShot);
 	}
 
 	/**********************************************************

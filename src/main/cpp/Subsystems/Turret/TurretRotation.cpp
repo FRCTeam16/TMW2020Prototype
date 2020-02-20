@@ -17,11 +17,6 @@ TurretRotation::TurretRotation(std::shared_ptr<VisionSystem> visionSystem) : vis
     frc::SmartDashboard::PutNumber("Turret.PID.D", 0);
     frc::SmartDashboard::PutNumber("Turret.RPM.Long", 5000);
     frc::SmartDashboard::PutNumber("Turret.RPM.Short", 3800);
-
-    frc::SmartDashboard::PutNumber("Turret.Pos.Front", -210);
-    frc::SmartDashboard::PutNumber("Turret.Pos.Right", -413);
-    frc::SmartDashboard::PutNumber("Turret.Pos.Back", -628);
-
     std::cout << "TurretRotation created\n";
 }
 
@@ -30,7 +25,7 @@ void TurretRotation::Init()
     visionTrackingEnabled = false;
     openLoopMessage = false;
 
-    turretStartPosition = turretMotor->GetEncoder().GetPosition();
+    ZeroTurretPosition();
     turretSetpoint = turretStartPosition;
     positionControl = true;
 }
@@ -88,25 +83,13 @@ void TurretRotation::OpenLoopHaltTurret()
 
 void TurretRotation::SetTurretPosition(Position position)
 {
-    double target = turretMotor->GetEncoder().GetPosition(); // default
-    switch (position)
-    {
-    case Position::kBack:
-        target = -210;
-        break;
-    case Position::kLeft:
-        target = 0;
-        break;
-    case Position::kRight:
-        target = -413;
-        break;
-    case Position::kFront:
-        target = -628;
-        break;
-    default:
-        break;
+    auto iter = turretPositions.find(position);
+    if (iter == turretPositions.end()) {
+        std::cout << "*** ERROR: TurretRotation::SetTurretPosition unable to "
+                  << "locate requested position: " << position << "\n";
+    } else {
+        this->SetTurretSetpoint(iter->second);    
     }
-    this->SetTurretSetpoint(target);
 }
 
 void TurretRotation::SetTurretSetpoint(double setpoint)
@@ -120,7 +103,18 @@ void TurretRotation::SetTurretSetpoint(double setpoint)
 bool TurretRotation::IsTurretInPosition()
 {
     double error = fabs(turretSetpoint - turretMotor->GetEncoder().GetPosition());
-    return (error < 1);
+    return (error < 1); //FIXME: Lookup Allowed Error
+}
+
+void TurretRotation::ZeroTurretPosition()
+{
+    turretStartPosition = turretMotor->GetEncoder().GetPosition();
+    turretPositions.clear();
+    turretPositions[Position::kRight] = turretStartPosition;
+    turretPositions[Position::kBack]  = turretStartPosition - 210;
+    turretPositions[Position::kLeft]  = turretStartPosition - 413;
+    turretPositions[Position::kFront] = turretStartPosition - 628;
+    turretPositions[Position::kGoalWallShot] = turretStartPosition - 500;
 }
 
 // ***************************************************************************/

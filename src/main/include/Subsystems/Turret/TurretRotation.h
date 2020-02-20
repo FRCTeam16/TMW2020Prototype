@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rev/CANSparkMax.h>
+#include <unordered_map>
 #include "Subsystems/SubsystemManager.h"
 #include "Subsystems/Vision/VisionSystem.h"
 #include "RobotMap.h"
@@ -8,7 +9,7 @@
 
 class TurretRotation : public SubsystemManager {
 public:
-    enum Position { kLeft, kFront, kRight, kBack };
+    enum Position { kLeft, kFront, kRight, kBack, kGoalWallShot };
     
     explicit TurretRotation(std::shared_ptr<VisionSystem> visionSystem);
     void Init() override;
@@ -19,7 +20,8 @@ public:
     void OpenLoopHaltTurret();
     void SetTurretPosition(Position position);
     void SetTurretSetpoint(double setpoint);
-    bool IsTurretInPosition();    
+    bool IsTurretInPosition();
+    void ZeroTurretPosition();
 
     void EnableVisionTracking();
     void DisableVisionTracking();
@@ -37,6 +39,7 @@ private:
     double visionTargetAcquiredTime = -1.0;
     const double kVisionTargetAcquiredMinWait = 0.5;
 
+    std::unordered_map<Position, double> turretPositions;
     double turretStartPosition = 0.0;
     double turretSetpoint = 0.0;
     double turretBackPosition = 0.0;
