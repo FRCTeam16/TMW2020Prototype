@@ -1,6 +1,7 @@
 #include "Autonomous/Steps/AckermanDriveToAngle.h"
 
 #include <frc/Timer.h>
+#include <cmath>
 #include "Robot.h"
 
 bool AckermanDriveToAngle::Run(std::shared_ptr<World> world)
@@ -12,10 +13,11 @@ bool AckermanDriveToAngle::Run(std::shared_ptr<World> world)
     }
 
     // Exit conditions
-    const units::degree_t currentAngle = units::degree_t(RobotMap::gyro->GetYaw());
-    if (units::math::fabs(steerAngle - currentAngle) < allowedError) {
+    const double currentAngle = (RobotMap::gyro->GetYaw());
+    if (std::fabs(target - currentAngle) < allowedError) {
         std::cout << "AckermanDriveToAngle hit target angle of " << currentAngle
-                  << " [Target: " << steerAngle << "]\n";
+                  << " [Target: " << target << "] "
+                  << " [Error: " << allowedError << "]\n";
         return true;
     }
     if ((now - startTime) > timeout) {
@@ -23,7 +25,9 @@ bool AckermanDriveToAngle::Run(std::shared_ptr<World> world)
         return true;
     }
 
-    units::radian_t radians = steerAngle;
-    Robot::driveBase->Steer(radians.to<double>(), speed, ackermanA);
+    // Robot::driveBase->SetTargetAngle(angle);
+    // Robot::driveBase->GetTwistControlOutput();
+    double radians = steerAngle * M_PI / 180.0;
+    Robot::driveBase->Steer(radians, speed, ackermanA);
     return false;
 }

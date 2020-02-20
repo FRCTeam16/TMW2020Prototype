@@ -2,17 +2,17 @@
 
 TurretRotation::TurretRotation(std::shared_ptr<VisionSystem> visionSystem) : visionSystem(visionSystem)
 {
-
-    turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, 0);
-    turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, -715);
     turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, true);
     turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, true);
+    turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, 0);
+    turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, -715);
+
 
     //-------------------------------
     // Turret PID Dashboard Controls
     //-------------------------------
     frc::SmartDashboard::PutNumber("Turret.Setpoint", turretMotor->GetEncoder().GetPosition());
-    frc::SmartDashboard::PutNumber("Turret.PID.P", 2.0);
+    frc::SmartDashboard::PutNumber("Turret.PID.P", 0.3);
     frc::SmartDashboard::PutNumber("Turret.PID.I", 0);
     frc::SmartDashboard::PutNumber("Turret.PID.D", 0);
     frc::SmartDashboard::PutNumber("Turret.RPM.Long", 5000);
@@ -168,7 +168,7 @@ void TurretRotation::Instrument()
 void TurretRotation::UpdateTurretPID()
 {
     double setpoint = frc::SmartDashboard::GetNumber("Turret.Setpoint", turretSetpoint);
-    double p = frc::SmartDashboard::GetNumber("Turret.PID.P", 2.0);
+    double p = frc::SmartDashboard::GetNumber("Turret.PID.P", 0.3);
     double i = frc::SmartDashboard::GetNumber("Turret.PID.I", 0);
     double d = frc::SmartDashboard::GetNumber("Turret.PID.D", 0);
     double f = frc::SmartDashboard::GetNumber("Turret.PID.F", 0);
