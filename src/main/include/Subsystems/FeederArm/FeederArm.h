@@ -6,10 +6,12 @@
 #include "RobotMap.h"
 #include "Util/BSPrefs.h"
 #include "Util/PIDConfig.h"
+#include <unordered_map>
 
 
 class FeederArm : public SubsystemManager {
 public:
+    enum Position { kZero, kDown, kPlayerStation, kVertical };
     explicit FeederArm();
 
     void Init() override;
@@ -21,6 +23,7 @@ public:
     void RunArm(double speed);
     void RunArmControlled();    // FIXME: Temp for testing
     void DebugSetPoint(double _setpoint);
+    void SetArmPosition(Position position);
     void ZeroArmPosition();
     void SetArmBrakeMode(bool brakeEnabled);
 
@@ -47,5 +50,5 @@ private :
     double armSpeed = 0.0;
     PIDConfig armPIDConfig;
     double armSetpoint = 0.0;
-
+    unordered_map<Position, double> armPositions;
 };

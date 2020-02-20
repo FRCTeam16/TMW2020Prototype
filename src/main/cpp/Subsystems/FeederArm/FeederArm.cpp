@@ -40,6 +40,11 @@ void FeederArm::Init()
     this->RetractClimberArms();
     armSetpoint = 0.0;
     runArmControlled = false; // FIXME: Determine if we want to start controlled or not
+
+    armPositions[Position::kZero] = 0;
+    armPositions[Position::kDown] = -10000;
+    armPositions[Position::kPlayerStation] = -112000;
+    armPositions[Position::kVertical] = -130000;
 }
 
 void FeederArm::InitTeleop()
@@ -131,6 +136,20 @@ void FeederArm::DebugSetPoint(double _setpoint)
     runArmControlled = true;
     armSetpoint = _setpoint;
     frc::SmartDashboard::PutNumber("Arm.Setpoint", armSetpoint);
+}
+
+void FeederArm::SetArmPosition(Position position)
+{
+    auto iter = armPositions.find(position);
+    if (iter == armPositions.end()) {
+        std::cout << "*** ERROR: FeederArm::SetArmPosition unable to "
+                  << "locate requested position: " << position << "\n";
+    } else {
+        armSetpoint = iter->second;
+        std::cout << "FeederArm::SetArmPosition: " << armSetpoint << "\n";
+        runArmControlled = true;
+        frc::SmartDashboard::PutNumber("Arm.Setpoint", armSetpoint);
+    }
 }
 
 void FeederArm::ZeroArmPosition()

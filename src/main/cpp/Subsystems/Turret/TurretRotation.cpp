@@ -94,7 +94,7 @@ void TurretRotation::SetTurretPosition(Position position)
 
 void TurretRotation::SetTurretSetpoint(double setpoint)
 {
-    std::cout << "*************** TURRET::SetTurretSetpoint(" << setpoint << ")\n";
+    std::cout << "TurretRotation::SetTurretSetpoint(" << setpoint << ")\n";
     turretSetpoint = setpoint;
     positionControl = true;
     frc::SmartDashboard::PutNumber("Turret.Setpoint", turretSetpoint);
