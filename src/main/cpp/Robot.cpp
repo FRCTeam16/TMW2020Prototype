@@ -147,9 +147,9 @@ void Robot::TeleopPeriodic() {
 			longShotPose->Run();
 		}
 	}
-	 if (dPad == OI::DPad::kRight) {
-		turret->GetTurretRotation().SetTurretPosition(TurretRotation::kGoalWallShot);
-	//  }
+	if (dPad == OI::DPad::kRight) {
+		turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kGoalWallShot);
+	}
 	
 
 	/**********************************************************
