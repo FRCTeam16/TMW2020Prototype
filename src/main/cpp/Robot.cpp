@@ -145,8 +145,11 @@ void Robot::TeleopPeriodic() {
 		}
 		else if (dPad == OI::DPad::kDown) {
 			longShotPose->Run();
-		}	
+		}
 	}
+	 if (dPad == OI::DPad::kRight) {
+		turret->GetTurretRotation().SetTurretPosition(TurretRotation::kGoalWallShot);
+	//  }
 	
 
 	/**********************************************************
@@ -180,15 +183,15 @@ void Robot::TeleopPeriodic() {
 	}
 	
 	if (oi->GPB->RisingEdge()) {
-		feederArm->DebugSetPoint(-10000);
+		feederArm->SetArmPosition(FeederArm::Position::kDown);
 	} 
 	else if (oi->GPY->RisingEdge()) {
-		feederArm->DebugSetPoint(-130000);
+		feederArm->SetArmPosition(FeederArm::Position::kVertical);
 	} 
 	else if (oi->GPX->RisingEdge()) {
-		feederArm->DebugSetPoint(-112000);
+		feederArm->SetArmPosition(FeederArm::Position::kPlayerStation);
 	} else if (oi->GPRB->RisingEdge()) {
-		feederArm->DebugSetPoint(0);
+		feederArm->SetArmPosition(FeederArm::Position::kZero);
 	} else if (oi->GPLB->RisingEdge()) {
 		feederArm->RunArm(0.0);
 	}
