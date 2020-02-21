@@ -29,6 +29,7 @@ public:
 
     void StartIntake(bool reverse = false);
     void StopIntake();
+    void StartIntakeForColorSpin();
 
     void ExtendClimberArms();
     void RetractClimberArms();
@@ -42,6 +43,7 @@ private :
 
     bool intakeEnabled = false;
     bool intakeReversed = false;
+    bool intakeColorWheelMode = false;
 
     bool climberExtended = false;
     bool climberMessageSent = false;

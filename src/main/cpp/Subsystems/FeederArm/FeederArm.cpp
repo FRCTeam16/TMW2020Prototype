@@ -76,7 +76,10 @@ void FeederArm::Run()
     double intakeSpeed = 0.0;
     if (intakeEnabled)
     {
-        intakeSpeed = frc::SmartDashboard::GetNumber("IntakeSpeed", 1.0);
+        
+        intakeSpeed = intakeColorWheelMode ? 
+            frc::SmartDashboard::GetNumber("IntakeSpeed.ColorWheel", 0.2) :
+            frc::SmartDashboard::GetNumber("IntakeSpeed", 1.0);
         if (intakeReversed)
         {
             intakeSpeed = -intakeSpeed;
@@ -177,6 +180,13 @@ void FeederArm::StartIntake(bool reverse)
 {
     intakeEnabled = true;
     intakeReversed = reverse;
+    intakeColorWheelMode = false;
+}
+
+void FeederArm::StartIntakeForColorSpin() 
+{
+    intakeEnabled = true;
+    intakeColorWheelMode = true;
 }
 
 void FeederArm::StopIntake()

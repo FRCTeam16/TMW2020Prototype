@@ -114,7 +114,7 @@ void TurretRotation::ZeroTurretPosition()
     turretPositions[Position::kBack]  = turretStartPosition - 210;
     turretPositions[Position::kLeft]  = turretStartPosition - 413;
     turretPositions[Position::kFront] = turretStartPosition - 628;
-    turretPositions[Position::kGoalWallShot] = turretStartPosition - 100;
+    turretPositions[Position::kGoalWallShot] = turretStartPosition - 175;
 }
 
 // ***************************************************************************/

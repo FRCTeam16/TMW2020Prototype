@@ -31,7 +31,7 @@
 
 DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 	// DebugSimple();
-	Measure();
+	// Measure();
 	std::cout << "--- DEBUG Autonomous ---\n";
 }
 	

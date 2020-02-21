@@ -12,7 +12,7 @@ std::shared_ptr<DriveBase> Robot::driveBase;
 std::shared_ptr<VisionSystem> Robot::visionSystem;
 std::shared_ptr<Turret> Robot::turret;
 std::shared_ptr<FeederArm> Robot::feederArm;
-
+std::shared_ptr<ControlPanelSystem> Robot::controlPanelSystem;
 
 void Robot::RobotInit() {
 	std::cout << "Robot::RobotInit => \n";
@@ -33,6 +33,8 @@ void Robot::RobotInit() {
     dmsProcessManager.reset(new DmsProcessManager(statusReporter));
 
 	autoManager.reset(new AutoManager());
+	controlPanelSystem.reset(new ControlPanelSystem());
+
 	RobotMap::gyro->ZeroYaw();
 
 	shortShotPose.reset(new ShortShotPose(turret, feederArm));
@@ -282,6 +284,7 @@ void Robot::InitSubsystems() {
 	visionSystem->Init();
 	turret->Init();
 	feederArm->Init();
+	controlPanelSystem->Init();
 	// status & dms currently don't have init
 	std::cout << "Robot::InitSubsystems <=\n";
 }
@@ -293,6 +296,7 @@ void Robot::RunSubsystems() {
 	visionSystem->Run(); 
 	turret->Run();
 	feederArm->Run();
+	controlPanelSystem->Run();
 	double now = frc::Timer::GetFPGATimestamp();
 	SmartDashboard::PutNumber("Subsystem Times", (now-start) * 1000);
 	// std::cout << "RunSubsystems() <=\n";
@@ -307,6 +311,7 @@ void Robot::InstrumentSubsystems() {
 		visionSystem->Instrument();
 		turret->Instrument();
 		feederArm->Instrument();
+		controlPanelSystem->Instrument();
 	}
 }
 

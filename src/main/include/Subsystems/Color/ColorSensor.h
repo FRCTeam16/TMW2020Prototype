@@ -6,7 +6,8 @@
 #include "rev/ColorMatch.h"
 
 #include "Subsystems/Color/WheelColor.h"
-class ColorSensor { 
+class ColorSensor
+{
   static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
 
   /**
@@ -34,18 +35,18 @@ class ColorSensor {
   static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
   static constexpr frc::Color kYellowTarget = frc::Color(0.301, 0.522, 0.176);
 
- public:
-
-
-  ColorSensor() {
+public:
+  ColorSensor()
+  {
     m_colorMatcher.AddColorMatch(kBlueTarget);
     m_colorMatcher.AddColorMatch(kGreenTarget);
     m_colorMatcher.AddColorMatch(kRedTarget);
     m_colorMatcher.AddColorMatch(kYellowTarget);
   }
 
-    WheelColor ReadColor(){
-   
+  WheelColor ReadColor()
+  {
+
     frc::Color detectedColor = m_colorSensor.GetColor();
 
     /**
@@ -57,19 +58,28 @@ class ColorSensor {
     double confidence = 0.0;
     frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
 
-    if (matchedColor == kBlueTarget) {
+    if (matchedColor == kBlueTarget)
+    {
       colorString = "Blue";
-      wheelColor = WheelColor::Blue; 
-    } else if (matchedColor == kRedTarget) {
+      wheelColor = WheelColor::Blue;
+    }
+    else if (matchedColor == kRedTarget)
+    {
       colorString = "Red";
       wheelColor = WheelColor::Red;
-    } else if (matchedColor == kGreenTarget) {
+    }
+    else if (matchedColor == kGreenTarget)
+    {
       colorString = "Green";
       wheelColor = WheelColor::Green;
-    } else if (matchedColor == kYellowTarget) {
+    }
+    else if (matchedColor == kYellowTarget)
+    {
       colorString = "Yellow";
       wheelColor = WheelColor::Yellow;
-    } else {
+    }
+    else
+    {
       colorString = "Unknown";
       wheelColor = WheelColor::Unknown;
     }
@@ -84,8 +94,6 @@ class ColorSensor {
     frc::SmartDashboard::PutNumber("Confidence", confidence);
     frc::SmartDashboard::PutString("Detected Color", colorString);
 
-    return wheelColor
-    
+    return wheelColor;
   }
-
 };

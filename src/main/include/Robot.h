@@ -19,6 +19,7 @@
 #include "Autonomous/AutoManager.h"
 #include "Subsystems/FeederArm/FeederArm.h"
 #include "Poses/ShotPoses.h"
+#include "Subsystems/Color/ControlPanelSystem.h"
 
 
 
@@ -44,6 +45,7 @@ class Robot : public frc::TimedRobot {
   static std::shared_ptr<VisionSystem> visionSystem;
   static std::shared_ptr<Turret> turret;
   static std::shared_ptr<FeederArm> feederArm;
+  static std::shared_ptr<ControlPanelSystem> controlPanelSystem;
 
 private:
   void InitSubsystems();
@@ -57,6 +59,7 @@ private:
   std::shared_ptr<StatusReporter> statusReporter;
   std::unique_ptr<DmsProcessManager> dmsProcessManager;
   std::unique_ptr<AutoManager> autoManager;
+  
   std::shared_ptr<World> world;
   bool runInstrumentation = false;  // whether to run subsystem instrumentation
 
