@@ -103,6 +103,7 @@ void Robot::TeleopPeriodic() {
 	const bool lockWheels = false;
 
 	const OI::DPad dPad = oi->GetGamepadDPad();
+	const bool startButtonPressed = oi->GPStart->Pressed();
 
 
 	/**********************************************************
@@ -138,12 +139,15 @@ void Robot::TeleopPeriodic() {
 	}
 
 	// Must be below open loop turret
-	if (dPad == OI::DPad::kUp) {
-		shortShotPose->Run();
+	if (!startButtonPressed) {
+		if (dPad == OI::DPad::kUp) {
+			shortShotPose->Run();
+		}
+		else if (dPad == OI::DPad::kDown) {
+			longShotPose->Run();
+		}	
 	}
-	else if (dPad == OI::DPad::kDown) {
-		longShotPose->Run();
-	}
+	
 
 	/**********************************************************
 	 * FeederArm  Control
@@ -205,7 +209,7 @@ void Robot::TeleopPeriodic() {
 	 * Climber Arms
 	**********************************************************/
 	
-	if (oi->GPStart->Pressed()) {
+	if (startButtonPressed) {
 		if (dPad == OI::DPad::kUp) {
 			shortShotPose->Run(false);
 			feederArm->ExtendClimberArms();
