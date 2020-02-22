@@ -23,6 +23,7 @@ FeederArm::FeederArm()
     armPIDConfig.kI = 0.000001;
 
     frc::SmartDashboard::SetDefaultNumber("IntakeSpeed", 1.0);
+    frc::SmartDashboard::SetDefaultNumber("IntakeSpeed.ColorWheel", 0.2);
 
     frc::SmartDashboard::SetDefaultNumber("Arm.P", armPIDConfig.kP);
     frc::SmartDashboard::SetDefaultNumber("Arm.I", armPIDConfig.kI);
@@ -76,10 +77,8 @@ void FeederArm::Run()
     double intakeSpeed = 0.0;
     if (intakeEnabled)
     {
-        
-        intakeSpeed = intakeColorWheelMode ? 
-            frc::SmartDashboard::GetNumber("IntakeSpeed.ColorWheel", 0.2) :
-            frc::SmartDashboard::GetNumber("IntakeSpeed", 1.0);
+
+        intakeSpeed = intakeColorWheelMode ? frc::SmartDashboard::GetNumber("IntakeSpeed.ColorWheel", 0.2) : frc::SmartDashboard::GetNumber("IntakeSpeed", 1.0);
         if (intakeReversed)
         {
             intakeSpeed = -intakeSpeed;
@@ -144,10 +143,13 @@ void FeederArm::DebugSetPoint(double _setpoint)
 void FeederArm::SetArmPosition(Position position)
 {
     auto iter = armPositions.find(position);
-    if (iter == armPositions.end()) {
+    if (iter == armPositions.end())
+    {
         std::cout << "*** ERROR: FeederArm::SetArmPosition unable to "
                   << "locate requested position: " << position << "\n";
-    } else {
+    }
+    else
+    {
         armSetpoint = iter->second;
         std::cout << "FeederArm::SetArmPosition: " << armSetpoint << "\n";
         runArmControlled = true;
@@ -160,13 +162,17 @@ void FeederArm::ZeroArmPosition()
     armMotor->SetSelectedSensorPosition(0, 0, 50);
 }
 
-void FeederArm::SetArmBrakeMode(bool brakeEnabled) {
+void FeederArm::SetArmBrakeMode(bool brakeEnabled)
+{
     std::cout << "FeederArm::SetArmBrakeMode(" << brakeEnabled << ")\n";
     ctre::phoenix::motorcontrol::NeutralMode neutralMode;
-    if (brakeEnabled) {
+    if (brakeEnabled)
+    {
         std::cout << "FeederArm::ToggleArmBreakMode() -> setting to coast\n";
         neutralMode = ctre::phoenix::motorcontrol::NeutralMode::Brake;
-    } else {
+    }
+    else
+    {
         std::cout << "FeederArm::ToggleArmBreakMode() -> setting to brake\n";
         neutralMode = ctre::phoenix::motorcontrol::NeutralMode::Coast;
     }
@@ -183,7 +189,7 @@ void FeederArm::StartIntake(bool reverse)
     intakeColorWheelMode = false;
 }
 
-void FeederArm::StartIntakeForColorSpin() 
+void FeederArm::StartIntakeForColorSpin()
 {
     intakeEnabled = true;
     intakeColorWheelMode = true;

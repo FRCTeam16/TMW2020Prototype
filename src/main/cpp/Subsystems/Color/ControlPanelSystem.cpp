@@ -27,8 +27,10 @@ void ControlPanelSystem::Run()
      *  TODO: Think about how to recover/reset state
      */
     const double now = frc::Timer::GetFPGATimestamp();
+    const WheelColor color = colorSensor.ReadColor();
+    
     if (enabled) {
-        const WheelColor color = colorSensor.ReadColor();
+        // const WheelColor color = colorSensor.ReadColor();
         if (WheelColor::Unknown != color) {
             if (history.firstSeen = -1) {
                 // First time we've seen the color, record it
@@ -50,4 +52,6 @@ void ControlPanelSystem::Run()
 
 void ControlPanelSystem::Instrument()
 {
+    // DEBUG ONLY
+    colorSensor.ReadColor();
 }

@@ -162,6 +162,8 @@ void Robot::TeleopPeriodic() {
 		feederArm->StartIntake();
 	} else if (oi->DR2->Pressed()) {
 		feederArm->StartIntake(true);	// reversed
+	} else if (fabs(oi->GetGamepadLeftStick()) > 0.25) {
+		feederArm->StartIntakeForColorSpin();
 	} else {
 		feederArm-> StopIntake();
 	}
