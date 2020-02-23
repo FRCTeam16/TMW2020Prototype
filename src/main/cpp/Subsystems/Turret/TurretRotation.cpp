@@ -19,6 +19,8 @@ TurretRotation::TurretRotation(std::shared_ptr<VisionSystem> visionSystem) : vis
     frc::SmartDashboard::PutNumber("Turret.RPM.Long", 5000);
     frc::SmartDashboard::PutNumber("Turret.RPM.Short", 3800);
     std::cout << "TurretRotation created\n";
+
+    ZeroTurretPosition();
 }
 
 void TurretRotation::Init()
@@ -27,8 +29,7 @@ void TurretRotation::Init()
     visionTrackingEnabled = false;
     openLoopMessage = false;
 
-    ZeroTurretPosition();
-    turretSetpoint = turretStartPosition;
+    turretSetpoint = turretMotor->GetEncoder().GetPosition();
     positionControl = true;
     std::cout << "TurretRotation::Init <=\n";
 }

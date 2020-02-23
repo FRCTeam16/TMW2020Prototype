@@ -179,12 +179,12 @@ void Robot::TeleopPeriodic() {
 		feederArm-> StopIntake();
 	}
 
-	if (!preloadPressed && dPad == OI::DPad::kLeft) {
-		turret->PreloadBall();
-		preloadPressed = true;
-	} else {
-		preloadPressed = false;
-	}
+	// if (!preloadPressed && dPad == OI::DPad::kLeft) {
+	// 	turret->PreloadBall();
+	// 	preloadPressed = true;
+	// } else {
+	// 	preloadPressed = false;
+	// }
 
 
 	if (oi->DL3->RisingEdge()){
