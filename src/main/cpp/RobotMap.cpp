@@ -19,7 +19,7 @@
   shared_ptr<rev::CANSparkMax> RobotMap::shooterMotorFollower;
   shared_ptr<rev::CANSparkMax> RobotMap::feederMotor;
 
-  shared_ptr<WPI_TalonSRX> RobotMap::intakeMotor;
+  shared_ptr<WPI_VictorSPX> RobotMap::intakeMotor;
   std::shared_ptr<BSGyro> RobotMap::gyro;
   
   std::shared_ptr<frc::Compressor> RobotMap::compressor;
@@ -46,7 +46,7 @@ RobotMap::RobotMap() {
   armMotor.reset(new WPI_TalonFX{13});
   armMotorFollower.reset(new WPI_TalonFX{12});
 
-  intakeMotor.reset(new WPI_TalonSRX{10});
+  intakeMotor.reset(new WPI_VictorSPX{10});
   // auto concreteGyro = std::unique_ptr<PigeonBSGyro>(new PigeonBSGyro(intakeMotor.get()));
   auto concreteGyro = std::unique_ptr<NavXBSGyro>(new NavXBSGyro(frc::I2C::Port::kMXP));
   gyro = std::move(concreteGyro); 

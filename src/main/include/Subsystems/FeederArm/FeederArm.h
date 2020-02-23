@@ -36,7 +36,7 @@ public:
 
 
 private : 
-    std::shared_ptr<WPI_TalonSRX>  intakeMotor = RobotMap::intakeMotor; 
+    std::shared_ptr<WPI_VictorSPX>  intakeMotor = RobotMap::intakeMotor; 
     std::shared_ptr<WPI_TalonFX> armMotor = RobotMap::armMotor; 
     std::shared_ptr<WPI_TalonFX> armMotorFollower = RobotMap::armMotorFollower;
     std::shared_ptr<frc::Solenoid> climberArms = RobotMap::climberArms;

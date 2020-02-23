@@ -33,7 +33,7 @@ class RobotMap {
   static shared_ptr<WPI_TalonFX> armMotorFollower;
 
 
-  static shared_ptr<WPI_TalonSRX> intakeMotor;
+  static shared_ptr<WPI_VictorSPX> intakeMotor;
   static std::shared_ptr<BSGyro> gyro;
 
   static std::shared_ptr<frc::Compressor> compressor;
