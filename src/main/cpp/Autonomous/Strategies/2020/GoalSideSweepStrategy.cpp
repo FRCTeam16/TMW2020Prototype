@@ -28,7 +28,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	steps.push_back(new ConcurrentStep({
 		new DriveToDistance(firstAngle, 0.3, 0_in, -6_in),
 		new SetTurretPosition(-180),
-		new EnableIntake(true),     // TODO: Pass in desired speed
+		new EnableIntake(true),     // TODO: Pass in desired speed?
 		new EnableShooter(true),
 	}));
 	steps.push_back(new ConcurrentStep({
@@ -78,9 +78,15 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	}));
 }
 
+/**
+ * Strategy for starting centered with goal, sweeping up bar
+ * then rushing back to trench
+ */
 void GoalSideSweepStrategy::Center(std::shared_ptr<World> world) {
 
-    const double firstAngle = 45.0;
+	steps.push_back(new SetGyroOffset(180.0));
+
+	const double firstAngle = -135.0;
 	steps.push_back(new ConcurrentStep({
 		new Rotate(firstAngle),
 		new SetTurretPosition(-111),
@@ -88,19 +94,32 @@ void GoalSideSweepStrategy::Center(std::shared_ptr<World> world) {
 		new EnableShooter(false)
 	}));
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(firstAngle, 0.3, 0_in, 81_in),
+		new DriveToDistance(firstAngle, 0.3, 0_in, -81_in),
 		new EnableVisionTracking(true)}));
+	
+	// Approach bar
 	auto driveToBar = new DriveToDistance(firstAngle, 0.2, 0_in, 6_in);
 	driveToBar->SetUseGyro(false);
 	steps.push_back(new ConcurrentStep({
 		driveToBar,
 		new EnableShooter(true)
 	}));
-	steps.push_back(driveToBar);
 
-	const double secondAngle = 30.0;
+	// Sweep up bar
+	const double secondAngle = -120.0;
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(secondAngle, 0.2, -56_in, 110_in),
+		new DriveToDistance(secondAngle, 0.2, 56_in, -110_in),
 		new EnableFeeder(true)			
 	}));
+
+	// Drive back to far end of trench
+	steps.push_back(new DriveToDistance(-180.0, 0.3, 0_in, 110_in));
+	
+	// Jog over to pickup location
+	steps.push_back(new ConcurrentStep({
+		new DriveToDistance(-180.0, 0.2, 24_in, -6_in),
+		new SetVisionOffsetDegrees(3.0)
+	}));
+	steps.push_back(new DriveToDistance(-180.0, 0.3, 0_in, -110_in));
+
 }
