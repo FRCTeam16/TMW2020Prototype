@@ -30,6 +30,8 @@ public:
     void StopFeeder();
     void PreloadBall();
 
+    void SetFeederAndShooterReversed(bool reversed);
+
     void SetLidToLongShot();
     void SetLidToShortShot();
 
@@ -49,6 +51,8 @@ private:
 
     bool feederEnabled = false;
     bool feederReversed = false;
+
+    bool feederAndShooterReversed = false;  // try to dump balls backwards to get out of jam
 
     bool preloadFeederRunning = false;
     double preloadFeederStarted = 0.0;

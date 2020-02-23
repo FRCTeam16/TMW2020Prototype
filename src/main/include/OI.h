@@ -38,6 +38,8 @@ public:
 	std::shared_ptr<BSButton> DL10;
 	std::shared_ptr<BSButton> DL11;
 	std::shared_ptr<BSButton> DL12;
+	std::shared_ptr<BSButton> DL16;
+
 	std::shared_ptr<BSButton> DR1;
 	std::shared_ptr<BSButton> DR2;
 	std::shared_ptr<BSButton> DR3;
@@ -50,6 +52,7 @@ public:
 	std::shared_ptr<BSButton> DR10;
 	std::shared_ptr<BSButton> DR11;
 	std::shared_ptr<BSButton> DR12;
+	std::shared_ptr<BSButton> DR16;
 	
 	enum DPad {
 		kUnpressed = -1,

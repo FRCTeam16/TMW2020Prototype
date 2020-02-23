@@ -23,6 +23,9 @@ public:
     bool IsTurretInPosition();
     void ZeroTurretPosition();
 
+    void EnableTurretSoftLimits();
+    void DisableTurretSoftLimits();
+
     void EnableVisionTracking();
     void DisableVisionTracking();
     void ToggleVisionTracking();

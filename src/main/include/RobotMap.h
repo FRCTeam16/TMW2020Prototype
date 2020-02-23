@@ -37,6 +37,7 @@ class RobotMap {
   static std::shared_ptr<BSGyro> gyro;
 
   static std::shared_ptr<frc::Compressor> compressor;
-  static std::shared_ptr<frc::Solenoid> climberArms;
   static std::shared_ptr<frc::Solenoid> lidTop;
+  static std::shared_ptr<frc::Solenoid> climberLeftArm;
+  static std::shared_ptr<frc::Solenoid> climberRightArm;
 };

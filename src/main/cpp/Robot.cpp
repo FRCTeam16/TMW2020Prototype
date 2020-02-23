@@ -37,8 +37,10 @@ void Robot::RobotInit() {
 
 	RobotMap::gyro->ZeroYaw();
 
-	shortShotPose.reset(new ShortShotPose(turret, feederArm));
-	longShotPose.reset(new LongShotPose(turret, feederArm));
+	shortShotPose.reset(new ShortShotPose());
+	mediumShotPose.reset(new MediumShotPose());
+	trenchShotPose.reset(new TrenchShotPose());
+	longShotPose.reset(new LongShotPose());
 
 	std::cout << "Robot::TeleopInit <=\n";
 }
@@ -106,6 +108,7 @@ void Robot::TeleopPeriodic() {
 
 	const OI::DPad dPad = oi->GetGamepadDPad();
 	const bool startButtonPressed = oi->GPStart->Pressed();
+	frc::SmartDashboard::PutBoolean("Start Button Pressed", startButtonPressed);
 
 
 	/**********************************************************
@@ -122,6 +125,13 @@ void Robot::TeleopPeriodic() {
 	**********************************************************/
 	if (oi->GPA->RisingEdge()) {
 		turret->ToggleShooterEnabled();
+	}
+
+	// Enable/Disable Soft Limits
+	if (oi->DR11->RisingEdge()) {
+		turret->GetTurretRotation().EnableTurretSoftLimits();
+	} else if (oi->DR16->RisingEdge()) {
+		turret->GetTurretRotation().DisableTurretSoftLimits();
 	}
 	
 	// TODO: Fixme to track state
@@ -144,13 +154,13 @@ void Robot::TeleopPeriodic() {
 	if (!startButtonPressed) {
 		if (dPad == OI::DPad::kUp) {
 			shortShotPose->Run();
-		}
-		else if (dPad == OI::DPad::kDown) {
+		} else if (dPad == OI::DPad::kDown) {
 			longShotPose->Run();
+		} else if (dPad == OI::DPad::kLeft) {
+			mediumShotPose->Run();
+		} else if (dPad == OI::DPad::kRight) {
+			trenchShotPose->Run();
 		}
-	}
-	if (dPad == OI::DPad::kRight) {
-		turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kGoalWallShot);
 	}
 	
 
@@ -195,9 +205,10 @@ void Robot::TeleopPeriodic() {
 	else if (oi->GPX->RisingEdge()) {
 		feederArm->SetArmPosition(FeederArm::Position::kPlayerStation);
 	} else if (oi->GPRB->RisingEdge()) {
-		feederArm->SetArmPosition(FeederArm::Position::kZero);
-	} else if (oi->GPLB->RisingEdge()) {
 		feederArm->RunArm(0.0);
+		// feederArm->SetArmPosition(FeederArm::Position::kZero);	// TODO Remove preload bool, just a reminder of previous func
+	} else if (oi->GPLB->RisingEdge()) {
+		turret->PreloadBall();
 	}
 	/*else {
 		double armSpeed = oi->GetGamepadRightStick();
@@ -206,11 +217,13 @@ void Robot::TeleopPeriodic() {
 		}
 		feederArm->RunArm(armSpeed);
 	}
-
-	if (oi->DL5->RisingEdge()) {
-		feederArm->ZeroArmPosition();
-	}
 	*/
+
+	if (oi->DL16->Pressed()) {
+		turret->SetFeederAndShooterReversed(true);
+	} else {
+		turret->SetFeederAndShooterReversed(false);
+	}
 
 	/**********************************************************
 	 * Climber Arms
@@ -218,7 +231,7 @@ void Robot::TeleopPeriodic() {
 	
 	if (startButtonPressed) {
 		if (dPad == OI::DPad::kUp) {
-			shortShotPose->Run(false);
+			// shortShotPose->Run(false);		FIXME: temp
 			feederArm->ExtendClimberArms();
 		}
 		if (dPad == OI::DPad::kDown) {

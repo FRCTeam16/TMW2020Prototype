@@ -66,6 +66,8 @@ private:
   // Operator input flags
   bool preloadPressed = false;    // prevent multiple ball queue commands
   std::unique_ptr<ShortShotPose> shortShotPose;
+  std::unique_ptr<MediumShotPose> mediumShotPose;
+  std::unique_ptr<TrenchShotPose> trenchShotPose;
   std::unique_ptr<LongShotPose> longShotPose;
   frc::DigitalInput toggleArmBreakModeButton{0};
   bool toggleArmBreakModeButtonPressed = false;

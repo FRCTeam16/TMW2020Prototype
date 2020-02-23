@@ -23,8 +23,9 @@
   std::shared_ptr<BSGyro> RobotMap::gyro;
   
   std::shared_ptr<frc::Compressor> RobotMap::compressor;
-  std::shared_ptr<frc::Solenoid> RobotMap::climberArms;
   std::shared_ptr<frc::Solenoid> RobotMap::lidTop;
+  std::shared_ptr<frc::Solenoid> RobotMap::climberLeftArm;
+  std::shared_ptr<frc::Solenoid> RobotMap::climberRightArm;
 
 
 RobotMap::RobotMap() {
@@ -53,6 +54,7 @@ RobotMap::RobotMap() {
 
   compressor.reset(new frc::Compressor{0});
   compressor->SetClosedLoopControl(true);
-  climberArms.reset(new frc::Solenoid{4});
-  lidTop.reset(new frc::Solenoid{2});
+  lidTop.reset(new frc::Solenoid{0});
+  climberLeftArm.reset(new frc::Solenoid{1});
+  climberRightArm.reset(new frc::Solenoid{2});
 }

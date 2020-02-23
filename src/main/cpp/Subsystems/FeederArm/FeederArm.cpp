@@ -1,4 +1,5 @@
 #include "Subsystems/FeederArm/FeederArm.h"
+#include "Util/BSPrefs.h"
 
 static int kVelocity = 10000;
 static int kAcceleration = 120000;
@@ -10,9 +11,12 @@ FeederArm::FeederArm()
 
     this->ZeroArmPosition();
 
+
+    auto prefs = BSPrefs::GetInstance();
+
     armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 0);
-    armMotor->ConfigForwardSoftLimitThreshold(-5000);
-    armMotor->ConfigReverseSoftLimitThreshold(-160000);
+    armMotor->ConfigForwardSoftLimitThreshold(prefs->GetDouble("FeederArm.Pos.FwdLimit", -5000));;
+    armMotor->ConfigReverseSoftLimitThreshold(prefs->GetDouble("FeederArm.Pos.RevLimit",-160000));
     armMotor->ConfigForwardSoftLimitEnable(true);
     armMotor->ConfigReverseSoftLimitEnable(true);
 
@@ -42,10 +46,11 @@ void FeederArm::Init()
     armSetpoint = 0.0;
     runArmControlled = false; // FIXME: Determine if we want to start controlled or not
 
+    auto prefs = BSPrefs::GetInstance();
     armPositions[Position::kZero] = 0;
-    armPositions[Position::kDown] = -10000;
-    armPositions[Position::kPlayerStation] = -112000;
-    armPositions[Position::kVertical] = -130000;
+    armPositions[Position::kDown] = prefs->GetDouble("FeederArm.Pos.Down",-10000);
+    armPositions[Position::kPlayerStation] = prefs->GetDouble("FeederArm.Pos.PlayerStation", -90000);
+    armPositions[Position::kVertical] = prefs->GetDouble("FeederArm.Pos.Vertical", -130000);
 }
 
 void FeederArm::InitTeleop()
@@ -67,7 +72,8 @@ void FeederArm::Run()
     //-----------------------
     if (!climberMessageSent)
     {
-        climberArms->Set(climberExtended);
+        climberLeftArm->Set(climberExtended);
+        climberRightArm->Set(climberExtended);
         climberMessageSent = true;
     }
 

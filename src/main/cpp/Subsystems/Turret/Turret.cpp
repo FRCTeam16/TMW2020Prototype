@@ -31,7 +31,7 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("Feeder.Preload.Time", 0.4);
     frc::SmartDashboard::PutNumber("Feeder.Preload.Speed", -0.2);
 
-    frc::SmartDashboard::SetDefaultNumber("Feeder.RPM", 3000.0);
+    frc::SmartDashboard::SetDefaultNumber("Feeder.RPM", -4200.0);
     frc::SmartDashboard::PutNumber("Feeder.PID.P", 0.00001);
     frc::SmartDashboard::PutNumber("Feeder.PID.I", 0.0);
     frc::SmartDashboard::PutNumber("Feeder.PID.D", 0.0);
@@ -88,12 +88,16 @@ void Turret::Run()
         std::cout << "feeder preload block\n";
         feederMotor->Set(feederSpeed);
     }
+    else if (feederAndShooterReversed) {
+        double reverseSpeed = -1.0 * copysign(1.0, frc::SmartDashboard::GetNumber("Feeder.RPM", -4200));
+        feederMotor->Set(reverseSpeed);
+    }
     else if (feederEnabled)
     {
         UpdateFeederPID();
         if (shooterMotor->GetEncoder().GetVelocity() > kMinRPMToShoot)
         {
-            double feederRPM = frc::SmartDashboard::GetNumber("Feeder.RPM", 0.0);
+            double feederRPM = frc::SmartDashboard::GetNumber("Feeder.RPM", -4200);
             if (feederReversed)
             {
                 feederRPM = -feederRPM;
@@ -118,7 +122,11 @@ void Turret::Run()
     // Shooter Control
     //----------------
     UpdateShooterPID();
-    if (shooterEnabled)
+    if (feederAndShooterReversed) {
+        double reverseSpeed = -1.0 * copysign(1.0, frc::SmartDashboard::GetNumber("Turret.RPM.Long", 5000));
+        shooterMotor->Set(reverseSpeed);
+    }
+    else if (shooterEnabled)
     {
         rev::CANPIDController shooterPIDController = shooterMotor->GetPIDController();
         double shooterRPM = shooterPIDConfig.kRpm1;
@@ -172,6 +180,13 @@ void Turret::PreloadBall()
         preloadFeederRunning = true;
         preloadFeederStarted = frc::Timer::GetFPGATimestamp();
     }
+}
+
+// ***************************************************************************/
+
+void Turret::SetFeederAndShooterReversed(bool reversed)
+{
+    feederAndShooterReversed = reversed;
 }
 
 // ***************************************************************************/

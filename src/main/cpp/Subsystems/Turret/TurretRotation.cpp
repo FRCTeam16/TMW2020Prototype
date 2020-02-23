@@ -1,4 +1,5 @@
 #include "Subsystems/Turret/TurretRotation.h"
+#include "Util/BSPrefs.h"
 
 TurretRotation::TurretRotation(std::shared_ptr<VisionSystem> visionSystem) : visionSystem(visionSystem)
 {
@@ -62,6 +63,18 @@ void TurretRotation::Run()
     }
 }
 
+
+void TurretRotation::EnableTurretSoftLimits()
+{
+    turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, true);
+    turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, true);
+}
+void TurretRotation::DisableTurretSoftLimits()
+{
+    turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, false);
+    turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, false);
+}
+
 // ***************************************************************************/
 
 void TurretRotation::SetOpenLoopTurretSpeed(double _speed)
@@ -108,13 +121,19 @@ bool TurretRotation::IsTurretInPosition()
 
 void TurretRotation::ZeroTurretPosition()
 {
+    auto prefs = BSPrefs::GetInstance();
     turretStartPosition = turretMotor->GetEncoder().GetPosition();
+
+    turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, turretStartPosition + prefs->GetDouble("TurretRotation.FwdLimit", 0));
+    turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, turretStartPosition + prefs->GetDouble("TurretRotation.RevLimit", -715));
+
     turretPositions.clear();
+    
     turretPositions[Position::kRight] = turretStartPosition;
-    turretPositions[Position::kBack]  = turretStartPosition - 210;
-    turretPositions[Position::kLeft]  = turretStartPosition - 413;
-    turretPositions[Position::kFront] = turretStartPosition - 628;
-    turretPositions[Position::kGoalWallShot] = turretStartPosition - 175;
+    turretPositions[Position::kBack]  = turretStartPosition + prefs->GetDouble("TurretRotation.Offset.Back", -210);
+    turretPositions[Position::kLeft]  = turretStartPosition + prefs->GetDouble("TurretRotation.Offset.Left", -413);
+    turretPositions[Position::kFront] = turretStartPosition + prefs->GetDouble("TurretRotation.Offset.Front", -628);
+    turretPositions[Position::kGoalWallShot] = turretStartPosition + prefs->GetDouble("TurretRotation.Offset.GoalWallShot", -175);
 }
 
 // ***************************************************************************/
@@ -135,12 +154,14 @@ void TurretRotation::ToggleVisionTracking()
     if (visionTrackingEnabled)
     {
         // turn off
+        std::cout << "TurretRotation::ToggleVisionTracking -> Disable Vision Tracking\n";
         visionSystem->DisableVisionTracking();
         this->DisableVisionTracking();
     }
     else
     {
         // turn on
+        std::cout << "TurretRotation::ToggleVisionTracking -> Enable Vision Tracking\n";
         visionSystem->EnableVisionTracking();
         this->EnableVisionTracking();
     }
@@ -155,7 +176,9 @@ bool TurretRotation::IsVisionTracking()
 
 void TurretRotation::Instrument()
 {
-    frc::SmartDashboard::PutNumber("Turret Position", turretMotor->GetEncoder().GetPosition());
+    const double physicalPosition = turretMotor->GetEncoder().GetPosition();
+    frc::SmartDashboard::PutNumber("Turret Position", physicalPosition);
+    frc::SmartDashboard::PutNumber("Adjusted Turret Position", physicalPosition + turretStartPosition);
     frc::SmartDashboard::PutNumber("Turret Velocity", turretMotor->GetEncoder().GetVelocity());
 }
 

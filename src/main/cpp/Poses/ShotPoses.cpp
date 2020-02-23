@@ -1,17 +1,36 @@
 #include "Poses/ShotPoses.h"
+#include "Robot.h"
 
 void ShortShotPose::Run(bool startShooter) {
-    turret->SetLidToShortShot();
-    turret->SetShooterEnabled(startShooter);
-    turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kFront);
+    Robot::turret->SetLidToShortShot();
+    Robot::turret->SetShooterEnabled(startShooter);
+    Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kFront);
     if (!startShooter) {
-        feederArm->SetArmPosition(FeederArm::Position::kZero);
+        Robot::feederArm->SetArmPosition(FeederArm::Position::kZero);
     }
+    Robot::feederArm->SetArmPosition(FeederArm::Position::kPlayerStation);
 }
 
 
+void MediumShotPose::Run(bool startShooter) {
+    Robot::turret->SetLidToLongShot();
+    Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kBack);
+    // Robot::feederArm->SetArmPosition(FeederArm::Position::kZero);
+    Robot::visionSystem->GetLimelight()->SelectPipeline(0);
+    Robot::visionSystem->EnableVisionTracking();
+}
+
 void LongShotPose::Run(bool startShooter) {
-    turret->SetLidToLongShot();
-    turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kBack);
-    feederArm->SetArmPosition(FeederArm::Position::kZero);
+    Robot::turret->SetLidToLongShot();
+    Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kBack);
+    // Robot::feederArm->SetArmPosition(FeederArm::Position::kZero);
+    Robot::visionSystem->GetLimelight()->SelectPipeline(1);
+    Robot::visionSystem->EnableVisionTracking();
+}
+
+void TrenchShotPose::Run(bool shartShooter) {
+    Robot::turret->SetLidToLongShot();
+    Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kGoalWallShot);
+    // Robot::feederArm->SetArmPosition(FeederArm::Position::kZero);
+    Robot::visionSystem->DisableVisionTracking();
 }

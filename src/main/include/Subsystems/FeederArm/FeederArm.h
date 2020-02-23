@@ -39,7 +39,9 @@ private :
     std::shared_ptr<WPI_VictorSPX>  intakeMotor = RobotMap::intakeMotor; 
     std::shared_ptr<WPI_TalonFX> armMotor = RobotMap::armMotor; 
     std::shared_ptr<WPI_TalonFX> armMotorFollower = RobotMap::armMotorFollower;
-    std::shared_ptr<frc::Solenoid> climberArms = RobotMap::climberArms;
+    std::shared_ptr<frc::Solenoid> climberRightArm = RobotMap::climberRightArm;
+    std::shared_ptr<frc::Solenoid> climberLeftArm = RobotMap::climberLeftArm;
+    
 
     bool intakeEnabled = false;
     bool intakeReversed = false;
