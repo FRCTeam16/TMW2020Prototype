@@ -31,7 +31,7 @@ bool DriveToDistance::Run(std::shared_ptr<World> world) {
     //*****************
     if (currentEncoderPosition > targetSetpoint) {
         std::cout << "DriveToDistance: target reached in " << elapsedTimeSecs << " secs\n";
-        crab->Stop();
+        // crab->Stop();
         return true;
     }
 

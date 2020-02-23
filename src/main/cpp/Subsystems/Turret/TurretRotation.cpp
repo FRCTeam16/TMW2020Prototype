@@ -23,12 +23,14 @@ TurretRotation::TurretRotation(std::shared_ptr<VisionSystem> visionSystem) : vis
 
 void TurretRotation::Init()
 {
+    std::cout << "TurretRotation::Init =>\n";
     visionTrackingEnabled = false;
     openLoopMessage = false;
 
     ZeroTurretPosition();
     turretSetpoint = turretStartPosition;
     positionControl = true;
+    std::cout << "TurretRotation::Init <=\n";
 }
 
 void TurretRotation::Run()
@@ -140,12 +142,14 @@ void TurretRotation::ZeroTurretPosition()
 
 void TurretRotation::EnableVisionTracking()
 {
+    visionSystem->EnableVisionTracking();
     visionTrackingEnabled = true;
     positionControl = false;
 }
 
 void TurretRotation::DisableVisionTracking()
 {
+    visionSystem->DisableVisionTracking();
     visionTrackingEnabled = false;
 }
 
@@ -155,14 +159,12 @@ void TurretRotation::ToggleVisionTracking()
     {
         // turn off
         std::cout << "TurretRotation::ToggleVisionTracking -> Disable Vision Tracking\n";
-        visionSystem->DisableVisionTracking();
         this->DisableVisionTracking();
     }
     else
     {
         // turn on
         std::cout << "TurretRotation::ToggleVisionTracking -> Enable Vision Tracking\n";
-        visionSystem->EnableVisionTracking();
         this->EnableVisionTracking();
     }
 }

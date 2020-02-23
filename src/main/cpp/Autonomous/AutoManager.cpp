@@ -15,15 +15,16 @@ AutoManager::AutoManager() :
 		strategies(new frc::SendableChooser<int>())
 {
 	strategies->SetDefaultOption("0 - None", AutoStrategy::kNone);
-	strategies->AddOption("1 - GoalSideSweep 8", AutoStrategy::kGoalSideSweepStandard);
+	strategies->AddOption("1 - GoalSideSweep Center", AutoStrategy::kGoalSideSweepCenter);
+	strategies->AddOption("2 - GoalSideSweep Offset", AutoStrategy::kGoalSideSweepOffset);
 	strategies->AddOption("99 - Debug Auto Strategy", AutoStrategy::kDebug);
 
 	positions->SetDefaultOption("2 - Right", AutoStartPosition::kRight);
 	// positions->AddOption("1 - Center", AutoStartPosition::kCenter);
 	positions->AddOption("0 - Left",  AutoStartPosition::kLeft);
 
-	frc::SmartDashboard::PutData("Auto Start Pos", positions.get());
-	frc::SmartDashboard::PutData("Auto Strategy", strategies.get());
+	frc::SmartDashboard::PutData("Auto Start Pos1", positions.get());
+	frc::SmartDashboard::PutData("Auto Strategy1", strategies.get());
 	std::cout << "AutoManager::AutoManager() finished\n";
 }
 
@@ -43,9 +44,13 @@ std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key, s
 		std::cout << "AUTOMAN: Selected DEBUG \n";
 		strategy = new DebugAutoStrategy(world);
 		break;
-	case kGoalSideSweepStandard:
-		std::cout << "AUTOMAN: Selected GoalSideSweep+8 \n";
-		strategy = new GoalSideSweepStrategy(world, GoalSideSweepStrategy::Mode::Standard);
+	case kGoalSideSweepOffset:
+		std::cout << "AUTOMAN: Selected GoalSideSweep Offset \n";
+		strategy = new GoalSideSweepStrategy(world, GoalSideSweepStrategy::Mode::kOffset);
+		break;
+	case kGoalSideSweepCenter:
+		std::cout << "AUTOMAN: Selected GoalSideSweep Center \n";
+		strategy = new GoalSideSweepStrategy(world, GoalSideSweepStrategy::Mode::kCenter);
 		break;
 	default:
 		// TODO: Fill in sane default

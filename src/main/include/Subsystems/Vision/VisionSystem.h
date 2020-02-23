@@ -33,9 +33,11 @@ class VisionSystem : public SubsystemManager {
   void EnableVisionTracking();
   void DisableVisionTracking();
   bool IsVisionTrackingEnabled();
+  void SetOffsetDegrees(double offset);
 private:
   std::shared_ptr<Limelight> limelight;
   std::unique_ptr<XOffsetController> xoffsetController;
   std::unique_ptr<frc::PIDController> xoffPID;
   std::shared_ptr<VisionInfo> currentVisionInfo;
+  double offsetDegrees = 0.0;
 };

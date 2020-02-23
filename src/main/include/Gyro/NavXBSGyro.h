@@ -13,7 +13,8 @@ public:
     
     double ReadRawYaw() override
     {
-        return ahrs->GetAngle();
+        // FIXME: offset here or in parent?
+       return this->GetOffset() + ahrs->GetAngle();
     }
 
     void ZeroYaw() override

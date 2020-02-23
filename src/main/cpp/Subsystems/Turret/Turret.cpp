@@ -88,10 +88,10 @@ void Turret::Run()
         std::cout << "feeder preload block\n";
         feederMotor->Set(feederSpeed);
     }
-    else if (feederAndShooterReversed) {
+    /*else if (feederAndShooterReversed) {
         double reverseSpeed = -1.0 * copysign(1.0, frc::SmartDashboard::GetNumber("Feeder.RPM", -4200));
         feederMotor->Set(reverseSpeed);
-    }
+    }*/
     else if (feederEnabled)
     {
         UpdateFeederPID();
@@ -122,11 +122,11 @@ void Turret::Run()
     // Shooter Control
     //----------------
     UpdateShooterPID();
-    if (feederAndShooterReversed) {
+    /*if (feederAndShooterReversed) {
         double reverseSpeed = -1.0 * copysign(1.0, frc::SmartDashboard::GetNumber("Turret.RPM.Long", 5000));
         shooterMotor->Set(reverseSpeed);
     }
-    else if (shooterEnabled)
+    else*/ if (shooterEnabled)
     {
         rev::CANPIDController shooterPIDController = shooterMotor->GetPIDController();
         double shooterRPM = shooterPIDConfig.kRpm1;

@@ -63,6 +63,7 @@ void Robot::HandleArmBrakeButton()
 }
 
 void Robot::DisabledInit() {
+	turret->GetTurretRotation().DisableVisionTracking();
 	visionSystem->DisableVisionTracking();
 }
 
@@ -219,11 +220,11 @@ void Robot::TeleopPeriodic() {
 	}
 	*/
 
-	if (oi->DL16->Pressed()) {
-		turret->SetFeederAndShooterReversed(true);
-	} else {
-		turret->SetFeederAndShooterReversed(false);
-	}
+	// if (oi->DL16->Pressed()) {
+	// 	turret->SetFeederAndShooterReversed(true);
+	// } else {
+	// 	turret->SetFeederAndShooterReversed(false);
+	// }
 
 	/**********************************************************
 	 * Climber Arms

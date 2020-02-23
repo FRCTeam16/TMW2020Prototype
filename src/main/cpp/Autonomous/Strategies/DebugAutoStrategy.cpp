@@ -66,13 +66,14 @@ void DebugAutoStrategy::DebugSimple() {
 }
 
 void DebugAutoStrategy::Measure() {
-	// steps.push_back(new DriveToDistance(0.0, 0.3, 0_in, 60_in));
-	const units::degree_t zero(0);
-	const units::degree_t fortyFive(45.0);
+	steps.push_back(new DriveToDistance(0.0, 0.3, 0_in, 60_in));
+
+	// const units::degree_t zero(0);
+	// const units::degree_t fortyFive(45.0);
 
 	// auto step = new AckermanDriveToAngle(units::degree_t(0), 0.2, 1.0, units::degree_t(45),units::degree_t(3.0), units::second_t(5.0));
-	auto step = new AckermanDriveToAngle(0, 0.2, 1, 45);
-	steps.push_back(step);
+	// auto step = new AckermanDriveToAngle(0, 0.2, 1, 45);
+	// steps.push_back(step);
 
 	
 }

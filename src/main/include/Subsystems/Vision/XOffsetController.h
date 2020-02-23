@@ -11,7 +11,7 @@ public:
   
   double PIDGet() override {
     double xOffset = limelight->GetScene().xOffset;
-    return xOffset;
+    return xOffset + offsetDegrees;
   }
 
   void PIDWrite(double value) override {
@@ -22,7 +22,12 @@ public:
     return pidValue;
   }
 
+  void SetOffsetDegrees(double offset) {
+    offsetDegrees = offset;
+  }
+
 private:
   std::shared_ptr<Limelight> limelight;
   double pidValue = 0.0;
+  double offsetDegrees = 0.0;
 };

@@ -33,7 +33,7 @@ Turret.Iz, 0.0
 Turret.D, 0.0
 Turret.FF, 0.000173
 Turret.RPM, 4300
-TurretRotation.FwdLimit, 0
+TurretRotation.FwdLimit, 130
 TurretRotation.RevLimit, -715
 TurretRotation.Offset.Back, -210
 TurretRotation.Offset.Left, -413

@@ -101,3 +101,8 @@ void VisionSystem::DisableVisionTracking() {
 bool VisionSystem::IsVisionTrackingEnabled() {
     return limelight->GetCameraMode() == Limelight::CameraMode::ImageProcessing;
 }
+
+void VisionSystem::SetOffsetDegrees(double offset)
+{
+    xoffsetController->SetOffsetDegrees(offset);
+}
