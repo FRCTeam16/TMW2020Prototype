@@ -94,6 +94,7 @@ void Robot::TeleopInit() {
 	InitSubsystems();
 	driveBase->InitTeleop();
 	visionSystem->ResetMaxOutputRange();
+	visionSystem->SetOffsetDegrees(0.0);
 	feederArm->InitTeleop();
     std::cout << "Robot::TeleopInit <=\n";
 }

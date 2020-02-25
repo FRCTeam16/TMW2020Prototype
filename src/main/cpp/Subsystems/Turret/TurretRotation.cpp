@@ -16,8 +16,6 @@ TurretRotation::TurretRotation(std::shared_ptr<VisionSystem> visionSystem) : vis
     frc::SmartDashboard::PutNumber("Turret.PID.P", 0.3);
     frc::SmartDashboard::PutNumber("Turret.PID.I", 0);
     frc::SmartDashboard::PutNumber("Turret.PID.D", 0);
-    frc::SmartDashboard::PutNumber("Turret.RPM.Long", 5000);
-    frc::SmartDashboard::PutNumber("Turret.RPM.Short", 3800);
     std::cout << "TurretRotation created\n";
 
     ZeroTurretPosition();
@@ -47,10 +45,14 @@ void TurretRotation::Run()
         openLoopMessage = false;
         positionControl = false;
     }
-    else if (visionTrackingEnabled && visionInfo->hasTarget)
+    else if (visionTrackingEnabled && !positionControl || (positionControl && visionInfo->hasTarget)) /* && hasTarget */
     {
         // We have a vision target, override turret position
-        double speed = -visionInfo->xSpeed;
+        double speed = 0.0;
+        if (visionInfo->hasTarget) {
+            speed = -visionInfo->xSpeed;
+            positionControl = false;    // kick out of position control if we see a target
+        }
         turretMotor->Set(speed);
     }
     else

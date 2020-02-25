@@ -22,39 +22,55 @@ GoalSideSweepStrategy::GoalSideSweepStrategy(std::shared_ptr<World> world, Mode 
 	}
 }
 
+
+/**
+ * P = 0.03
+ * P = 0.05
+ */
 void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	const double firstAngle = 180.0;
 	steps.push_back(new SetGyroOffset(180.0));
 
 	steps.push_back(new ConcurrentStep({
 		new DriveToDistance(firstAngle, 0.3, 0_in, -6_in),
-		new SetTurretPosition(-180),
+		new SetTurretPosition(-165),
 		new EnableIntake(true),     // TODO: Pass in desired speed?
 		new EnableShooter(true),
 	}));
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(firstAngle, 0.3, 0_in, -54_in),
-		new SetVisionOffsetDegrees(3.0),
-		new EnableVisionTracking(true)
+		new DriveToDistance(firstAngle, 0.5, 0_in, -54_in),
+		new SetVisionOffsetDegrees(7.0),		// FIXME: testing
+		new EnableVisionTracking(true),
 	}));
 	
+	// Ramp down
+	auto lastStraight = new DriveToDistance(firstAngle, 0.5, 0_in, -77_in);		// was 75 @ 0.3
+	lastStraight->SetRampDownDistance(25_in);
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(firstAngle, 0.3, 0_in, -78_in),
+		lastStraight,
+		new SetVisionOffsetDegrees(2.0),
 		new EnableFeeder(true)
 	}));
-	steps.push_back(new Delay(1.0));
-	steps.push_back(new EnableFeeder(false));
+	// steps.push_back(new Delay(0.5));
+	steps.push_back(new ConcurrentStep({
+		new Delay(0.5),
+		new EnableFeeder(false)
+	}));
+
 
 	//
 	// Turn and drive to bar
 	//
-	const double initialBarAngle = -120.0;
+	const double initialBarAngle = -125.0;
 	steps.push_back(new ConcurrentStep({
 		new Rotate(initialBarAngle),
-		new SetTurretPosition(100)
+		new EnableFeeder(false),
+		new EnableVisionTracking(false),
+		new SetTurretPosition(0, 5_s),
+		new SetVisionOffsetDegrees(2.0)
 	}));
 
-	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -2_in, 32_in);
+	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -2_in, 36_in);
 	driveToBar->SetUseGyro(false);
 	steps.push_back(new ConcurrentStep({
 		driveToBar,
@@ -62,44 +78,22 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	}));
 	steps.push_back(driveToBar);
 
-	// Pause and shoot
-	steps.push_back(new ConcurrentStep({
-		new Delay(1.0),
-		new EnableFeeder(true)
-	}));
-
 
 	//
 	// Align and perform sweep
 	//
-	double sweepAngle = -75.0;
-	
-	// Backup, turn and setup sweep angle
-
-	// auto driveBack = new DriveToDistance(initialBarAngle, -0.2, 0_in, 16_in);
-	// driveBack->SetUseGyro(false);
-	// steps.push_back(driveBack);
-
+	double sweepAngle = -85.0;
+	// auto kickRight = new DriveToDistance(sweepAngle, 0.10, 4_in, -2_in);
+	// kickRight->SetUseGyro(false);
 	// steps.push_back(new ConcurrentStep({
-	// 	new Rotate(sweepAngle),
+	// 	kickRight,
 	// 	new SetTurretPosition(100.0),
-	// 	new SetVisionOffsetDegrees(3.0),
 	// }));
-	// steps.push_back(new DriveToDistance(sweepAngle, 0.2, -20_in, 0_in));
-
-
-	auto kickRight = new DriveToDistance(sweepAngle, 0.15, 4_in, -2_in);
-	kickRight->SetUseGyro(false);
-	steps.push_back(new ConcurrentStep({
-		kickRight,
-		new SetTurretPosition(100.0),
-		new SetVisionOffsetDegrees(3.0),
-	}));
-
+	steps.push_back(new Rotate(sweepAngle));
 
 	// Sweep down bar while shooting
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(sweepAngle, 0.2, -56_in, 110_in),
+		new DriveToDistance(sweepAngle, 0.15, -56_in, 110_in),
 		new EnableFeeder(true)
 	}));
 }

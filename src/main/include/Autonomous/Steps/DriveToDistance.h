@@ -21,6 +21,8 @@ public:
 
     void SetDebug(bool debug) { this->debug = debug; }
 
+    void SetRampDownDistance(units::inch_t distance) { this->rampDownDistance = distance; }
+
 private:
     const double angle;
     const double speed;
@@ -33,4 +35,6 @@ private:
     bool debug = false;
     units::second_t startTime = -1_s;
     units::second_t stepTimeOut = 10.0_s;
+
+    units::inch_t rampDownDistance = -1_in;
 };

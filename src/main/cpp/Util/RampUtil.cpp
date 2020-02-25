@@ -29,7 +29,7 @@ double RampUtil::RampDown(double baseSpeed, double currentPosition, double targe
 		std::cout << "RampDown Error: " << error << " Profiled Speed: " << speed << "\n";
 		if (fabs(speed) < minSpeed) {
 			speed = std::copysign(minSpeed, baseSpeed);
-			std::cout << "RampDown - keeping minimum speed of " << speed;
+			std::cout << "RampDown - keeping minimum speed of " << speed << "\n";
 		}
 	}
 	return speed;

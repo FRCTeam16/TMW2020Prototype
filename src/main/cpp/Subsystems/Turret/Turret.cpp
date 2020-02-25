@@ -37,6 +37,14 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     frc::SmartDashboard::PutNumber("Feeder.PID.D", 0.0);
     frc::SmartDashboard::PutNumber("Feeder.PID.F", 0.000185);
 
+
+    frc::SmartDashboard::PutNumber("Turret.RPM.Long", 4250);
+    frc::SmartDashboard::PutNumber("Turret.RPM.Short", 3800);
+
+    //debug
+    frc::SmartDashboard::PutNumber("Shooter.Get.Out", shooterMotor->Get());
+
+
     std::cout << "Turret initialized\n";
     
 }
@@ -134,6 +142,7 @@ void Turret::Run()
         frc::SmartDashboard::PutNumber("ShooterSetpoint", shooterRPM);
         frc::SmartDashboard::PutNumber("Shooter Amps", shooterMotor->GetOutputCurrent());
         frc::SmartDashboard::PutNumber("Shooter Output", shooterMotor->GetAppliedOutput());
+        frc::SmartDashboard::PutNumber("Shooter.Get.Out", shooterMotor->Get());
         shooterPIDController.SetReference(shooterRPM, rev::ControlType::kVelocity);
     }
     else

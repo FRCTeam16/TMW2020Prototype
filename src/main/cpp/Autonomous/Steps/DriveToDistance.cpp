@@ -1,5 +1,7 @@
 #include "Autonomous/Steps/DriveToDistance.h"
 #include "Robot.h"
+#include "Util/RampUtil.h"
+#include "Autonomous/DriveUnit.h"
 
 bool DriveToDistance::Run(std::shared_ptr<World> world) {
     const units::second_t now {world->GetClock()};
@@ -45,9 +47,17 @@ bool DriveToDistance::Run(std::shared_ptr<World> world) {
     //*****************
     // Drive Control
     //*****************
-    const auto yspeed = speed * units::math::cos(angleRadians);
-    const auto xspeed = speed * units::math::sin(angleRadians);
+    double adjSpeed = speed;
+    if (rampDownDistance > -1_in) {
+        double pulses = rampDownDistance.to<double>();
+        adjSpeed = RampUtil::RampDown(adjSpeed, currentEncoderPosition, targetSetpoint, pulses);
+    }
+
+    const auto yspeed = adjSpeed * units::math::cos(angleRadians);
+    const auto xspeed = adjSpeed * units::math::sin(angleRadians);
     const auto twistOutput = Robot::driveBase->GetTwistControlOutput();
+
+    
 
     crab->Update(twistOutput, yspeed.to<double>(), xspeed.to<double>(), useGyro);
     return false;
