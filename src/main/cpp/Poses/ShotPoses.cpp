@@ -2,6 +2,7 @@
 #include "Robot.h"
 
 void ShortShotPose::Run(bool startShooter) {
+    Robot::turret->SetShootingProfile(ShootingProfile::kShort);
     Robot::turret->SetLidToShortShot();
     Robot::turret->SetShooterEnabled(startShooter);
     Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kFront);
@@ -11,8 +12,8 @@ void ShortShotPose::Run(bool startShooter) {
     Robot::feederArm->SetArmPosition(FeederArm::Position::kPlayerStation);
 }
 
-
 void MediumShotPose::Run(bool startShooter) {
+    Robot::turret->SetShootingProfile(ShootingProfile::kMedium);
     Robot::turret->SetLidToLongShot();
     Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kBack);
     // Robot::feederArm->SetArmPosition(FeederArm::Position::kZero);
@@ -21,6 +22,7 @@ void MediumShotPose::Run(bool startShooter) {
 }
 
 void LongShotPose::Run(bool startShooter) {
+    Robot::turret->SetShootingProfile(ShootingProfile::kLong);
     Robot::turret->SetLidToLongShot();
     Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kBack);
     // Robot::feederArm->SetArmPosition(FeederArm::Position::kZero);
@@ -29,6 +31,7 @@ void LongShotPose::Run(bool startShooter) {
 }
 
 void TrenchShotPose::Run(bool shartShooter) {
+    Robot::turret->SetShootingProfile(ShootingProfile::kMedium);
     Robot::turret->SetLidToLongShot();
     Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kGoalWallShot);
     // Robot::feederArm->SetArmPosition(FeederArm::Position::kZero);

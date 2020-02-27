@@ -1,19 +1,15 @@
 #include "Subsystems/FeederArm/FeederArm.h"
 #include "Util/BSPrefs.h"
 
-static int kVelocity = 10000;
-static int kAcceleration = 120000;
 
 FeederArm::FeederArm()
 {
     armMotorFollower->Follow(*armMotor);
     armMotorFollower->SetInverted(true);
 
-    this->ZeroArmPosition();
-
-
     auto prefs = BSPrefs::GetInstance();
 
+    // Configure arm limits and brake modes
     armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 0);
     armMotor->ConfigForwardSoftLimitThreshold(prefs->GetDouble("FeederArm.Pos.FwdLimit", -5000));;
     armMotor->ConfigReverseSoftLimitThreshold(prefs->GetDouble("FeederArm.Pos.RevLimit",-160000));
@@ -23,21 +19,28 @@ FeederArm::FeederArm()
     armMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
     armMotorFollower->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
-    armPIDConfig.kP = 0.01999998;
-    armPIDConfig.kI = 0.000001;
+    //------------------
+    // Configure Arm PID
+    //------------------
+    armPIDConfig.P = prefs->GetDouble("FeederArm.PID.P", 0.01999998);
+    armPIDConfig.I = prefs->GetDouble("FeederArm.PID.I", 0.000001);
+    armPIDConfig.D = prefs->GetDouble("FeederArm.PID.D", 0.0);
+    armPIDConfig.F = prefs->GetDouble("FeederArm.PID.F", 0.0);
+    armPIDConfig.acceleration = prefs->GetDouble("FeederArm.PID.Acceleration", 120000);
+    armPIDConfig.velocity = prefs->GetDouble("FeederArm.PID.Velocity", 10000);
 
-    frc::SmartDashboard::SetDefaultNumber("IntakeSpeed", 1.0);
-    frc::SmartDashboard::SetDefaultNumber("IntakeSpeed.ColorWheel", 0.2);
+    armMotor->Config_kP(0, armPIDConfig.P);
+    armMotor->Config_kI(0, armPIDConfig.I);
+    armMotor->Config_kD(0, armPIDConfig.D);
+    armMotor->Config_kF(0, armPIDConfig.F);
+    armMotor->ConfigMotionCruiseVelocity(armPIDConfig.velocity);
+    armMotor->ConfigMotionAcceleration(armPIDConfig.acceleration);
 
-    frc::SmartDashboard::SetDefaultNumber("Arm.P", armPIDConfig.kP);
-    frc::SmartDashboard::SetDefaultNumber("Arm.I", armPIDConfig.kI);
-    frc::SmartDashboard::SetDefaultNumber("Arm.D", armPIDConfig.kD);
-    frc::SmartDashboard::SetDefaultNumber("Arm.F", armPIDConfig.kFF);
+    this->ZeroArmPosition();
 
+    frc::SmartDashboard::SetDefaultNumber("FeederArm.IntakeSpeed", 1.0);
+    frc::SmartDashboard::SetDefaultNumber("FeederArm.IntakeSpeed.ColorWheel", 0.2);
     frc::SmartDashboard::SetDefaultNumber("Arm.Setpoint", 0.0);
-
-    frc::SmartDashboard::SetDefaultNumber("Arm.V", kVelocity);
-    frc::SmartDashboard::SetDefaultNumber("Arm.A", kAcceleration);
 }
 
 void FeederArm::Init()
@@ -84,7 +87,9 @@ void FeederArm::Run()
     if (intakeEnabled)
     {
 
-        intakeSpeed = intakeColorWheelMode ? frc::SmartDashboard::GetNumber("IntakeSpeed.ColorWheel", 0.2) : frc::SmartDashboard::GetNumber("IntakeSpeed", 1.0);
+        intakeSpeed = intakeColorWheelMode ? 
+            frc::SmartDashboard::GetNumber("FeederArm.IntakeSpeed.ColorWheel", 0.2) :
+            frc::SmartDashboard::GetNumber("FeederArm.IntakeSpeed", 1.0);
         if (intakeReversed)
         {
             intakeSpeed = -intakeSpeed;
@@ -102,27 +107,8 @@ void FeederArm::Run()
     else
     {
         // run magic motion
-        // see https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/C%2B%2B/MotionMagic/src/main/cpp/Robot.cpp
-        armPIDConfig.kP = frc::SmartDashboard::GetNumber("Arm.P", 0.0);
-        armPIDConfig.kI = frc::SmartDashboard::GetNumber("Arm.I", 0.0);
-        armPIDConfig.kD = frc::SmartDashboard::GetNumber("Arm.D", 0.0);
-        armPIDConfig.kFF = frc::SmartDashboard::GetNumber("Arm.F", 0.0);
-        armSetpoint = frc::SmartDashboard::GetNumber("Arm.Setpoint", 0.0);
-
-        double velocity = frc::SmartDashboard::GetNumber("Arm.V", kVelocity);
-        double acceleration = frc::SmartDashboard::GetNumber("Arm.A", kAcceleration);
-
-        armMotor->Config_kP(0, armPIDConfig.kP, 2);
-        armMotor->Config_kI(0, armPIDConfig.kI, 2);
-        armMotor->Config_kD(0, armPIDConfig.kD, 2);
-        armMotor->Config_kF(0, armPIDConfig.kFF, 2);
-        armMotor->ConfigMotionCruiseVelocity(velocity, 2);
-        armMotor->ConfigMotionAcceleration(acceleration, 2);
-
         armMotor->Set(ControlMode::MotionMagic, armSetpoint);
     }
-    frc::SmartDashboard::PutNumber("Arm.Position", armMotor->GetSelectedSensorPosition());
-    frc::SmartDashboard::PutNumber("Arm.Speed", armSpeed);
 }
 
 /*****************************************************************************/
@@ -170,7 +156,6 @@ void FeederArm::ZeroArmPosition()
 
 void FeederArm::SetArmBrakeMode(bool brakeEnabled)
 {
-    std::cout << "FeederArm::SetArmBrakeMode(" << brakeEnabled << ")\n";
     ctre::phoenix::motorcontrol::NeutralMode neutralMode;
     if (brakeEnabled)
     {

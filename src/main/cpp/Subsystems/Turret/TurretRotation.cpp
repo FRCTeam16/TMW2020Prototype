@@ -3,22 +3,35 @@
 
 TurretRotation::TurretRotation(std::shared_ptr<VisionSystem> visionSystem) : visionSystem(visionSystem)
 {
+    //-------------------------------
+    // Turret Limits
+    //-------------------------------
     turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, true);
     turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, true);
     turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, 0);
     turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, -715);
 
-
     //-------------------------------
     // Turret PID Dashboard Controls
     //-------------------------------
     frc::SmartDashboard::PutNumber("Turret.Setpoint", turretMotor->GetEncoder().GetPosition());
-    frc::SmartDashboard::PutNumber("Turret.PID.P", 0.3);
-    frc::SmartDashboard::PutNumber("Turret.PID.I", 0);
-    frc::SmartDashboard::PutNumber("Turret.PID.D", 0);
-    std::cout << "TurretRotation created\n";
+    auto prefs = BSPrefs::GetInstance();
+    turretRotationPID.P = prefs->GetDouble("TurretRotation.PID.P", 0.3);
+    turretRotationPID.I = prefs->GetDouble("TurretRotation.PID.I", 0);
+    turretRotationPID.D = prefs->GetDouble("TurretRotation.PID.D", 0);
+    turretRotationPID.F = prefs->GetDouble("TurretRotation.PID.F", 0);
 
+    auto turretPID = turretMotor->GetPIDController();
+    turretPID.SetP(turretRotationPID.P);
+    turretPID.SetI(turretRotationPID.I);
+    turretPID.SetD(turretRotationPID.D);
+    turretPID.SetFF(turretRotationPID.F);
+
+    //-------------------------------
+    // Default initialization
+    //-------------------------------
     ZeroTurretPosition();
+    std::cout << "TurretRotation created\n";
 }
 
 void TurretRotation::Init()
@@ -62,7 +75,7 @@ void TurretRotation::Run()
             positionControl = false;
             turretMotor->Set(0.0);
         } else {
-            UpdateTurretPID();
+            // UpdateTurretRotationPID();
             turretMotor->GetPIDController().SetReference(turretSetpoint, rev::ControlType::kPosition);
         }
     }
@@ -74,6 +87,7 @@ void TurretRotation::EnableTurretSoftLimits()
     turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, true);
     turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, true);
 }
+
 void TurretRotation::DisableTurretSoftLimits()
 {
     turretMotor->EnableSoftLimit(rev::CANSparkMax::SoftLimitDirection::kForward, false);
@@ -133,7 +147,6 @@ void TurretRotation::ZeroTurretPosition()
     turretMotor->SetSoftLimit(rev::CANSparkMax::SoftLimitDirection::kReverse, turretStartPosition + prefs->GetDouble("TurretRotation.RevLimit", -715));
 
     turretPositions.clear();
-    
     turretPositions[Position::kRight] = turretStartPosition;
     turretPositions[Position::kBack]  = turretStartPosition + prefs->GetDouble("TurretRotation.Offset.Back", -210);
     turretPositions[Position::kLeft]  = turretStartPosition + prefs->GetDouble("TurretRotation.Offset.Left", -413);
@@ -160,13 +173,11 @@ void TurretRotation::ToggleVisionTracking()
 {
     if (visionTrackingEnabled)
     {
-        // turn off
         std::cout << "TurretRotation::ToggleVisionTracking -> Disable Vision Tracking\n";
         this->DisableVisionTracking();
     }
     else
     {
-        // turn on
         std::cout << "TurretRotation::ToggleVisionTracking -> Enable Vision Tracking\n";
         this->EnableVisionTracking();
     }
@@ -187,7 +198,7 @@ void TurretRotation::Instrument()
     frc::SmartDashboard::PutNumber("Turret Velocity", turretMotor->GetEncoder().GetVelocity());
 }
 
-void TurretRotation::UpdateTurretPID()
+void TurretRotation::UpdateTurretRotationPID()
 {
     double setpoint = frc::SmartDashboard::GetNumber("Turret.Setpoint", turretSetpoint);
     double p = frc::SmartDashboard::GetNumber("Turret.PID.P", 0.3);

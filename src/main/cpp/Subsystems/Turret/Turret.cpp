@@ -14,23 +14,38 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     //-------------------------------
     // Shooter PID Dashboard Controls
     //-------------------------------
-    shooterConfig.P = prefs->GetDouble("Shooter.PID.P", shooterConfig.P);
-    shooterConfig.I = prefs->GetDouble("Shooter.PID.I", shooterConfig.I);
-    shooterConfig.D = prefs->GetDouble("Shooter.PID.D", shooterConfig.D);
-    shooterConfig.F = prefs->GetDouble("Shooter.PID.F", shooterConfig.F);
+    shooterConfig.P = prefs->GetDouble("Shooter.PID.P", 0.0004);
+    shooterConfig.I = prefs->GetDouble("Shooter.PID.I", 0.0);
+    shooterConfig.D = prefs->GetDouble("Shooter.PID.D", 0.0);
+    shooterConfig.F = prefs->GetDouble("Shooter.PID.F", 0.000173);
     frc::SmartDashboard::SetDefaultNumber("Shooter.RPM", 4500);
 
+    auto shooterPID = shooterMotor->GetPIDController();
+    shooterPID.SetP(shooterConfig.P);
+    shooterPID.SetI(shooterConfig.I);
+    shooterPID.SetD(shooterConfig.D);
+    shooterPID.SetFF(shooterConfig.F);
 
     //---------------------------------
     // Feeder PID Controls and Settings
     //---------------------------------
-    feederConfig.preloadTime = prefs->GetDouble("Feeder.Preload.Time", feederConfig.preloadTime);
-    feederConfig.preloadSpeed = prefs->GetDouble("Feeder.Preload.Speed", feederConfig.preloadTime);
-    feederConfig.P = prefs->GetDouble("Feeder.PID.P", feederConfig.P);
-    feederConfig.I = prefs->GetDouble("Feeder.PID.I", feederConfig.I);
-    feederConfig.D = prefs->GetDouble("Feeder.PID.D", feederConfig.D);
-    feederConfig.F = prefs->GetDouble("Feeder.PID.F", feederConfig.F);
+    feederConfig.preloadTime = prefs->GetDouble("Feeder.Preload.Time", 0.4);
+    feederConfig.preloadSpeed = prefs->GetDouble("Feeder.Preload.Speed", -0.2);
+    feederConfig.P = prefs->GetDouble("Feeder.PID.P", 0.00001);
+    feederConfig.I = prefs->GetDouble("Feeder.PID.I", 0.0);
+    feederConfig.D = prefs->GetDouble("Feeder.PID.D", 0.0);
+    feederConfig.F = prefs->GetDouble("Feeder.PID.F", 0.000185);
     frc::SmartDashboard::SetDefaultNumber("Feeder.RPM", -4200.0);
+
+    auto feederPID = feederMotor->GetPIDController();
+    feederPID.SetP(feederConfig.P);
+    feederPID.SetI(feederConfig.I);
+    feederPID.SetD(feederConfig.D);
+    feederPID.SetFF(feederConfig.F);
+
+    //---------------------------------
+    // Initial states
+    //---------------------------------
 
     InitShootingProfiles();
     SetShootingProfile(ShootingProfile::kLong);
@@ -97,7 +112,7 @@ void Turret::Run()
             }
             feederMotor->GetPIDController().SetReference(feederRPM, rev::ControlType::kVelocity);
 
-            // double feederSpeed = frc::SmartDashboard::GetNumber("FeederSpeed", -.70);
+            // double feederSpeed = frc::SmartDashboard::GetNumber("Turret.FeederSpeed", -.70);
             // feederMotor->Set(0.0);
         }
         else
@@ -228,6 +243,7 @@ void Turret::InitShootingProfiles()
 {
     auto prefs = BSPrefs::GetInstance();
     ShootingProfileConfig shortCfg, mediumCfg, longCfg;
+    shootingProfiles.clear();
 
     shortCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Short.Shooter", 4250);
     shortCfg.feederRPM = prefs->GetDouble("ShootingProfile.Short.Feeder", 5000);
@@ -239,7 +255,7 @@ void Turret::InitShootingProfiles()
 
     longCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Long.Shooter", 4500);
     longCfg.feederRPM = prefs->GetDouble("ShootingProfile.Long.Feeder", 4000);
-    shootingProfiles[ShootingProfile::kMedium] = longCfg;
+    shootingProfiles[ShootingProfile::kLong] = longCfg;
 
 }
 

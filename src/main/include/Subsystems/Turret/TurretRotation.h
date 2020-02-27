@@ -5,6 +5,7 @@
 #include "Subsystems/SubsystemManager.h"
 #include "Subsystems/Vision/VisionSystem.h"
 #include "RobotMap.h"
+#include "Util/PIDConfig.h"
 
 
 class TurretRotation : public SubsystemManager {
@@ -35,8 +36,8 @@ private:
     std::shared_ptr<rev::CANSparkMax> turretMotor = RobotMap::turretMotor;
     std::shared_ptr<VisionSystem> visionSystem;
 
-    void UpdateTurretPID();
-
+    PIDConfig turretRotationPID;
+    void UpdateTurretRotationPID();
 
     bool visionTrackingEnabled = false;
     double visionTargetAcquiredTime = -1.0;

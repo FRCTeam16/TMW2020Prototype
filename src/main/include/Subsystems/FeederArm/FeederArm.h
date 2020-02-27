@@ -9,6 +9,11 @@
 #include <unordered_map>
 
 
+struct ArmPIDConfig : PIDConfig {
+    double velocity;
+    double acceleration;
+};
+
 class FeederArm : public SubsystemManager {
 public:
     enum Position { kZero, kDown, kPlayerStation, kVertical };
@@ -52,7 +57,7 @@ private :
 
     bool runArmControlled = false;
     double armSpeed = 0.0;
-    PIDConfig armPIDConfig;
+    ArmPIDConfig armPIDConfig;
     double armSetpoint = 0.0;
     unordered_map<Position, double> armPositions;
 };
