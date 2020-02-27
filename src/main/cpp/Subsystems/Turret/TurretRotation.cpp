@@ -34,7 +34,7 @@ void TurretRotation::Init()
 
 void TurretRotation::Run()
 {
-    const double now = frc::Timer::GetFPGATimestamp();
+    // const double now = frc::Timer::GetFPGATimestamp();
     auto visionInfo = visionSystem->GetLastVisionInfo();
     // std::cout << "Turret(tpc=" << positionControl << ", ol=" << openLoopMessage << ", vt=" << visionTrackingEnabled << ")\n";
 
@@ -45,7 +45,7 @@ void TurretRotation::Run()
         openLoopMessage = false;
         positionControl = false;
     }
-    else if (visionTrackingEnabled && !positionControl || (positionControl && visionInfo->hasTarget)) /* && hasTarget */
+    else if ((visionTrackingEnabled && !positionControl) || (positionControl && visionInfo->hasTarget)) /* && hasTarget */
     {
         // We have a vision target, override turret position
         double speed = 0.0;

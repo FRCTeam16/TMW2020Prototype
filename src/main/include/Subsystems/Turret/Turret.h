@@ -7,11 +7,34 @@
 #include "Subsystems/Vision/VisionSystem.h"
 #include "RobotMap.h"
 #include "Util/BSPrefs.h"
-#include "Util/PIDConfig.h"
 #include <frc/Timer.h>
 #include <frc/Solenoid.h>
+#include <unordered_map>
 
 #include "Subsystems/Turret/TurretRotation.h"
+
+enum ShootingProfile { kShort, kMedium, kLong };
+
+struct ShootingProfileConfig {
+    double shooterRPM = 0;
+    double feederRPM = 0;
+};
+
+struct FeederConfig {
+    double preloadTime = 0.4;
+    double preloadSpeed = -0.2;
+    double P = 0.00001;
+    double I = 0.0;
+    double D = 0.0;
+    double F = 0.000185;
+};
+
+struct ShooterConfig {
+    double P = 0.0004;
+    double I = 0.0;
+    double D = 0.0;
+    double F = 0.000173;
+};
 
 class Turret : public SubsystemManager {
 public:
@@ -21,7 +44,7 @@ public:
     void Run() override;
 	void Instrument() override;
 
-    TurretRotation& GetTurretRotation();    // bad practice
+    TurretRotation& GetTurretRotation();
 
     void SetShooterEnabled(bool _enabled);
     void ToggleShooterEnabled();
@@ -35,6 +58,8 @@ public:
     void SetLidToLongShot();
     void SetLidToShortShot();
 
+    void SetShootingProfile(ShootingProfile profile);
+
     
 
 private:
@@ -45,8 +70,9 @@ private:
     std::shared_ptr<VisionSystem> visionSystem;
     TurretRotation turretRotation;
 
-
-    PIDConfig shooterPIDConfig;
+    unordered_map<ShootingProfile, ShootingProfileConfig> shootingProfiles;
+    FeederConfig feederConfig;
+    ShooterConfig shooterConfig;
     bool shooterEnabled = false;
 
     bool feederEnabled = false;
@@ -59,6 +85,8 @@ private:
 
     bool lidTopShort = false;
     bool lidTopMessageSent = true;
+
+    void InitShootingProfiles();
 
     void UpdateShooterPID();
     void UpdateTurretPID();
