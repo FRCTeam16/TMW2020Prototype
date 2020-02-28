@@ -128,6 +128,9 @@ void Turret::Run()
 
     //----------------
     // Shooter Control
+    // Note that shooter control can override TurretRotation vision tracking state
+    // Shooter will talk directly to vision system to enable/disable light when 
+    // Turret Rotation has been configured to use vision tracking
     //----------------
     // UpdateShooterPID();
     const double currentShooterRPM = frc::SmartDashboard::GetNumber("Shooter.RPM", 4500.0);
@@ -136,11 +139,19 @@ void Turret::Run()
     }
     else if (shooterEnabled)
     {
+        if (turretRotation.IsVisionTracking()) {
+            visionSystem->EnableVisionTracking();
+        }
+        
         rev::CANPIDController shooterPIDController = shooterMotor->GetPIDController();
         shooterPIDController.SetReference(currentShooterRPM, rev::ControlType::kVelocity);
     }
     else
     {
+        if (turretRotation.IsVisionTracking())
+        {
+            visionSystem->DisableVisionTracking();
+        }
         // Go open loop
         shooterMotor->Set(0.0);
     }
