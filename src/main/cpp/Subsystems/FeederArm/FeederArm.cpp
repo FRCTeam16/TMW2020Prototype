@@ -48,13 +48,14 @@ void FeederArm::Init()
     this->RetractClimberArms();
     armSetpoint = 0.0;
     runArmControlled = false; // FIXME: Determine if we want to start controlled or not
+    intakeColorWheelMode = false;
 
     auto prefs = BSPrefs::GetInstance();
     armPositions[Position::kZero] = 0;
     armPositions[Position::kDown] = prefs->GetDouble("FeederArm.Pos.Down",-10000);
     armPositions[Position::kShortShot] = prefs->GetDouble("FeederArm.Pos.ShortShot", -65000);
     armPositions[Position::kPlayerStation] = prefs->GetDouble("FeederArm.Pos.PlayerStation", -75000);
-    armPositions[Position::kVertical] = prefs->GetDouble("FeederArm.Pos.Vertical", -130000);
+    armPositions[Position::kVertical] = prefs->GetDouble("FeederArm.Pos.Vertical", -105000);
 }
 
 void FeederArm::InitTeleop()
@@ -85,11 +86,10 @@ void FeederArm::Run()
     // Intake
     //-----------------------
     double intakeSpeed = 0.0;
-    if (intakeEnabled)
+    if (intakeEnabled || intakeColorWheelMode)
     {
-
         intakeSpeed = intakeColorWheelMode ? 
-            frc::SmartDashboard::GetNumber("FeederArm.IntakeSpeed.ColorWheel", 0.2) :
+            colorModeSpeed :
             frc::SmartDashboard::GetNumber("FeederArm.IntakeSpeed", 1.0);
         if (intakeReversed)
         {
@@ -181,11 +181,19 @@ void FeederArm::StartIntake(bool reverse)
     intakeColorWheelMode = false;
 }
 
-void FeederArm::StartIntakeForColorSpin()
+void FeederArm::StartIntakeForColorSpin(double speed)
 {
+    colorModeSpeed = speed;
     intakeEnabled = true;
     intakeColorWheelMode = true;
 }
+
+void FeederArm::StopIntakeForColorSpin()
+{
+    intakeEnabled = false;
+    intakeColorWheelMode = false;
+}
+
 
 void FeederArm::StopIntake()
 {

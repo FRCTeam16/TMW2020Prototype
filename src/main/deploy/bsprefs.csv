@@ -38,7 +38,7 @@ FeederArm.Pos.FwdLimit, -5000
 FeederArm.Pos.RevLimit, -160000
 FeederArm.Pos.Down, -10000
 FeederArm.Pos.PlayerStation, -75000
-FeederArm.Pos.Vertical, -108000
+FeederArm.Pos.Vertical, -105000
 TurretRotation.FwdLimit, 130
 TurretRotation.RevLimit, -715
 TurretRotation.Offset.Back, -210

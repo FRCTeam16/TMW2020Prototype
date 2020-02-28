@@ -93,7 +93,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 
 	// Sweep down bar while shooting
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(sweepAngle, 0.15, -56_in, 110_in),
+		new DriveToDistance(sweepAngle, 0.15, -53_in, 104_in),
 		new EnableFeeder(true)
 	}));
 }

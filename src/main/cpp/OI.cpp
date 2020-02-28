@@ -47,7 +47,9 @@ OI::OI() {
     DL10.reset(new BSButton(driverLeft, 10));
     DL11.reset(new BSButton(driverLeft, 11));
     DL12.reset(new BSButton(driverLeft, 12));
-    DL12.reset(new BSButton(driverLeft, 16));
+    DL13.reset(new BSButton(driverLeft, 13));
+    DL14.reset(new BSButton(driverLeft, 14));
+    DL16.reset(new BSButton(driverLeft, 16));
 
     DR1.reset(new BSButton(driverRight, 1));
     DR2.reset(new BSButton(driverRight, 2));

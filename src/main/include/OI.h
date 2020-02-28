@@ -38,6 +38,8 @@ public:
 	std::shared_ptr<BSButton> DL10;
 	std::shared_ptr<BSButton> DL11;
 	std::shared_ptr<BSButton> DL12;
+	std::shared_ptr<BSButton> DL13;
+	std::shared_ptr<BSButton> DL14;
 	std::shared_ptr<BSButton> DL16;
 
 	std::shared_ptr<BSButton> DR1;

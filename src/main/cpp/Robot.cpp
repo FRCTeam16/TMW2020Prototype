@@ -29,7 +29,7 @@ void Robot::RobotInit() {
     statusReporter.reset(new StatusReporter());
 	turret.reset(new Turret(visionSystem));
 	feederArm.reset(new FeederArm());
-    statusReporter->Launch();
+    // statusReporter->Launch();
     dmsProcessManager.reset(new DmsProcessManager(statusReporter));
 
 	autoManager.reset(new AutoManager());
@@ -141,11 +141,9 @@ void Robot::TeleopPeriodic() {
 	const bool gamepadRTPressed = oi->GetGamepadRT() > 0.05;
 	double turretSpeed = 0.0;
 	if (gamepadLTPressed) {
-		// std::cout << "Turret => Turning Left\n";
 		turretSpeed = oi->GetGamepadLT();
 		turret->GetTurretRotation().SetOpenLoopTurretSpeed(turretSpeed);
 	} else if (gamepadRTPressed) {
-		// std::cout << "Turret => Turning Right\n";
 		turretSpeed = oi->GetGamepadRT();
 		turret->GetTurretRotation().SetOpenLoopTurretSpeed(-turretSpeed);
 	} else {
@@ -168,24 +166,16 @@ void Robot::TeleopPeriodic() {
 
 	/**********************************************************
 	 * FeederArm  Control
-	 * Intake will be overridden by shooting
 	**********************************************************/
 	if (oi->DR1->Pressed()) {
 		feederArm->StartIntake();
 	} else if (oi->DR2->Pressed()) {
 		feederArm->StartIntake(true);	// reversed
 	} else if (fabs(oi->GetGamepadLeftStick()) > 0.25) {
-		feederArm->StartIntakeForColorSpin();
+		feederArm->StartIntakeForColorSpin(oi->GetGamepadLeftStick());
 	} else {
 		feederArm-> StopIntake();
 	}
-
-	// if (!preloadPressed && dPad == OI::DPad::kLeft) {
-	// 	turret->PreloadBall();
-	// 	preloadPressed = true;
-	// } else {
-	// 	preloadPressed = false;
-	// }
 
 
 	if (oi->DL3->RisingEdge()){
@@ -228,11 +218,24 @@ void Robot::TeleopPeriodic() {
 	}
 	*/
 
-	// if (oi->DL16->Pressed()) {
-	// 	turret->SetFeederAndShooterReversed(true);
-	// } else {
-	// 	turret->SetFeederAndShooterReversed(false);
-	// }
+	if (oi->DL16->Pressed()) {
+		turret->SetFeederAndShooterReversed(true);
+	} else if (oi->DL16->FallingEdge()) {
+		turret->SetFeederAndShooterReversed(false);
+	}
+
+	if (oi->DL11->Pressed()) {
+		controlPanelSystem->SetMode(ControlPanelSystem::Mode::kNone);
+	}
+	else if (oi->DL12->RisingEdge())
+	{
+		feederArm->RunArm(0.0);
+		controlPanelSystem->SetMode(ControlPanelSystem::Mode::kRotateWheel);
+	} else if (oi->DL13->RisingEdge())
+	{
+		feederArm->RunArm(0.0);
+		controlPanelSystem->SetMode(ControlPanelSystem::Mode::kRotateToColor);
+	}
 
 	/**********************************************************
 	 * Climber Arms
@@ -252,7 +255,7 @@ void Robot::TeleopPeriodic() {
 	/**********************************************************
 	 * Testing and Diagnostics
 	**********************************************************/
-	const bool dmsMode = oi->DL11->Pressed();
+	const bool dmsMode = oi->DL14->Pressed();
 	dmsProcessManager->SetRunning(dmsMode);
 
 	
