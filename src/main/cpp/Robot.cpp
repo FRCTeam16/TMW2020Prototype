@@ -29,7 +29,7 @@ void Robot::RobotInit() {
     statusReporter.reset(new StatusReporter());
 	turret.reset(new Turret(visionSystem));
 	feederArm.reset(new FeederArm());
-    // statusReporter->Launch();
+    statusReporter->Launch();
     dmsProcessManager.reset(new DmsProcessManager(statusReporter));
 
 	autoManager.reset(new AutoManager());
@@ -202,10 +202,17 @@ void Robot::TeleopPeriodic() {
 		feederArm->SetArmPosition(FeederArm::Position::kDown);
 	} 
 	else if (oi->GPY->RisingEdge()) {
+		if (turret->GetCurrentShootingProfile() == ShootingProfile::kShort) {
+			mediumShotPose->Run();
+		}
 		feederArm->SetArmPosition(FeederArm::Position::kVertical);
 	} 
 	else if (oi->GPX->RisingEdge()) {
-		feederArm->SetArmPosition(FeederArm::Position::kPlayerStation);
+		if (turret->GetCurrentShootingProfile() == ShootingProfile::kShort) {
+			feederArm->SetArmPosition(FeederArm::Position::kShortShot);
+		} else {
+			feederArm->SetArmPosition(FeederArm::Position::kPlayerStation);
+		}		
 	} else if (oi->GPRB->RisingEdge()) {
 		feederArm->RunArm(0.0);
 		// feederArm->SetArmPosition(FeederArm::Position::kZero);	// TODO Remove preload bool, just a reminder of previous func

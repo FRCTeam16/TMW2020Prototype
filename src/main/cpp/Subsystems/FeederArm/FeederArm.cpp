@@ -52,6 +52,7 @@ void FeederArm::Init()
     auto prefs = BSPrefs::GetInstance();
     armPositions[Position::kZero] = 0;
     armPositions[Position::kDown] = prefs->GetDouble("FeederArm.Pos.Down",-10000);
+    armPositions[Position::kShortShot] = prefs->GetDouble("FeederArm.Pos.ShortShot", -65000);
     armPositions[Position::kPlayerStation] = prefs->GetDouble("FeederArm.Pos.PlayerStation", -75000);
     armPositions[Position::kVertical] = prefs->GetDouble("FeederArm.Pos.Vertical", -130000);
 }

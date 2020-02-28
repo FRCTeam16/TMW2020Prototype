@@ -48,7 +48,7 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
     //---------------------------------
 
     InitShootingProfiles();
-    SetShootingProfile(ShootingProfile::kLong);
+    SetShootingProfile(ShootingProfile::kMedium);
     std::cout << "Turret initialized\n"; 
 }
 
@@ -212,6 +212,7 @@ void Turret::SetLidToShortShot()
 void Turret::SetShootingProfile(ShootingProfile profile)
 {
     if (shootingProfiles.find(profile) != shootingProfiles.end()) {
+        currentShootingProfile = profile;
         auto config = shootingProfiles[profile];
         frc::SmartDashboard::PutNumber("Shooter.RPM", config.shooterRPM);
         frc::SmartDashboard::PutNumber("Feeder.RPM", config.feederRPM);        
@@ -238,6 +239,11 @@ void Turret::SetShootingProfile(ShootingProfile profile)
     frc::SmartDashboard::PutString("Shooting Profile", profileName);
 }
 
+ShootingProfile Turret::GetCurrentShootingProfile()
+{
+    return currentShootingProfile;
+}
+
 
 void Turret::InitShootingProfiles()
 {
@@ -246,15 +252,15 @@ void Turret::InitShootingProfiles()
     shootingProfiles.clear();
 
     shortCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Short.Shooter", 4250);
-    shortCfg.feederRPM = prefs->GetDouble("ShootingProfile.Short.Feeder", 5000);
+    shortCfg.feederRPM = prefs->GetDouble("ShootingProfile.Short.Feeder", -5000);
     shootingProfiles[ShootingProfile::kShort] = shortCfg;
 
     mediumCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Medium.Shooter", 4250);
-    mediumCfg.feederRPM = prefs->GetDouble("ShootingProfile.Medium.Feeder", 5000);
+    mediumCfg.feederRPM = prefs->GetDouble("ShootingProfile.Medium.Feeder", -5000);
     shootingProfiles[ShootingProfile::kMedium] = mediumCfg;
 
     longCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Long.Shooter", 4500);
-    longCfg.feederRPM = prefs->GetDouble("ShootingProfile.Long.Feeder", 4000);
+    longCfg.feederRPM = prefs->GetDouble("ShootingProfile.Long.Feeder", -2000);
     shootingProfiles[ShootingProfile::kLong] = longCfg;
 
 }

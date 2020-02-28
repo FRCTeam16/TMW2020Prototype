@@ -4,6 +4,7 @@
 
 class GameDataParser
 {
+public:
     WheelColor Parse()
     {
         std::string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();

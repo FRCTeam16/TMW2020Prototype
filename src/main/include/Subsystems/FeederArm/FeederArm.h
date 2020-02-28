@@ -16,7 +16,7 @@ struct ArmPIDConfig : PIDConfig {
 
 class FeederArm : public SubsystemManager {
 public:
-    enum Position { kZero, kDown, kPlayerStation, kVertical };
+    enum Position { kZero, kDown, kShortShot, kPlayerStation, kVertical };
     explicit FeederArm();
 
     void Init() override;

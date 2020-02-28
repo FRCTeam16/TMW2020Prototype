@@ -50,7 +50,7 @@ public:
     void SetLidToShortShot();
 
     void SetShootingProfile(ShootingProfile profile);
-
+    ShootingProfile GetCurrentShootingProfile();
     
 
 private:
@@ -62,6 +62,7 @@ private:
     TurretRotation turretRotation;
 
     unordered_map<ShootingProfile, ShootingProfileConfig> shootingProfiles;
+    ShootingProfile currentShootingProfile = ShootingProfile::kMedium;
     FeederConfig feederConfig;
     PIDConfig shooterConfig;
     bool shooterEnabled = false;

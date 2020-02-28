@@ -10,7 +10,6 @@ class AutoManager;
 class World {
 private:
 	bool isRed;
-	FieldInfo fieldInfo;
 	AutoStartPosition startPosition;
 
 	double driveDistance = 0;
@@ -24,8 +23,7 @@ public:
 	void Init();							// perform world initialization
 	double GetClock() const;				// time elapsed since Init() in seconds
 	bool IsRed();
-	FieldInfo GetFieldInfo();
-	void SetFieldInfo(FieldInfo fieldInfo);
+
 	AutoStartPosition GetStartPosition() { return startPosition; }
 	void SetStartPosition(AutoStartPosition pos) { startPosition = pos; }
 
