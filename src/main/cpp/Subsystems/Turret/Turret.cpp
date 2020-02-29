@@ -266,12 +266,12 @@ void Turret::InitShootingProfiles()
     shortCfg.feederRPM = prefs->GetDouble("ShootingProfile.Short.Feeder", -5000);
     shootingProfiles[ShootingProfile::kShort] = shortCfg;
 
-    mediumCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Medium.Shooter", 4250);
-    mediumCfg.feederRPM = prefs->GetDouble("ShootingProfile.Medium.Feeder", -5000);
+    mediumCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Medium.Shooter", 4600);
+    mediumCfg.feederRPM = prefs->GetDouble("ShootingProfile.Medium.Feeder", -3000);
     shootingProfiles[ShootingProfile::kMedium] = mediumCfg;
 
-    longCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Long.Shooter", 4500);
-    longCfg.feederRPM = prefs->GetDouble("ShootingProfile.Long.Feeder", -2000);
+    longCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Long.Shooter", 4800);
+    longCfg.feederRPM = prefs->GetDouble("ShootingProfile.Long.Feeder", -3000);
     shootingProfiles[ShootingProfile::kLong] = longCfg;
 
 }
