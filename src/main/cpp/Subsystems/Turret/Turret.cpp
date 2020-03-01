@@ -55,6 +55,7 @@ Turret::Turret(std::shared_ptr<VisionSystem> visionSystem)
 void Turret::Init()
 {
     shooterEnabled = false;
+    feederAndShooterReversed = false;
     this->SetLidToLongShot();
     turretRotation.Init();
 }

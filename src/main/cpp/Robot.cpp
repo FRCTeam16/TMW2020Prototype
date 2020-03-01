@@ -221,7 +221,7 @@ void Robot::TeleopPeriodic() {
 
 	if (oi->DL16->Pressed()) {
 		turret->SetFeederAndShooterReversed(true);
-	} else if (oi->DL16->FallingEdge()) {
+	} else {
 		turret->SetFeederAndShooterReversed(false);
 	}
 
