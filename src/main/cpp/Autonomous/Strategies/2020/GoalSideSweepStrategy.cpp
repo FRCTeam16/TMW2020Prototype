@@ -5,6 +5,7 @@
 #include "Autonomous/Steps/DriveToDistance.h"
 #include "Autonomous/Steps/SetGyroOffset.h"
 #include "Autonomous/Steps/Delay.h"
+#include "Autonomous/Steps/SelectVisionPipeline.h"
 #include "Autonomous/Steps/SetVisionOffsetDegrees.h"
 
 #include "Autonomous/Steps/2020/SetTurretPosition.h"
@@ -12,6 +13,7 @@
 #include "Autonomous/Steps/2020/EnableIntake.h"
 #include "Autonomous/Steps/2020/EnableShooter.h"
 #include "Autonomous/Steps/2020/EnableVisionTracking.h"
+#include "Autonomous/Steps/2020/SelectShootingProfile.h"
 #include "Autonomous/Steps/2020/SetFeederArmPosition.h"
 #include "Autonomous/Steps/2020/SetFeederArmOpenLoop.h"
 
@@ -34,15 +36,16 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	steps.push_back(new SetGyroOffset(180.0));
 
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(firstAngle, 0.5, 0_in, -36_in),
-		new SetTurretPosition(-180, 0.2_s)
+		new DriveToDistance(firstAngle, 0.5, 0_in, -60_in),
+		new SetTurretPosition(-180, 0.2_s),
+		new SelectShootingProfile(ShootingProfile::kAutoFade)
 	})); 
 
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(firstAngle, 0.5, 0_in, -38_in),
+		new DriveToDistance(firstAngle, 0.5, 0_in, -14_in),
 		new EnableIntake(true),
 		new EnableShooter(true),
-		new SetVisionOffsetDegrees(7.0),
+		new SetVisionOffsetDegrees(9.0),
 		new EnableVisionTracking(true),
 	}));
 	
@@ -52,6 +55,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	steps.push_back(new ConcurrentStep({
 		lastStraight,
 		new SetVisionOffsetDegrees(2.0),
+		new SelectShootingProfile(ShootingProfile::kMedium),
 		new EnableFeeder(true)
 	}));
 	// steps.push_back(new Delay(0.5));
@@ -73,7 +77,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new SetVisionOffsetDegrees(2.0)
 	}));
 
-	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -2_in, 43_in);
+	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -4_in, 43_in);
 	driveToBar->SetUseGyro(false);
 	steps.push_back(new ConcurrentStep({
 		driveToBar,
@@ -96,7 +100,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 
 	// Sweep down bar while shooting
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(sweepAngle, 0.15, -53_in, 104_in),
+		new DriveToDistance(sweepAngle, 0.15, -51_in, 102_in),
 		new EnableFeeder(true)
 	}));
 }
