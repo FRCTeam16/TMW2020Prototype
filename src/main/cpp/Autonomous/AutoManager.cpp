@@ -7,6 +7,7 @@
 
 #include "Autonomous/Strategies/DebugAutoStrategy.h"
 #include "Autonomous/Strategies/2020/GoalSideSweepStrategy.h"
+#include "Autonomous/Strategies/2020/SnatchAndScoot.h"
 
 
 
@@ -17,6 +18,7 @@ AutoManager::AutoManager() :
 	strategies->SetDefaultOption("0 - None", AutoStrategy::kNone);
 	strategies->AddOption("1 - GoalSideSweep Center", AutoStrategy::kGoalSideSweepCenter);
 	strategies->AddOption("2 - GoalSideSweep Offset", AutoStrategy::kGoalSideSweepOffset);
+	strategies->AddOption("3 - SnatchAndScoot", AutoStrategy::kSnatchAndShoot);
 	strategies->AddOption("99 - Debug Auto Strategy", AutoStrategy::kDebug);
 
 	positions->SetDefaultOption("2 - Right", AutoStartPosition::kRight);
@@ -51,6 +53,10 @@ std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key, s
 	case kGoalSideSweepCenter:
 		std::cout << "AUTOMAN: Selected GoalSideSweep Center \n";
 		strategy = new GoalSideSweepStrategy(world, GoalSideSweepStrategy::Mode::kCenter);
+		break;
+	case kSnatchAndShoot:
+		std::cout << "AUTOMAN: Selected SnatchAndShoot \n";
+		strategy = new SnatchAndScoot(world);
 		break;
 	default:
 		// TODO: Fill in sane default

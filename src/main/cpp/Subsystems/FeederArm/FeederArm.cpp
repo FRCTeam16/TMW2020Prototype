@@ -155,6 +155,14 @@ void FeederArm::ZeroArmPosition()
     armMotor->SetSelectedSensorPosition(0, 0, 50);
 }
 
+bool FeederArm::IsArmInPosition()
+{
+    const double allowedError = BSPrefs::GetInstance()->GetDouble("FeederArm.Pos.AllowedError", 3000);
+    const double currentPosition = armMotor->GetSelectedSensorPosition();
+    return fabs((currentPosition - armSetpoint) < allowedError);
+}
+
+
 void FeederArm::SetArmBrakeMode(bool brakeEnabled)
 {
     ctre::phoenix::motorcontrol::NeutralMode neutralMode;

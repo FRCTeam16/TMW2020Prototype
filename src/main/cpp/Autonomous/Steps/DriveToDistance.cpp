@@ -14,16 +14,18 @@ bool DriveToDistance::Run(std::shared_ptr<World> world) {
 
 		std::cout << "DriveToDistance: Setting Target Drive Distance:" << targetSetpoint << "| Speed:" << speed << "\n";
 		Robot::driveBase->SetTargetDriveDistance(targetSetpoint, speed);
-		Robot::driveBase->UseClosedLoopDrive();
+        // if (Robot::driveBase->GetWheels()->FL->IsOpenLoopDrive()) {
+        //     // Robot::driveBase->UseClosedLoopDrive();
+        // }
     }
 
     const units::second_t elapsedTimeSecs = now - startTime;
     const double currentEncoderPosition = Robot::driveBase->GetDriveControlEncoderPosition();
-    const double currentPIDOutput = Robot::driveBase->GetDriveControlOutput();
+    // const double currentPIDOutput = Robot::driveBase->GetDriveControlOutput();
 
     if (debug) {
         frc::SmartDashboard::PutNumber("Auto.Step.DriveToDistance.Encoder", currentEncoderPosition);
-        frc::SmartDashboard::PutNumber("Auto.Step.DriveToDistance.PIDOut", currentPIDOutput);
+        // frc::SmartDashboard::PutNumber("Auto.Step.DriveToDistance.PIDOut", currentPIDOutput);
     }
 
     std::cout << "DriveToDistance: " << currentEncoderPosition << " => " << targetSetpoint << "\n";
@@ -53,12 +55,10 @@ bool DriveToDistance::Run(std::shared_ptr<World> world) {
         adjSpeed = RampUtil::RampDown(adjSpeed, currentEncoderPosition, targetSetpoint, pulses);
     }
 
-    const auto yspeed = adjSpeed * units::math::cos(angleRadians);
-    const auto xspeed = adjSpeed * units::math::sin(angleRadians);
+    const auto yspeed = std::copysign(adjSpeed * units::math::cos(angleRadians), ydist.to<double>());
+    const auto xspeed = std::copysign(adjSpeed * units::math::sin(angleRadians), xdist.to<double>());
     const auto twistOutput = Robot::driveBase->GetTwistControlOutput();
 
-    
-
-    crab->Update(twistOutput, yspeed.to<double>(), xspeed.to<double>(), useGyro);
+    crab->Update(twistOutput, yspeed, xspeed, useGyro);
     return false;
 }

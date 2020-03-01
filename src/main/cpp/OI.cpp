@@ -6,6 +6,7 @@
 #include "Commands/ZeroGyro.h"
 #include "Commands/ZeroFeederArm.h"
 #include "Commands/ZeroTurretPosition.h"
+#include "Commands/RotateTurretToStart.h"
 
 
 # define M_PI		3.14159265358979323846	/* pi */
@@ -26,6 +27,7 @@ OI::OI() {
     SmartDashboard::PutData("ZeroGyro2", new ZeroGyro());
     SmartDashboard::PutData("ZeroFeederArm2", new ZeroFeederArm());
     SmartDashboard::PutData("ZeroTurretPosition2", new ZeroTurretPosition());
+    SmartDashboard::PutData("RotateTurretToStart", new RotateTurretToStart());
 
     GPX.reset(new BSButton(gamepad, 3));
     GPY.reset(new BSButton(gamepad, 4));

@@ -14,7 +14,7 @@
 
 #include "Subsystems/Turret/TurretRotation.h"
 
-enum ShootingProfile { kShort, kMedium, kLong };
+enum ShootingProfile { kShort, kMedium, kLong, kAutoFade };
 
 struct ShootingProfileConfig {
     double shooterRPM = 0;

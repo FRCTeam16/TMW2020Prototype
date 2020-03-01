@@ -23,6 +23,8 @@ public:
 
     void SetRampDownDistance(units::inch_t distance) { this->rampDownDistance = distance; }
 
+    void SetTimeOut(units::second_t timeout) { this->stepTimeOut = timeout; }
+
 private:
     const double angle;
     const double speed;

@@ -12,6 +12,8 @@
 #include "Autonomous/Steps/2020/EnableIntake.h"
 #include "Autonomous/Steps/2020/EnableShooter.h"
 #include "Autonomous/Steps/2020/EnableVisionTracking.h"
+#include "Autonomous/Steps/2020/SetFeederArmPosition.h"
+#include "Autonomous/Steps/2020/SetFeederArmOpenLoop.h"
 
 GoalSideSweepStrategy::GoalSideSweepStrategy(std::shared_ptr<World> world, Mode mode) {
 	std::cout << "GoalSideSweepStrategy::GoalSideSweepStrategy : " << mode << "\n";

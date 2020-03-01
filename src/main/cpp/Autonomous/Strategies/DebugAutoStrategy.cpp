@@ -33,6 +33,15 @@ DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 	// DebugSimple();
 	// Measure();
 	std::cout << "--- DEBUG Autonomous ---\n";
+
+	const double firstAngle = 180.0;
+	auto scootBack = new DriveToDistance(firstAngle, 0.6, 0_in, 12_in);
+    steps.push_back(scootBack);
+
+
+	auto crabOver = new DriveToDistance(firstAngle, 0.4, 100_in, -100_in);
+    crabOver->SetRampDownDistance(18_in);
+    steps.push_back(crabOver);
 }
 	
 

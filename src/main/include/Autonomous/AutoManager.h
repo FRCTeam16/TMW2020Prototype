@@ -16,7 +16,7 @@ public:
 
 private:
 	enum AutoStrategy {
-		kNone = 0, kGoalSideSweepCenter, kGoalSideSweepOffset, kDebug = 99
+		kNone = 0, kGoalSideSweepCenter, kGoalSideSweepOffset, kSnatchAndShoot, kDebug = 99
 	};
 
 	std::shared_ptr<frc::SendableChooser<int>> positions;

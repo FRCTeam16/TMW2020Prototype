@@ -259,7 +259,7 @@ ShootingProfile Turret::GetCurrentShootingProfile()
 void Turret::InitShootingProfiles()
 {
     auto prefs = BSPrefs::GetInstance();
-    ShootingProfileConfig shortCfg, mediumCfg, longCfg;
+    ShootingProfileConfig shortCfg, mediumCfg, longCfg, autoFadeCfg;
     shootingProfiles.clear();
 
     shortCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Short.Shooter", 4250);
@@ -273,6 +273,10 @@ void Turret::InitShootingProfiles()
     longCfg.shooterRPM = prefs->GetDouble("ShootingProfile.Long.Shooter", 4800);
     longCfg.feederRPM = prefs->GetDouble("ShootingProfile.Long.Feeder", -3000);
     shootingProfiles[ShootingProfile::kLong] = longCfg;
+
+    autoFadeCfg.shooterRPM = prefs->GetDouble("ShootingProfile.AutoFade.Shooter", 4800);
+    autoFadeCfg.feederRPM = prefs->GetDouble("ShootingProfile.AutoFade.Feeder", -3250);
+    shootingProfiles[ShootingProfile::kAutoFade] = autoFadeCfg;
 
 }
 
