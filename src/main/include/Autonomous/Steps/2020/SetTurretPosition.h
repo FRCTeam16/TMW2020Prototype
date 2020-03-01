@@ -6,11 +6,11 @@
 
 class SetTurretPosition : public Step {
 public:
-    explicit SetTurretPosition(double setpoint, units::second_t timeout=1.0_s)
+    explicit SetTurretPosition(double setpoint, units::second_t timeout=0.2_s)
     : setpoint(setpoint), timeout(timeout), useSetpoint(true) {
     }
 
-    explicit SetTurretPosition(TurretRotation::Position position, units::second_t timeout=1.0_s)
+    explicit SetTurretPosition(TurretRotation::Position position, units::second_t timeout=0.2_s)
     : position(position), timeout(timeout), useSetpoint(false) {
     }
 

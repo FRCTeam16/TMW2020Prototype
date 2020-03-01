@@ -34,19 +34,20 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	steps.push_back(new SetGyroOffset(180.0));
 
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(firstAngle, 0.3, 0_in, -6_in),
-		new SetTurretPosition(-180),
-		new EnableIntake(true),     // TODO: Pass in desired speed?
-		new EnableShooter(true),
-	}));
+		new DriveToDistance(firstAngle, 0.5, 0_in, -36_in),
+		new SetTurretPosition(-180, 0.2_s)
+	})); 
+
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(firstAngle, 0.5, 0_in, -54_in),
-		new SetVisionOffsetDegrees(7.0),		// FIXME: testing
+		new DriveToDistance(firstAngle, 0.5, 0_in, -38_in),
+		new EnableIntake(true),
+		new EnableShooter(true),
+		new SetVisionOffsetDegrees(7.0),
 		new EnableVisionTracking(true),
 	}));
 	
 	// Ramp down
-	auto lastStraight = new DriveToDistance(firstAngle, 0.5, 0_in, -77_in);		// was 75 @ 0.3
+	auto lastStraight = new DriveToDistance(firstAngle, 0.5, 0_in, -90_in);
 	lastStraight->SetRampDownDistance(25_in);
 	steps.push_back(new ConcurrentStep({
 		lastStraight,
@@ -68,11 +69,11 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new Rotate(initialBarAngle),
 		new EnableFeeder(false),
 		new EnableVisionTracking(false),
-		new SetTurretPosition(0, 5_s),
+		new SetTurretPosition(0, 0.2_s),
 		new SetVisionOffsetDegrees(2.0)
 	}));
 
-	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -2_in, 36_in);
+	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -2_in, 43_in);
 	driveToBar->SetUseGyro(false);
 	steps.push_back(new ConcurrentStep({
 		driveToBar,
