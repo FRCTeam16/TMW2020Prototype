@@ -21,6 +21,8 @@ public:
 
     void SetDebug(bool debug) { this->debug = debug; }
 
+    void SetRampUpTime(units::second_t time) { this->rampUpTime = time; }
+
     void SetRampDownDistance(units::inch_t distance) { this->rampDownDistance = distance; }
 
     void SetTimeOut(units::second_t timeout) { this->stepTimeOut = timeout; }
@@ -38,5 +40,6 @@ private:
     units::second_t startTime = -1_s;
     units::second_t stepTimeOut = 10.0_s;
 
+    units::second_t rampUpTime = -1_s;
     units::inch_t rampDownDistance = -1_in;
 };

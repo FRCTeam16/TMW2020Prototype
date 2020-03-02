@@ -12,7 +12,7 @@ DriveP, 0.00035
 DriveRampRate, 0.1
 PulsesPerInch, 0.4182
 Steer.ContinuousCurrentLimit, 20
-TwistD, 0.005
+TwistD, 0.0025
 TwistI, 0
 TwistP, 0.006
 Vision.x.D, 0

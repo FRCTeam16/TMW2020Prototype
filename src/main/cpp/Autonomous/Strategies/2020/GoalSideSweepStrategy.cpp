@@ -35,22 +35,29 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	const double firstAngle = 180.0;
 	steps.push_back(new SetGyroOffset(180.0));
 
+	auto pushOff = new DriveToDistance(firstAngle, 0.5, 0_in, -60_in);
+	pushOff->SetRampUpTime(0.25_s);
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(firstAngle, 0.5, 0_in, -60_in),
+		pushOff,
 		new SetTurretPosition(-180, 0.2_s),
-		new SelectShootingProfile(ShootingProfile::kAutoFade)
+		new SelectShootingProfile(ShootingProfile::kAutoFade),
+		new EnableShooter(true)
 	})); 
 
 	steps.push_back(new ConcurrentStep({
 		new DriveToDistance(firstAngle, 0.5, 0_in, -14_in),
 		new EnableIntake(true),
-		new EnableShooter(true),
-		new SetVisionOffsetDegrees(9.0),
+		new SetVisionOffsetDegrees(5.0),
 		new EnableVisionTracking(true),
+	}));
+
+	steps.push_back(new ConcurrentStep({
+		new DriveToDistance(firstAngle, 0.5, 0_in, -45_in),
+		new EnableFeeder(true)
 	}));
 	
 	// Ramp down
-	auto lastStraight = new DriveToDistance(firstAngle, 0.5, 0_in, -90_in);
+	auto lastStraight = new DriveToDistance(firstAngle, 0.5, 0_in, -43_in);
 	lastStraight->SetRampDownDistance(25_in);
 	steps.push_back(new ConcurrentStep({
 		lastStraight,
@@ -58,7 +65,8 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new SelectShootingProfile(ShootingProfile::kMedium),
 		new EnableFeeder(true)
 	}));
-	// steps.push_back(new Delay(0.5));
+
+	// wait for shooting to end
 	steps.push_back(new ConcurrentStep({
 		new Delay(0.5),
 		new EnableFeeder(false)
@@ -77,7 +85,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new SetVisionOffsetDegrees(2.0)
 	}));
 
-	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -4_in, 43_in);
+	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -3_in, 35_in);
 	driveToBar->SetUseGyro(false);
 	steps.push_back(new ConcurrentStep({
 		driveToBar,
@@ -90,12 +98,6 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	// Align and perform sweep
 	//
 	double sweepAngle = -85.0;
-	// auto kickRight = new DriveToDistance(sweepAngle, 0.10, 4_in, -2_in);
-	// kickRight->SetUseGyro(false);
-	// steps.push_back(new ConcurrentStep({
-	// 	kickRight,
-	// 	new SetTurretPosition(100.0),
-	// }));
 	steps.push_back(new Rotate(sweepAngle));
 
 	// Sweep down bar while shooting

@@ -39,6 +39,7 @@ public:
 
     void SetShooterEnabled(bool _enabled);
     void ToggleShooterEnabled();
+    bool IsShooterEnabled();
 
     void StartFeeder(bool reverse = false);
     void StopFeeder();

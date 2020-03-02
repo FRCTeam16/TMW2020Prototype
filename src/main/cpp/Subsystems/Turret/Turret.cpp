@@ -175,6 +175,11 @@ void Turret::ToggleShooterEnabled()
     shooterEnabled = !shooterEnabled;
 }
 
+bool Turret::IsShooterEnabled()
+{
+    return shooterEnabled;
+}
+
 // ***************************************************************************/
 
 void Turret::StartFeeder(bool reverse)

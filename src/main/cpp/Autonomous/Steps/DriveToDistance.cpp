@@ -9,23 +9,17 @@ bool DriveToDistance::Run(std::shared_ptr<World> world) {
     if (startTime < 0_s) {
         startTime = now;
 
-        // const double targetAngle = (!useCurrentAngle) ? angle : RobotMap::gyro->GetYaw();
 		Robot::driveBase->SetTargetAngle(angle);
 
 		std::cout << "DriveToDistance: Setting Target Drive Distance:" << targetSetpoint << "| Speed:" << speed << "\n";
 		Robot::driveBase->SetTargetDriveDistance(targetSetpoint, speed);
-        // if (Robot::driveBase->GetWheels()->FL->IsOpenLoopDrive()) {
-        //     // Robot::driveBase->UseClosedLoopDrive();
-        // }
     }
 
     const units::second_t elapsedTimeSecs = now - startTime;
     const double currentEncoderPosition = Robot::driveBase->GetDriveControlEncoderPosition();
-    // const double currentPIDOutput = Robot::driveBase->GetDriveControlOutput();
 
     if (debug) {
         frc::SmartDashboard::PutNumber("Auto.Step.DriveToDistance.Encoder", currentEncoderPosition);
-        // frc::SmartDashboard::PutNumber("Auto.Step.DriveToDistance.PIDOut", currentPIDOutput);
     }
 
     std::cout << "DriveToDistance: " << currentEncoderPosition << " => " << targetSetpoint << "\n";
@@ -50,6 +44,11 @@ bool DriveToDistance::Run(std::shared_ptr<World> world) {
     // Drive Control
     //*****************
     double adjSpeed = speed;
+
+    if (rampUpTime >= 0_s) {
+        adjSpeed = RampUtil::RampUp(adjSpeed, elapsedTimeSecs.to<double>(), rampUpTime.to<double>());
+    }
+
     if (rampDownDistance > -1_in) {
         double pulses = rampDownDistance.to<double>();
         adjSpeed = RampUtil::RampDown(adjSpeed, currentEncoderPosition, targetSetpoint, pulses);
