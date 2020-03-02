@@ -86,17 +86,16 @@ void StatusReporter::SendData() {
 	data[6]  = (char) (dmsMode) ? steerStatus.RL : 0;
 	data[7]  = (char) (dmsMode) ? driveStatus.RR : 0;
 	data[8]  = (char) (dmsMode) ? steerStatus.RR : 0;
-	// Custom Coces
-	// data[9] = Robot::turret->IsShooterEnabled();												FIXME: Add getter for shooter status
-	data[9]  = (char) 0;
+	// Custom Codes
+	data[9] = Robot::turret->IsShooterEnabled();
 	data[10] = (char) StatusReporterUtil::map(speed, 0.0, 1.0, 0, 250);
 	data[11] = (char) allianceColor;	// 1 red, 2 blue, 0 unknown
 	data[12] = (char) robotState;		// 0 - none, 1 - disabled, 2- auto, 3- tele
 	// data[13] = (char) GetWheelColor   	// 0 - nothing, 1 - looking, 2 - 3 - 4 - 5 -		FIXME: Add Color Subsystem Hook, - when out of wheel mode
-	int val = (((int)frc::Timer::GetFPGATimestamp()) % 255);
+	int val = (((int)frc::Timer::GetFPGATimestamp()) % 5);
 	data[13] = (char) val;
 
-	int written = serial->Write((const char *)data, DATA_SIZE);
-	std::cout << "StatusReporter - wrote " << written << " bytes with val = " << val << "\n";
+	int written = serial->Write(data, DATA_SIZE);
+	std::cout << "StatusReporter - wrote " << written << " bytes\n";
 	serial->Flush();
 }

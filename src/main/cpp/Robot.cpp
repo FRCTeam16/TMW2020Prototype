@@ -29,7 +29,7 @@ void Robot::RobotInit() {
     statusReporter.reset(new StatusReporter());
 	turret.reset(new Turret(visionSystem));
 	feederArm.reset(new FeederArm());
-    // statusReporter->Launch();
+    statusReporter->Launch();
     dmsProcessManager.reset(new DmsProcessManager(statusReporter));
 
 	autoManager.reset(new AutoManager());
