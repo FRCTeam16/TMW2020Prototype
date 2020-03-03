@@ -39,6 +39,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	pushOff->SetRampUpTime(0.25_s);
 	steps.push_back(new ConcurrentStep({
 		pushOff,
+		new SetFeederArmPosition(FeederArm::Position::kZero),
 		new SetTurretPosition(-180, 0.2_s),
 		new SelectShootingProfile(ShootingProfile::kAutoFade),
 		new EnableShooter(true)
@@ -46,6 +47,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 
 	steps.push_back(new ConcurrentStep({
 		new DriveToDistance(firstAngle, 0.5, 0_in, -14_in),
+		new SetFeederArmOpenLoop(0.0),
 		new EnableIntake(true),
 		new SetVisionOffsetDegrees(5.0),
 		new EnableVisionTracking(true),
@@ -118,12 +120,14 @@ void GoalSideSweepStrategy::Center(std::shared_ptr<World> world) {
 	const double firstAngle = -135.0;
 	steps.push_back(new ConcurrentStep({
 		new Rotate(firstAngle),
+		new SetFeederArmPosition(FeederArm::Position::kZero, 0.25_s),
 		new SetTurretPosition(-111),
 		new EnableIntake(true),     // TODO: Pass in desired speed
 		new EnableShooter(false)
 	}));
 	steps.push_back(new ConcurrentStep({
 		new DriveToDistance(firstAngle, 0.3, 0_in, -81_in),
+		new SetFeederArmOpenLoop(0.0),
 		new EnableVisionTracking(true)}));
 	
 	// Approach bar

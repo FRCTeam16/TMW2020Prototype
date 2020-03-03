@@ -10,6 +10,7 @@
 #include "Autonomous/Steps/SelectVisionPipeline.h"
 #include "Autonomous/Steps/SetGyroOffset.h"
 #include "Autonomous/Steps/SetVisionOffsetDegrees.h"
+#include "Autonomous/Steps/TimedDrive.h"
 
 #include "Autonomous/Steps/2020/SetTurretPosition.h"
 #include "Autonomous/Steps/2020/EnableFeeder.h"
@@ -33,19 +34,21 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
     grabOppoBalls->SetRampDownDistance(6_in);
     steps.push_back(new ConcurrentStep({
         grabOppoBalls,
+        new SetFeederArmPosition(FeederArm::Position::kZero, 0.25_s),
         new EnableIntake(true),
         new SetTurretPosition(-451, 0.2_s),
         new SelectVisionPipeline(2),
         new SetVisionOffsetDegrees(1),
         new SelectShootingProfile(ShootingProfile::kMedium)
-        // new SetFeederArmPosition(FeederArm::Position::kPlayerStation)
-        // new SetFeederArmOpenLoop(0.0)
     }));
 
 
     // Scoot back from the ball pickup
     auto scootBack = new DriveToDistance(firstAngle, 0.6, 0_in, 12_in);
-    steps.push_back(scootBack);
+    steps.push_back(new ConcurrentStep({
+        scootBack,
+        new SetFeederArmOpenLoop(0.0)
+    }));
 
 
     auto crabOver = new DriveToDistance(firstAngle, 0.4, 80_in, -12_in);
@@ -84,6 +87,12 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
         sweep
     }));;
 
+    // coast atan2(xdist, ydist)
+    auto coastSweep = new DriveToDistance(sweepAngle, 0.00001, 44_in, 22_in);
+    coastSweep->SetTimeOut(0.25_s);
+    steps.push_back(coastSweep);
+
+    // raise arm, then start shooting
     steps.push_back(new SetFeederArmPosition(FeederArm::Position::kPlayerStation));
     steps.push_back(new EnableFeeder(true));
 }

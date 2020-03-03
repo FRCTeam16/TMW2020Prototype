@@ -197,6 +197,8 @@ void Robot::TeleopPeriodic() {
 			mediumShotPose->Run();
 		}
 		feederArm->SetArmPosition(FeederArm::Position::kVertical);
+		// driver request always turn off shooter
+		turret->SetShooterEnabled(false);
 	} 
 	else if (oi->GPX->RisingEdge()) {
 		if (turret->GetCurrentShootingProfile() == ShootingProfile::kShort) {
@@ -319,12 +321,23 @@ void Robot::InitSubsystems() {
 
 void Robot::RunSubsystems() {
 	// std::cout << "RunSubsystems() =>\n";
-    double start = frc::Timer::GetFPGATimestamp();
+    	double start = frc::Timer::GetFPGATimestamp();
+		// double t1 = start;
     dmsProcessManager->Run();
+		// double t2 = frc::Timer::GetFPGATimestamp();
+		// std::cout << "Time DMS   : " << fabs(t2 - t1) << "\n";
 	visionSystem->Run(); 
+		// t1 = frc::Timer::GetFPGATimestamp();
+		// std::cout << "Time Vision: " << fabs(t2 - t1) << "\n";
 	turret->Run();
+		// t2 = frc::Timer::GetFPGATimestamp();
+		// std::cout << "Time Turret: " << fabs(t2 - t1) << "\n";
 	feederArm->Run();
+		// t2 = frc::Timer::GetFPGATimestamp();
+		// std::cout << "Time Feeder: " << fabs(t2 - t1) << "\n";
 	controlPanelSystem->Run();
+		// t2 = frc::Timer::GetFPGATimestamp();
+		// std::cout << "Time ColorW: " << fabs(t2 - t1) << "\n";
 	double now = frc::Timer::GetFPGATimestamp();
 	SmartDashboard::PutNumber("Subsystem Times", (now-start) * 1000);
 	// std::cout << "RunSubsystems() <=\n";
