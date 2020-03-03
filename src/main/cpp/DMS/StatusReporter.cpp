@@ -96,6 +96,6 @@ void StatusReporter::SendData() {
 	data[13] = (char) val;
 
 	int written = serial->Write(data, DATA_SIZE);
-	std::cout << "StatusReporter - wrote " << written << " bytes\n";
+	// std::cout << "StatusReporter - wrote " << written << " bytes\n";
 	serial->Flush();
 }
