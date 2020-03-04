@@ -47,8 +47,9 @@ void FeederArm::Init()
 {
     this->RetractClimberArms();
     armSetpoint = 0.0;
-    runArmControlled = false; // FIXME: Determine if we want to start controlled or not
+    runArmControlled = false;
     intakeColorWheelMode = false;
+    intakeJamDetected = false;
 
     auto prefs = BSPrefs::GetInstance();
     armPositions[Position::kZero] = 0;
@@ -85,6 +86,7 @@ void FeederArm::Run()
     //-----------------------
     // Intake
     //-----------------------
+    
     double intakeSpeed = 0.0;
     if (intakeEnabled || intakeColorWheelMode)
     {
@@ -209,6 +211,11 @@ void FeederArm::StopIntake()
     intakeEnabled = false;
 }
 
+bool FeederArm::IsIntakeJamDetected()
+{
+    return intakeJamDetected;
+}
+
 /*****************************************************************************/
 
 void FeederArm::ExtendClimberArms()
@@ -231,4 +238,13 @@ void FeederArm::Instrument()
 {
     frc::SmartDashboard::PutNumber("Arm.Amps.Out", armMotor->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("Arm.Position", armMotor->GetSelectedSensorPosition());
+
+    const double currentIntakeAmps = powerDistributionPanel->GetCurrent(10);
+    frc::SmartDashboard::PutNumber("Intake.Amps.Out", currentIntakeAmps);
+
+    // FIXME: Move to run loop
+    const double filterOutput = intakeSpikeDetector.Calculate(currentIntakeAmps);
+    frc::SmartDashboard::PutNumber("Intake.Filter.Out", filterOutput);
+    intakeJamDetected = (filterOutput > BSPrefs::GetInstance()->GetDouble("Intake.Jam.Detected", 25));
+    frc::SmartDashboard::PutBoolean("Intake.Jam.Detected", intakeJamDetected);
 }

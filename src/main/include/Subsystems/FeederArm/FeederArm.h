@@ -3,10 +3,13 @@
 #include <ctre/Phoenix.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/Solenoid.h>
+#include <frc/PowerDistributionPanel.h>
+#include <frc/LinearFilter.h>
 #include "RobotMap.h"
 #include "Util/BSPrefs.h"
 #include "Util/PIDConfig.h"
 #include <unordered_map>
+#include <units/units.h>
 
 
 struct ArmPIDConfig : PIDConfig {
@@ -37,6 +40,7 @@ public:
     void StopIntake();
     void StartIntakeForColorSpin(double speed);
     void StopIntakeForColorSpin();
+    bool IsIntakeJamDetected();
 
     void ExtendClimberArms();
     void RetractClimberArms();
@@ -48,6 +52,7 @@ private :
     std::shared_ptr<WPI_TalonFX> armMotorFollower = RobotMap::armMotorFollower;
     std::shared_ptr<frc::Solenoid> climberRightArm = RobotMap::climberRightArm;
     std::shared_ptr<frc::Solenoid> climberLeftArm = RobotMap::climberLeftArm;
+    std::shared_ptr<frc::PowerDistributionPanel> powerDistributionPanel = RobotMap::powerDistributionPanel;
     
 
     bool intakeEnabled = false;
@@ -63,4 +68,7 @@ private :
     ArmPIDConfig armPIDConfig;
     double armSetpoint = 0.0;
     unordered_map<Position, double> armPositions;
+
+    frc::LinearFilter<double> intakeSpikeDetector = frc::LinearFilter<double>::MovingAverage(5);
+    bool intakeJamDetected = false;
 };

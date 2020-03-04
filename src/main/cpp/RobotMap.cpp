@@ -27,6 +27,8 @@
   std::shared_ptr<frc::Solenoid> RobotMap::climberLeftArm;
   std::shared_ptr<frc::Solenoid> RobotMap::climberRightArm;
 
+  std::shared_ptr<frc::PowerDistributionPanel> RobotMap::powerDistributionPanel;
+
 
 RobotMap::RobotMap() {
   driveBaseFrontLeftDrive.reset(new rev::CANSparkMax{1, rev::CANSparkMax::MotorType::kBrushless});
@@ -57,4 +59,6 @@ RobotMap::RobotMap() {
   lidTop.reset(new frc::Solenoid{0});
   climberLeftArm.reset(new frc::Solenoid{1});
   climberRightArm.reset(new frc::Solenoid{2});
+
+  powerDistributionPanel.reset(new frc::PowerDistributionPanel{0});
 }

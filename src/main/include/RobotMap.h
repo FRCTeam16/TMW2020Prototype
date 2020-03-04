@@ -2,6 +2,7 @@
 
 #include <frc/Compressor.h>
 #include <frc/Solenoid.h>
+#include <frc/PowerDistributionPanel.h>
 #include <ctre/Phoenix.h>
 #include <rev/CANSparkMax.h>
 #include "Gyro/BSGyro.h"
@@ -40,4 +41,6 @@ class RobotMap {
   static std::shared_ptr<frc::Solenoid> lidTop;
   static std::shared_ptr<frc::Solenoid> climberLeftArm;
   static std::shared_ptr<frc::Solenoid> climberRightArm;
+
+  static std::shared_ptr<frc::PowerDistributionPanel> powerDistributionPanel;
 };
