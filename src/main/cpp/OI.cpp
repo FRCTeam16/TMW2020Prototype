@@ -5,6 +5,7 @@
 #include "Commands/SetWheelOffsets.h"
 #include "Commands/ZeroGyro.h"
 #include "Commands/ZeroFeederArm.h"
+#include "Commands/ZeroFeederArmHigh.h"
 #include "Commands/ZeroTurretPosition.h"
 #include "Commands/RotateTurretToStart.h"
 
@@ -26,6 +27,7 @@ OI::OI() {
     SmartDashboard::PutData("SetWheelOffsets2", new SetWheelOffsets());
     SmartDashboard::PutData("ZeroGyro2", new ZeroGyro());
     SmartDashboard::PutData("ZeroFeederArm2", new ZeroFeederArm());
+    SmartDashboard::PutData("ZeroFeederArm HIGH", new ZeroFeederArmHigh());
     SmartDashboard::PutData("ZeroTurretPosition2", new ZeroTurretPosition());
     SmartDashboard::PutData("RotateTurretToStart", new RotateTurretToStart());
 

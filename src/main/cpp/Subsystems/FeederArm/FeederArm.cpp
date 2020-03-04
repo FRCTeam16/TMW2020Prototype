@@ -150,9 +150,9 @@ void FeederArm::SetArmPosition(Position position)
     }
 }
 
-void FeederArm::ZeroArmPosition()
+void FeederArm::ZeroArmPosition(int position)
 {
-    armMotor->SetSelectedSensorPosition(0, 0, 50);
+    armMotor->SetSelectedSensorPosition(position, 0, 50);
 }
 
 bool FeederArm::IsArmInPosition()

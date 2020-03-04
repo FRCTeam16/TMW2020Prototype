@@ -29,7 +29,7 @@ public:
     void RunArmControlled();    // FIXME: Temp for testing
     void DebugSetPoint(double _setpoint);
     void SetArmPosition(Position position);
-    void ZeroArmPosition();
+    void ZeroArmPosition(int position = 0);
     void SetArmBrakeMode(bool brakeEnabled);
     bool IsArmInPosition();
 
