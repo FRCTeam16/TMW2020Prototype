@@ -27,7 +27,12 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
     std::cout << "SnatchAndScoot::SnatchAndScoot\n";
 
     const double firstAngle = 180.0;
-    steps.push_back(new SetGyroOffset(firstAngle));
+    steps.push_back(new ConcurrentStep({
+		new SetGyroOffset(firstAngle),
+        new SetFeederArmPosition(FeederArm::Position::kVertical, 0.25_s),
+        new SetTurretPosition(-451, 0.2_s),
+		new Delay(0.5)
+	}));
 
     // Run and grab balls
     auto grabOppoBalls = new DriveToDistance(firstAngle, 0.6, 0_in, -104_in);
@@ -36,7 +41,6 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
         grabOppoBalls,
         new SetFeederArmPosition(FeederArm::Position::kZero, 0.25_s),
         new EnableIntake(true),
-        new SetTurretPosition(-451, 0.2_s),
         new SelectVisionPipeline(2),
         new SetVisionOffsetDegrees(1),
         new SelectShootingProfile(ShootingProfile::kMedium)

@@ -25,6 +25,7 @@
 #include "Autonomous/Steps/2020/EnableShooter.h"
 #include "Autonomous/Steps/2020/EnableFeeder.h"
 #include "Autonomous/Steps/2020/EnableVisionTracking.h"
+#include "Autonomous/Steps/2020/SetFeederArmPosition.h"
 #include "Autonomous/Steps/2020/SetTurretPosition.h"
 
 #include <units/units.h>
@@ -35,6 +36,23 @@ DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 	std::cout << "--- DEBUG Autonomous ---\n";
 
 	const double firstAngle = 180.0;
+	steps.push_back(new ConcurrentStep({
+		new SetGyroOffset(180.0),
+		new SetFeederArmPosition(FeederArm::Position::kVertical, 0.25_s),
+		new SetTurretPosition(-180, 0.2_s),
+		new Delay(0.5)
+	}));
+
+	auto pushOff = new DriveToDistance(firstAngle, 0.5, 0_in, -60_in);
+	pushOff->SetRampUpTime(0.25_s);
+	steps.push_back(new ConcurrentStep({
+		pushOff,
+		new SetFeederArmPosition(FeederArm::Position::kZero),
+		new EnableShooter(true)
+	})); 
+
+/*
+	const double firstAngle = 180.0;
 	auto scootBack = new DriveToDistance(firstAngle, 0.6, 0_in, 12_in);
     steps.push_back(scootBack);
 
@@ -42,6 +60,7 @@ DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 	auto crabOver = new DriveToDistance(firstAngle, 0.4, 100_in, -100_in);
     crabOver->SetRampDownDistance(18_in);
     steps.push_back(crabOver);
+	*/
 }
 	
 
