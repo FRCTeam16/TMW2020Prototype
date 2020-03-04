@@ -91,7 +91,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new SetVisionOffsetDegrees(2.0)
 	}));
 
-	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -3_in, 35_in);
+	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -3_in, 38_in);
 	driveToBar->SetUseGyro(false);
 	steps.push_back(new ConcurrentStep({
 		driveToBar,

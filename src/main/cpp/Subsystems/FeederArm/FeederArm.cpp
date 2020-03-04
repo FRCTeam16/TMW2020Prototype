@@ -152,6 +152,7 @@ void FeederArm::SetArmPosition(Position position)
 
 void FeederArm::ZeroArmPosition(int position)
 {
+    std::cout << "FeederArm::ZeroArmPosition(" << position << ")\n";
     armMotor->SetSelectedSensorPosition(position, 0, 50);
 }
 
