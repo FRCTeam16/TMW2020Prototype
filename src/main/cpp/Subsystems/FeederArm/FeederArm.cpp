@@ -41,6 +41,8 @@ FeederArm::FeederArm()
     frc::SmartDashboard::SetDefaultNumber("FeederArm.IntakeSpeed", 1.0);
     frc::SmartDashboard::SetDefaultNumber("FeederArm.IntakeSpeed.ColorWheel", 0.2);
     frc::SmartDashboard::SetDefaultNumber("Arm.Setpoint", 0.0);
+
+    jamThreshold = BSPrefs::GetInstance()->GetDouble("Intake.Jam.Threshold", 25);
 }
 
 void FeederArm::Init()
@@ -245,6 +247,6 @@ void FeederArm::Instrument()
     // FIXME: Move to run loop
     const double filterOutput = intakeSpikeDetector.Calculate(currentIntakeAmps);
     frc::SmartDashboard::PutNumber("Intake.Filter.Out", filterOutput);
-    intakeJamDetected = (filterOutput > BSPrefs::GetInstance()->GetDouble("Intake.Jam.Detected", 25));
+    intakeJamDetected = (filterOutput > jamThreshold);
     frc::SmartDashboard::PutBoolean("Intake.Jam.Detected", intakeJamDetected);
 }

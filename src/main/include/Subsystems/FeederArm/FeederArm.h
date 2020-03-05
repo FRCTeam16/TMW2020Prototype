@@ -71,4 +71,5 @@ private :
 
     frc::LinearFilter<double> intakeSpikeDetector = frc::LinearFilter<double>::MovingAverage(5);
     bool intakeJamDetected = false;
+    double jamThreshold = 50.0;
 };
