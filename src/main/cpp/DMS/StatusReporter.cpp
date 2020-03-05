@@ -93,7 +93,8 @@ void StatusReporter::SendData() {
 	data[12] = (char) robotState;		// 0 - none, 1 - disabled, 2- auto, 3- tele
 	// data[13] = (char) GetWheelColor   	// 0 - nothing, 1 - looking, 2 - 3 - 4 - 5 -		FIXME: Add Color Subsystem Hook, - when out of wheel mode
 	int val = (((int)frc::Timer::GetFPGATimestamp()) % 5);
-	data[13] = (char) val;
+	// data[13] = (char) val;
+	data[13] = 0;
 
 	int written = serial->Write(data, DATA_SIZE);
 	// std::cout << "StatusReporter - wrote " << written << " bytes\n";
