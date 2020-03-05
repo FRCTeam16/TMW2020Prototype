@@ -107,8 +107,10 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	steps.push_back(new Rotate(sweepAngle));
 
 	// Sweep down bar while shooting
+	auto sweepDrive = new DriveToDistance(sweepAngle, 0.15, -51_in, 102_in);
+	sweepDrive->SetStopDriveOnJam(true);
 	steps.push_back(new ConcurrentStep({
-		new DriveToDistance(sweepAngle, 0.15, -51_in, 102_in),
+		sweepDrive,
 		new EnableFeeder(true)
 	}));
 }

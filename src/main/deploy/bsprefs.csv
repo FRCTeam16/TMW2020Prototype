@@ -50,3 +50,4 @@ TurretRotation.PID.P, 0.3
 TurretRotation.PID.I, 0.0
 TurretRotation.PID.D, 0.0
 TurretRotation.PID.F, 0.0
+Intake.Jam.Threshold, 40.0

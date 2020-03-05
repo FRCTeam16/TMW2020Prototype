@@ -21,10 +21,10 @@ public:
             startTime = now;
             if (useSetpoint) {
                 std::cout << "SetTurretPosition(setpoint = " << setpoint << ")\n";
-                Robot::turret->GetTurretRotation().SetTurretSetpoint(setpoint);
+                Robot::turret->GetTurretRotation().SetTurretSetpointAuto(setpoint);
             } else {
                 std::cout << "SetTurretPosition(position = " << setpoint << ")\n";
-                Robot::turret->GetTurretRotation().SetTurretPosition(position);
+                Robot::turret->GetTurretRotation().SetTurretSetpointAuto(position);
             }  
         }
         auto elapsed = now - startTime;

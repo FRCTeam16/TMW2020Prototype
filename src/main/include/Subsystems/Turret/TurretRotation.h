@@ -20,7 +20,8 @@ public:
     void SetOpenLoopTurretSpeed(double _speed);
     void OpenLoopHaltTurret();
     void SetTurretPosition(Position position);
-    void SetTurretSetpoint(double setpoint);
+    void SetTurretSetpoint(double setpoint);    // raw value
+    void SetTurretSetpointAuto(double setpoint);
     bool IsTurretInPosition();
     void ZeroTurretPosition();
 

@@ -27,6 +27,8 @@ public:
 
     void SetTimeOut(units::second_t timeout) { this->stepTimeOut = timeout; }
 
+    void SetStopDriveOnJam(bool stopDrive) { this->stopDriveOnJam = stopDrive; }
+
 private:
     const double angle;
     const double speed;
@@ -42,4 +44,7 @@ private:
 
     units::second_t rampUpTime = -1_s;
     units::inch_t rampDownDistance = -1_in;
+
+    bool stopDriveOnJam = false;
+    bool haltedDueToJam = false;
 };

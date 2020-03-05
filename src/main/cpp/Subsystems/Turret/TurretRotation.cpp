@@ -124,6 +124,11 @@ void TurretRotation::SetTurretPosition(Position position)
     }
 }
 
+void TurretRotation::SetTurretSetpointAuto(double setpoint)
+{
+    this->SetTurretSetpoint(turretStartPosition + setpoint);
+}
+
 void TurretRotation::SetTurretSetpoint(double setpoint)
 {
     std::cout << "TurretRotation::SetTurretSetpoint(" << setpoint << ")\n";

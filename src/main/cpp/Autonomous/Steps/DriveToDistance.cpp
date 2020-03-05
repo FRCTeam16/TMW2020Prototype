@@ -33,6 +33,14 @@ bool DriveToDistance::Run(std::shared_ptr<World> world) {
         return true;
     }
 
+    if (haltedDueToJam || (stopDriveOnJam && Robot::feederArm->IsIntakeJamDetected())) {
+        haltedDueToJam = true;
+        std::cout << "**** DriveToDistance: EMERGENCY STOP DUE TO INTAKE JAM ****\n";
+        Robot::feederArm->StopIntake();
+        crab->Stop();
+        return false;
+    }
+
     if (elapsedTimeSecs > stepTimeOut) {
         std::cerr << "**** DriveToDistance: EMERGENCY STOP DUE TO TIMEOUT ****\n";
         crab->Stop();
