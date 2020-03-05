@@ -53,7 +53,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new DriveToDistance(firstAngle, 0.5, 0_in, -14_in),
 		new SetFeederArmOpenLoop(0.0),
 		new EnableIntake(true),
-		new SetVisionOffsetDegrees(5.0),
+		new SetVisionOffsetDegrees(4.0),
 		new EnableVisionTracking(true),
 	}));
 
@@ -63,7 +63,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	}));
 	
 	// Ramp down
-	auto lastStraight = new DriveToDistance(firstAngle, 0.5, 0_in, -43_in);
+	auto lastStraight = new DriveToDistance(firstAngle, 0.5, 0_in, -40_in);
 	lastStraight->SetRampDownDistance(25_in);
 	steps.push_back(new ConcurrentStep({
 		lastStraight,
@@ -91,7 +91,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new SetVisionOffsetDegrees(2.0)
 	}));
 
-	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -3_in, 38_in);
+	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -3_in, 35_in);
 	driveToBar->SetUseGyro(false);
 	steps.push_back(new ConcurrentStep({
 		driveToBar,
@@ -107,7 +107,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	steps.push_back(new Rotate(sweepAngle));
 
 	// Sweep down bar while shooting
-	auto sweepDrive = new DriveToDistance(sweepAngle, 0.15, -51_in, 102_in);
+	auto sweepDrive = new DriveToDistance(sweepAngle, 0.20, -51_in, 102_in);
 	sweepDrive->SetStopDriveOnJam(true);
 	steps.push_back(new ConcurrentStep({
 		sweepDrive,

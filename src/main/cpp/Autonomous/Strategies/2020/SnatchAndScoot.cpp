@@ -31,7 +31,7 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
 		new SetGyroOffset(firstAngle),
         new SetFeederArmPosition(FeederArm::Position::kVertical, 0.25_s),
         new SetTurretPosition(-451, 0.2_s),
-		new Delay(0.5)
+		new Delay(0.75)
 	}));
 
     // Run and grab balls
@@ -77,7 +77,7 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
         new Delay(1.5)
     }));
 
-    auto driveToBar = new DriveToDistance(sweepAngle, 0.15, 18_in, -21.5_in);
+    auto driveToBar = new DriveToDistance(sweepAngle, 0.15, 18_in, -19.5_in);
     steps.push_back(new ConcurrentStep({
         driveToBar,
         new EnableFeeder(false),
@@ -85,7 +85,7 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
     }));
 
     // sweep bar
-    auto sweep = new DriveToDistance(sweepAngle, 0.15, 44_in, 22_in);
+    auto sweep = new DriveToDistance(sweepAngle, 0.15, 54_in, 27_in);
     sweep->SetTimeOut(2.5_s);
     steps.push_back(new ConcurrentStep({
         sweep

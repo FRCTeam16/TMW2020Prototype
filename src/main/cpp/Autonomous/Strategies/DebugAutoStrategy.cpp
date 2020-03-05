@@ -35,21 +35,23 @@ DebugAutoStrategy::DebugAutoStrategy(std::shared_ptr<World> world) {
 	// Measure();
 	std::cout << "--- DEBUG Autonomous ---\n";
 
-	const double firstAngle = 180.0;
-	steps.push_back(new ConcurrentStep({
-		new SetGyroOffset(180.0),
-		new SetFeederArmPosition(FeederArm::Position::kVertical, 0.25_s),
-		new SetTurretPosition(-180, 0.2_s),
-		new Delay(0.5)
-	}));
+	steps.push_back(new SetTurretPosition(-180, 0.2_s));
 
-	auto pushOff = new DriveToDistance(firstAngle, 0.5, 0_in, -60_in);
-	pushOff->SetRampUpTime(0.25_s);
-	steps.push_back(new ConcurrentStep({
-		pushOff,
-		new SetFeederArmPosition(FeederArm::Position::kZero),
-		new EnableShooter(true)
-	})); 
+	// const double firstAngle = 180.0;
+	// steps.push_back(new ConcurrentStep({
+	// 	new SetGyroOffset(180.0),
+	// 	new SetFeederArmPosition(FeederArm::Position::kVertical, 0.25_s),
+	// 	new SetTurretPosition(-180, 0.2_s),
+	// 	new Delay(0.5)
+	// }));
+
+	// auto pushOff = new DriveToDistance(firstAngle, 0.5, 0_in, -60_in);
+	// pushOff->SetRampUpTime(0.25_s);
+	// steps.push_back(new ConcurrentStep({
+	// 	pushOff,
+	// 	new SetFeederArmPosition(FeederArm::Position::kZero),
+	// 	new EnableShooter(true)
+	// })); 
 
 /*
 	const double firstAngle = 180.0;
