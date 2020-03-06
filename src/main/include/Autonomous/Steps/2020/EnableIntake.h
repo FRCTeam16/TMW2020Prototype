@@ -5,8 +5,8 @@
 
 class EnableIntake : public Step {
 public:
-    explicit EnableIntake(bool enableIntake)
-    : enableIntake(enableIntake) {
+    explicit EnableIntake(bool enableIntake, bool reversed = false)
+    : enableIntake(enableIntake), reversed(reversed) {
     }
 
     bool Run(std::shared_ptr<World> world) override {

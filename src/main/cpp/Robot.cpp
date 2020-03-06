@@ -175,8 +175,8 @@ void Robot::TeleopPeriodic() {
 		feederArm->StartIntake();
 	} else if (oi->DR2->Pressed()) {
 		feederArm->StartIntake(true);	// reversed
-	} else if (fabs(oi->GetGamepadLeftStick()) > 0.25) {
-		feederArm->StartIntakeForColorSpin(oi->GetGamepadLeftStick());
+	} else if (fabs(oi->GetGamepadRightStick()) > 0.25) {
+		feederArm->StartIntakeForColorSpin(oi->GetGamepadRightStick());
 	} else {
 		feederArm-> StopIntake();
 	}
@@ -215,14 +215,6 @@ void Robot::TeleopPeriodic() {
 	} else if (oi->GPLB->RisingEdge()) {
 		turret->PreloadBall();
 	}
-	/*else {
-		double armSpeed = oi->GetGamepadRightStick();
-		if (fabs(armSpeed)<0.05) {
-			armSpeed = 0;
-		}
-		feederArm->RunArm(armSpeed);
-	}
-	*/
 
 	if (oi->DL16->Pressed()) {
 		turret->SetFeederAndShooterReversed(true);
@@ -254,6 +246,13 @@ void Robot::TeleopPeriodic() {
 		}
 		if (dPad == OI::DPad::kDown) {
 			feederArm->RetractClimberArms();
+		}
+
+		double armDir = oi->GetGamepadLeftStick();
+		if (fabs(armDir) > 0.05) {
+			double armSetpoint = feederArm->GetCurrentSetPoint();
+			double increase = std::copysign(100, armDir);
+			feederArm->DebugSetPoint(armSetpoint + increase);
 		}
 	}
 

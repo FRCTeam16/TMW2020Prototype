@@ -68,10 +68,17 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
         new SetFeederArmPosition(FeederArm::Position::kPlayerStation),
         new EnableShooter(true),
     }));
-    steps.push_back(new ConcurrentStep({
-        new EnableVisionTracking(true),
-        new Delay(1.0)
-    }));
+
+    // steps.push_back(new ConcurrentStep({
+    //     new EnableVisionTracking(true),
+    //     new Delay(1.0)
+    // }));
+    steps.push_back(new EnableVisionTracking(true));
+    steps.push_back(new ConcurrentStep({ new EnableIntake(true, true), new Delay(0.25) }));
+    steps.push_back(new ConcurrentStep({ new EnableIntake(true, false), new Delay(0.25) }));
+    steps.push_back(new ConcurrentStep({ new EnableIntake(true, true), new Delay(0.25) }));
+    steps.push_back(new ConcurrentStep({ new EnableIntake(true, false), new Delay(0.25) }));
+    
     steps.push_back(new ConcurrentStep({
         new EnableFeeder(true),
         new Delay(1.5)
