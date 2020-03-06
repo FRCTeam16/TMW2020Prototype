@@ -63,8 +63,10 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
 
 
     const double sweepAngle = 115.0;
+    auto rotate = new Rotate(sweepAngle);
+    rotate->SetContinueOnTimeout(rotate);
     steps.push_back(new ConcurrentStep({
-        new Rotate(sweepAngle),
+        rotate,
         new SetFeederArmPosition(FeederArm::Position::kPlayerStation),
         new EnableShooter(true),
     }));

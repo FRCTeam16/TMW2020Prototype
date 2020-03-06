@@ -247,13 +247,14 @@ void Robot::TeleopPeriodic() {
 		if (dPad == OI::DPad::kDown) {
 			feederArm->RetractClimberArms();
 		}
-
+/*
 		double armDir = oi->GetGamepadLeftStick();
 		if (fabs(armDir) > 0.05) {
 			double armSetpoint = feederArm->GetCurrentSetPoint();
 			double increase = std::copysign(100, armDir);
 			feederArm->DebugSetPoint(armSetpoint + increase);
 		}
+		*/
 	}
 
 
