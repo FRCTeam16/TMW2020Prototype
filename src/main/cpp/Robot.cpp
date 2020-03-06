@@ -6,6 +6,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/commands/Scheduler.h>
+#include <wpi/PortForwarder.h>
 
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<DriveBase> Robot::driveBase;
@@ -41,6 +42,8 @@ void Robot::RobotInit() {
 	mediumShotPose.reset(new MediumShotPose());
 	trenchShotPose.reset(new TrenchShotPose());
 	longShotPose.reset(new LongShotPose());
+
+	// wpi::PortForwarder::GetInstance().Add(5801, "10.0.16.11", 5801);
 
 	std::cout << "Robot::TeleopInit <=\n";
 }
