@@ -293,6 +293,7 @@ void Turret::Instrument()
     frc::SmartDashboard::PutBoolean("ShooterEnabled", shooterEnabled);
     frc::SmartDashboard::PutNumber("Shooter Out RPM", shooterMotor->GetEncoder().GetVelocity());
     frc::SmartDashboard::PutNumber("Shooter Amps", shooterMotor->GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("Shooter Follower Amps", shooterMotorFollower->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("Feeder Amps", feederMotor->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("Feeder Out RPM", feederMotor->GetEncoder().GetVelocity());
     turretRotation.Instrument();
