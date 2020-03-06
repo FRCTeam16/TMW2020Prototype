@@ -51,7 +51,7 @@ TurretRotation.PID.I, 0.0
 TurretRotation.PID.D, 0.0
 TurretRotation.PID.F, 0.0
 Intake.Jam.Threshold, 40.0
-ShootingProfile.Medium.Shooter, 4400
+ShootingProfile.Medium.Shooter, 4700
 ShootingProfile.Medium.Feeder, -3000
-ShootingProfile.Long.Shooter, 4700
+ShootingProfile.Long.Shooter, 5000
 ShootingProfile.Long.Feeder, -3200

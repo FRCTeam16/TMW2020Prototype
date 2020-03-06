@@ -167,6 +167,11 @@ bool FeederArm::IsArmInPosition()
     return fabs((currentPosition - armSetpoint) < allowedError);
 }
 
+double FeederArm::GetCurrentSetPoint()
+{
+    return armSetpoint;
+}
+
 
 void FeederArm::SetArmBrakeMode(bool brakeEnabled)
 {

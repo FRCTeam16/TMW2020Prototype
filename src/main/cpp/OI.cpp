@@ -24,12 +24,12 @@ OI::OI() {
 
 
     // SmartDashboard Buttons
-    SmartDashboard::PutData("SetWheelOffsets2", new SetWheelOffsets());
-    SmartDashboard::PutData("ZeroGyro2", new ZeroGyro());
-    SmartDashboard::PutData("ZeroFeederArm2", new ZeroFeederArm());
-    SmartDashboard::PutData("ZeroFeederArm HIGH", new ZeroFeederArmHigh());
-    SmartDashboard::PutData("ZeroTurretPosition2", new ZeroTurretPosition());
-    SmartDashboard::PutData("RotateTurretToStart", new RotateTurretToStart());
+    SmartDashboard::PutData("SetWheelOffsets3", new SetWheelOffsets());
+    SmartDashboard::PutData("ZeroGyro3", new ZeroGyro());
+    SmartDashboard::PutData("ZeroFeederArm3", new ZeroFeederArm());
+    SmartDashboard::PutData("ZeroFeederArm HIGH3", new ZeroFeederArmHigh());
+    SmartDashboard::PutData("ZeroTurretPosition3", new ZeroTurretPosition());
+    SmartDashboard::PutData("RotateTurretToStart3", new RotateTurretToStart());
 
     GPX.reset(new BSButton(gamepad, 3));
     GPY.reset(new BSButton(gamepad, 4));

@@ -53,7 +53,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new DriveToDistance(firstAngle, 0.5, 0_in, -14_in),
 		new SetFeederArmOpenLoop(0.0),
 		new EnableIntake(true),
-		new SetVisionOffsetDegrees(4.0),
+		// new SetVisionOffsetDegrees(4.0),
 		new EnableVisionTracking(true),
 	}));
 
@@ -67,7 +67,7 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 	lastStraight->SetRampDownDistance(25_in);
 	steps.push_back(new ConcurrentStep({
 		lastStraight,
-		new SetVisionOffsetDegrees(2.0),
+		// new SetVisionOffsetDegrees(2.0),
 		new SelectShootingProfile(ShootingProfile::kMedium),
 		new EnableFeeder(true)
 	}));
@@ -87,8 +87,8 @@ void GoalSideSweepStrategy::Offset(std::shared_ptr<World> world) {
 		new Rotate(initialBarAngle),
 		new EnableFeeder(false),
 		new EnableVisionTracking(false),
-		new SetTurretPosition(0, 0.2_s),
-		new SetVisionOffsetDegrees(2.0)
+		new SetTurretPosition(0, 0.2_s)
+		// new SetVisionOffsetDegrees(2.0)
 	}));
 
 	auto driveToBar = new DriveToDistance(initialBarAngle, 0.2, -3_in, 35_in);

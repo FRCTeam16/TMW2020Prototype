@@ -35,6 +35,7 @@ public:
     void ZeroArmPosition(int position = 0);
     void SetArmBrakeMode(bool brakeEnabled);
     bool IsArmInPosition();
+    double GetCurrentSetPoint();
 
     void StartIntake(bool reverse = false);
     void StopIntake();

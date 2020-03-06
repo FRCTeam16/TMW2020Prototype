@@ -15,10 +15,10 @@ AutoManager::AutoManager() :
 		positions(new frc::SendableChooser<int>()),
 		strategies(new frc::SendableChooser<int>())
 {
-	strategies->SetDefaultOption("0 - None", AutoStrategy::kNone);
+	strategies->AddOption("0 - None", AutoStrategy::kNone);
 	strategies->AddOption("1 - GoalSideSweep Center", AutoStrategy::kGoalSideSweepCenter);
 	strategies->AddOption("2 - GoalSideSweep Offset", AutoStrategy::kGoalSideSweepOffset);
-	strategies->AddOption("3 - SnatchAndScoot", AutoStrategy::kSnatchAndShoot);
+	strategies->SetDefaultOption("3 - SnatchAndScoot", AutoStrategy::kSnatchAndShoot);
 	strategies->AddOption("99 - Debug Auto Strategy", AutoStrategy::kDebug);
 
 	positions->SetDefaultOption("2 - Right", AutoStartPosition::kRight);
@@ -26,7 +26,7 @@ AutoManager::AutoManager() :
 	positions->AddOption("0 - Left",  AutoStartPosition::kLeft);
 
 	frc::SmartDashboard::PutData("Auto Start Pos1", positions.get());
-	frc::SmartDashboard::PutData("Auto Strategy1", strategies.get());
+	frc::SmartDashboard::PutData("Auto Strategy3", strategies.get());
 	std::cout << "AutoManager::AutoManager() finished\n";
 }
 
