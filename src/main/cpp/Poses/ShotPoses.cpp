@@ -15,7 +15,14 @@ void ShortShotPose::Run(bool startShooter) {
 
 void MediumShotPose::Run(bool startShooter) {
     Robot::visionSystem->GetLimelight()->SelectPipeline(0);
-    Robot::turret->GetTurretRotation().EnableVisionTracking();
+    if (startShooter) {
+        Robot::turret->GetTurretRotation().EnableVisionTracking();
+    } else {
+        std::cout << "MediumShotPose::Run - disabling vision due to startShooter false\n";
+        Robot::turret->SetShooterEnabled(false);
+        Robot::turret->GetTurretRotation().DisableVisionTracking();
+    }
+    
     Robot::turret->SetShootingProfile(ShootingProfile::kMedium);
     Robot::turret->SetLidToLongShot();
     Robot::turret->GetTurretRotation().SetTurretPosition(TurretRotation::Position::kBack);

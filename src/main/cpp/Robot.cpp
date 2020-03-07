@@ -197,7 +197,7 @@ void Robot::TeleopPeriodic() {
 	} 
 	else if (oi->GPY->RisingEdge()) {
 		if (turret->GetCurrentShootingProfile() == ShootingProfile::kShort) {
-			mediumShotPose->Run();
+			mediumShotPose->Run(false);
 		}
 		feederArm->SetArmPosition(FeederArm::Position::kVertical);
 		// driver request always turn off shooter
