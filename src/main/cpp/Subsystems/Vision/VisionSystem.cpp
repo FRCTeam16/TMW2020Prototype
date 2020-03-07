@@ -38,12 +38,12 @@ VisionSystem::VisionSystem() {
 
 void VisionSystem::Run() {
     auto prefs = BSPrefs::GetInstance();
-    // double P = prefs->GetDouble("Vision.x.P", 0.5);
+    // double P = prefs->GetDouble("Vision.x.P", 0.05);
     // double I = prefs->GetDouble("Vision.x.I", 0.0);
     // double D = prefs->GetDouble("Vision.x.D", 0.0);
-    double P = frc::SmartDashboard::GetNumber("Vision.x.P", 0.1);
+    double P = frc::SmartDashboard::GetNumber("Vision.x.P", 0.05);
     double I = frc::SmartDashboard::GetNumber("Vision.x.I", 0.0);
-    double D = frc::SmartDashboard::GetNumber("Vision.x.D", 0.03);
+    double D = frc::SmartDashboard::GetNumber("Vision.x.D", 0.00);
 
     double xThreshold = prefs->GetDouble("Vision.x.threshold", 50.0);
     xoffPID->SetPID(P, I, D);
