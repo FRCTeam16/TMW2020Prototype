@@ -86,7 +86,7 @@ SnatchAndScoot::SnatchAndScoot(std::shared_ptr<World> world)
         new Delay(1.5)
     }));
 
-    auto driveToBar = new DriveToDistance(sweepAngle, 0.15, 18_in, -19.5_in);
+    auto driveToBar = new DriveToDistance(sweepAngle, 0.15, 19.5_in, -21.12_in);
     steps.push_back(new ConcurrentStep({
         driveToBar,
         new EnableFeeder(false),
