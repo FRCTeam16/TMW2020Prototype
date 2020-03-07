@@ -58,7 +58,8 @@ void TurretRotation::Run()
         openLoopMessage = false;
         positionControl = false;
     }
-    else if ((visionTrackingEnabled && !positionControl) || (positionControl && visionInfo->hasTarget)) /* && hasTarget */
+    else if ((visionTrackingEnabled && !positionControl) ||
+            (visionTrackingEnabled && positionControl && visionInfo->hasTarget)) /* Simplify to visionTracking + hasTarget */
     {
         // We have a vision target, override turret position
         double speed = 0.0;
