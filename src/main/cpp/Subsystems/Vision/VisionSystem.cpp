@@ -15,7 +15,6 @@
 
 VisionSystem::VisionSystem() {
     limelight.reset(new Limelight());
-    xoffsetController.reset(new XOffsetController(limelight));
 
     double P = frc::SmartDashboard::PutNumber("Vision.x.P", 0.05);
     double I = frc::SmartDashboard::PutNumber("Vision.x.I", 0.0);
@@ -25,15 +24,9 @@ VisionSystem::VisionSystem() {
     // double I = BSPrefs::GetInstance()->GetDouble("Vision.x.I", 0.0);
     // double D = BSPrefs::GetInstance()->GetDouble("Vision.x.D", 0.0);
     /*double xThreshold =*/ BSPrefs::GetInstance()->GetDouble("Vision.x.threshold", 50.0);
-    double range = BSPrefs::GetInstance()->GetDouble("Vision.x.range", 0.3);
-
-    // TODO: modify XOffset Controller functions to work with frc2::PIDControllers
-    xoffPID.reset(
-        new PIDController(P, I, D, xoffsetController.get(), xoffsetController.get() )
-    );
-    xoffPID->SetOutputRange(-range, range);
+    outputRange = BSPrefs::GetInstance()->GetDouble("Vision.x.range", 0.3);
+    xoffPID.reset(new frc2::PIDController(P, I, D));
     xoffPID->SetSetpoint(0.0);
-    xoffPID->Enable();
 }
 
 void VisionSystem::Run() {
@@ -48,19 +41,19 @@ void VisionSystem::Run() {
     double xThreshold = prefs->GetDouble("Vision.x.threshold", 50.0);
     xoffPID->SetPID(P, I, D);
 
-    auto driveInfo = new VisionInfo();
+    auto visionInfo = new VisionInfo();
     SceneInfo scene = limelight->GetScene();
     if (scene.hasTarget) {
-        driveInfo->hasTarget = true;
-        driveInfo->xSpeed = -xoffsetController->GetValue();
-        driveInfo->xOffset = scene.xOffset;
-        driveInfo->inThreshold = fabs(scene.xOffset) <= xThreshold;
-        driveInfo->targetArea = scene.targetArea;
+        double xSpeed = std::clamp(xoffPID->Calculate(scene.xOffset + offsetDegrees), -outputRange, outputRange);
+        visionInfo->hasTarget = true;
+        visionInfo->xSpeed = -xSpeed;
+        visionInfo->xOffset = scene.xOffset;
+        visionInfo->inThreshold = fabs(scene.xOffset) <= xThreshold;
+        visionInfo->targetArea = scene.targetArea;
+    } else {
+        xoffPID->Reset();
     }
-    // std::cout 
-    //     << "hasTarget? " << scene.hasTarget
-    //     << " | vision xtranslate: " << xTranslate << std::endl;
-    currentVisionInfo.reset(driveInfo);
+    currentVisionInfo.reset(visionInfo);
 }
 
 std::shared_ptr<VisionInfo> VisionSystem::GetLastVisionInfo() {
@@ -69,7 +62,7 @@ std::shared_ptr<VisionInfo> VisionSystem::GetLastVisionInfo() {
 
 void VisionSystem::ToggleCameraMode() {
     auto mode = limelight->ToggleCameraMode();
-    std::cout << "Toggled to mode: " << static_cast<int>(mode) << std::endl;
+    std::cout << "VisionSystem::ToggleCameraMode - Toggled to mode: " << static_cast<int>(mode) << std::endl;
 }
 
 void VisionSystem::Instrument() {
@@ -81,8 +74,8 @@ void VisionSystem::Instrument() {
 }
 
 void VisionSystem::SetMaxOutputRange(double range) {
-    std::cout << "Setting VisionSystem MaxOutputRange: " << range << "\n";
-    xoffPID->SetOutputRange(-range, range);
+    std::cout << "VisionSystem::SetMaxOutputRange: " << range << "\n";
+    outputRange = range;
 }
 
 void VisionSystem::ResetMaxOutputRange() {
@@ -104,5 +97,5 @@ bool VisionSystem::IsVisionTrackingEnabled() {
 
 void VisionSystem::SetOffsetDegrees(double offset)
 {
-    xoffsetController->SetOffsetDegrees(offset);
+    offsetDegrees = offset;
 }

@@ -53,6 +53,7 @@ OI::OI() {
     DL12.reset(new BSButton(driverLeft, 12));
     DL13.reset(new BSButton(driverLeft, 13));
     DL14.reset(new BSButton(driverLeft, 14));
+    DL15.reset(new BSButton(driverLeft, 15));
     DL16.reset(new BSButton(driverLeft, 16));
 
     DR1.reset(new BSButton(driverRight, 1));
@@ -67,6 +68,9 @@ OI::OI() {
     DR10.reset(new BSButton(driverRight, 10));
     DR11.reset(new BSButton(driverRight, 11));
     DR12.reset(new BSButton(driverRight, 12));
+    DR13.reset(new BSButton(driverRight, 13));
+    DR14.reset(new BSButton(driverRight, 14));
+    DR15.reset(new BSButton(driverRight, 15));
     DR16.reset(new BSButton(driverRight, 16));
 }
 
@@ -149,8 +153,7 @@ double OI::scaledRadians(double radians) {
     return scaledradians;
 }
 
-double OI::GetGamepadLeftStick() {
-    const double threshold = 0.1;
+double OI::GetGamepadLeftStick(double threshold) {
     if ((fabs(gamepad->GetRawAxis(1))) < threshold) {
         return 0;
     } else {
@@ -158,8 +161,7 @@ double OI::GetGamepadLeftStick() {
     }
 }
 
-double OI::GetGamepadRightStick() {
-    const double threshold = 0.1;
+double OI::GetGamepadRightStick(double threshold) {
     if ((fabs(gamepad->GetRawAxis(5))) < threshold) {
         return 0;
     } else {
@@ -167,8 +169,7 @@ double OI::GetGamepadRightStick() {
     }
 }
 
-double OI::GetGamepadRT() {
-    const double threshold = 0.1;
+double OI::GetGamepadRT(double threshold) {
     if ((fabs(gamepad->GetRawAxis(3))) < threshold) {
         return 0;
     } else {
@@ -176,8 +177,7 @@ double OI::GetGamepadRT() {
     }
 }
 
-double OI::GetGamepadLT() {
-    const double threshold = 0.1;
+double OI::GetGamepadLT(double threshold) {
     if ((fabs(gamepad->GetRawAxis(2))) < threshold) {
         return 0;
     } else {
@@ -213,6 +213,10 @@ OI::DPad OI::TranslatePOV(int pov) {
 
 OI::DPad OI::GetGamepadDPad() {
     return TranslatePOV(gamepad->GetPOV());
+}
+
+OI::DPad OI::GetDLHat() {
+    return TranslatePOV(driverLeft->GetPOV());
 }
 
 OI::DPad OI::GetDRHat() {

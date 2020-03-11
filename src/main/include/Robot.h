@@ -61,6 +61,7 @@ private:
   std::unique_ptr<AutoManager> autoManager;
   
   std::shared_ptr<World> world;
+  int instrumentationScans = 0;     // number of scans instrument has been called to reduce # of times invoked
   bool runInstrumentation = false;  // whether to run subsystem instrumentation
 
   // Operator input flags

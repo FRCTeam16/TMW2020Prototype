@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #include "Subsystems/Vision/Limelight.h"
 #include "networktables/NetworkTableInstance.h"
 #include <iostream>
@@ -13,12 +6,13 @@ Limelight::Limelight() {
     auto defaultInstance = nt::NetworkTableInstance::GetDefault();
     dataTable = defaultInstance.GetTable("limelight");
     SetStreamMode(StreamMode::USBMain);
+    std::cout << "Limelight::Limelight()\n";
 }
 
 SceneInfo Limelight::GetScene() const {
     SceneInfo si;
 
-    si.hasTarget = dataTable->GetNumber("tv", 0) == 1;  // 0 or 1
+    si.hasTarget = dataTable->GetNumber("tv", 0) == 1;  // valid targets? 0 or 1
     si.xOffset = dataTable->GetNumber("tx", 0.0);       // -27 - 27 degrees
     si.yOffset = dataTable->GetNumber("ty", 0.0);       // -20.5 - 20.5 degrees
     si.targetArea = dataTable->GetNumber("ta", 0.0);    // 0 - 100%
@@ -44,17 +38,21 @@ Limelight::CameraMode Limelight::GetCameraMode() const {
 }
 
 void Limelight::SetCameraMode(CameraMode cameraMode) {
-    // FIXME: Add enum for light states
     switch (cameraMode) {
         case CameraMode::DriverCamera:
-            dataTable->PutNumber("ledMode", 1);
+            SetLedMode(LedMode::kOff);
             break;
         default:
-            dataTable->PutNumber("ledMode", 0);
+            SetLedMode(LedMode::kPipeline);
             break;
     }
     const auto value = static_cast<int>(cameraMode);
     dataTable->PutNumber("camMode", value);
+}
+
+void Limelight::SetLedMode(LedMode ledMode) {
+    const auto value = static_cast<int>(ledMode);
+    dataTable->PutNumber("ledMode", value);
 }
 
 Limelight::CameraMode Limelight::ToggleCameraMode() {

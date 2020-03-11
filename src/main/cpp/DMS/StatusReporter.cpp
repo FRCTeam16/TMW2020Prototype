@@ -43,7 +43,7 @@ void StatusReporter::Run() {
 
 	while (running) {
 		try {
-			SendData();
+			running = SendData();
 		} catch(...) {
 			std::cout << "StatusReporter exited\n";
 			return;
@@ -53,7 +53,7 @@ void StatusReporter::Run() {
 	std::cout << "StatusReporter::Run exited\n";
 }
 
-void StatusReporter::SendData() {
+bool StatusReporter::SendData() {
 	const double x = Robot::driveBase->GetLastSpeedX();
 	const double y = Robot::driveBase->GetLastSpeedY();
 	const double speed = sqrt(fabs(x*x) + fabs(y*y));
@@ -92,11 +92,15 @@ void StatusReporter::SendData() {
 	data[11] = (char) allianceColor;	// 1 red, 2 blue, 0 unknown
 	data[12] = (char) robotState;		// 0 - none, 1 - disabled, 2- auto, 3- tele
 	// data[13] = (char) GetWheelColor   	// 0 - nothing, 1 - looking, 2 - 3 - 4 - 5 -		FIXME: Add Color Subsystem Hook, - when out of wheel mode
-	int val = (((int)frc::Timer::GetFPGATimestamp()) % 5);
+	// int val = (((int)frc::Timer::GetFPGATimestamp()) % 5);
 	// data[13] = (char) val;
 	data[13] = 0;
 
 	int written = serial->Write(data, DATA_SIZE);
-	// std::cout << "StatusReporter - wrote " << written << " bytes\n";
 	serial->Flush();
+	if (written < 0) {
+		std::cerr << "*** StatusReporter::SendData() - Error while attempting to write data, exiting ***\n";
+		return false;
+	}
+	return true;
 }

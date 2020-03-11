@@ -40,6 +40,7 @@ public:
 	std::shared_ptr<BSButton> DL12;
 	std::shared_ptr<BSButton> DL13;
 	std::shared_ptr<BSButton> DL14;
+	std::shared_ptr<BSButton> DL15;
 	std::shared_ptr<BSButton> DL16;
 
 	std::shared_ptr<BSButton> DR1;
@@ -54,6 +55,9 @@ public:
 	std::shared_ptr<BSButton> DR10;
 	std::shared_ptr<BSButton> DR11;
 	std::shared_ptr<BSButton> DR12;
+	std::shared_ptr<BSButton> DR13;
+	std::shared_ptr<BSButton> DR14;
+	std::shared_ptr<BSButton> DR15;
 	std::shared_ptr<BSButton> DR16;
 	
 	enum DPad {
@@ -70,16 +74,17 @@ public:
 	};
 
 	DPad GetGamepadDPad();
+	DPad GetDLHat();
 	DPad GetDRHat();
 	DPad TranslatePOV(int povValue);
 
 	double GetJoystickTwist(double threshold = 0.1);
 	double GetJoystickX(double threshold = 0.1);
 	double GetJoystickY(double threshold = 0.1);
-	double GetGamepadLeftStick();
-	double GetGamepadRightStick();
-	double GetGamepadLT();
-	double GetGamepadRT();
+	double GetGamepadLeftStick(double threshold = 0.1);
+	double GetGamepadRightStick(double threshold = 0.1);
+	double GetGamepadLT(double threshold = 0.1);
+	double GetGamepadRT(double threshold = 0.1);
 	void SetGamepadLeftRumble(double rumble);
 	void SetGamepadRightRumble(double rumble);
 	void SetGamepadBothRumble(double rumble);

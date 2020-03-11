@@ -23,7 +23,7 @@ private:
 
 	bool dmsMode = false;
 
-	void SendData();
+	bool SendData();
 
 	DriveInfo<int> driveStatus;
 	DriveInfo<int> steerStatus;

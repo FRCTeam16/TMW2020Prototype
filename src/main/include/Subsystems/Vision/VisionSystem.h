@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Subsystems/SubsystemManager.h"
-#include <frc/PIDController.h>  // TODO: Deprecated, need to move to frc2::PIDController
+#include <frc/controller/PIDController.h>
 #include "Limelight.h"
-#include "XOffsetController.h"
 #include "Util/UtilityFunctions.h"
 #include <iostream>
 
@@ -36,8 +35,8 @@ class VisionSystem : public SubsystemManager {
   void SetOffsetDegrees(double offset);
 private:
   std::shared_ptr<Limelight> limelight;
-  std::unique_ptr<XOffsetController> xoffsetController;
-  std::unique_ptr<frc::PIDController> xoffPID;
+  std::unique_ptr<frc2::PIDController> xoffPID;
   std::shared_ptr<VisionInfo> currentVisionInfo;
+  double outputRange = 0.3;
   double offsetDegrees = 0.0;
 };

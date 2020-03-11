@@ -347,15 +347,19 @@ void Robot::RunSubsystems() {
 }
 
 void Robot::InstrumentSubsystems() {
-	autoManager->Instrument();
-	frc::SmartDashboard::PutNumber("ArmPos", RobotMap::armMotor->GetSelectedSensorPosition());
-	if (true || runInstrumentation) {
-		RobotMap::gyro->Instrument();
-		driveBase->Instrument();
-		visionSystem->Instrument();
-		turret->Instrument();
-		feederArm->Instrument();
-		controlPanelSystem->Instrument();
+	// Run instrumentation on delayed time
+	instrumentationScans %= 10;
+	if (instrumentationScans == 0) {
+		autoManager->Instrument();
+		frc::SmartDashboard::PutNumber("ArmPos", RobotMap::armMotor->GetSelectedSensorPosition());
+		if (true || runInstrumentation) {
+			RobotMap::gyro->Instrument();
+			driveBase->Instrument();
+			visionSystem->Instrument();
+			turret->Instrument();
+			feederArm->Instrument();
+			controlPanelSystem->Instrument();
+		}
 	}
 }
 

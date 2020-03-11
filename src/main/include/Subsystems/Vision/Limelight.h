@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 #include "networktables/NetworkTable.h"
 
@@ -43,5 +36,7 @@ class Limelight {
   double CalculateDistance(double heightToCamera, double heightToTarget) const;
 
 private:
+  enum class LedMode { kPipeline = 0, kOff = 1, kBlink = 2, kOn = 3 };
+  void SetLedMode(LedMode ledMode);
   std::shared_ptr<NetworkTable> dataTable;
 };
